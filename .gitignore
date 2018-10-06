@@ -1,0 +1,4 @@
+*.project
+*.buildpath
+/node_modules
+npm-debug.log

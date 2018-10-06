@@ -37,7 +37,6 @@ export class HangxeComponent implements OnInit {
 
   ngOnInit() {
     self = this;
-    self.menu.getURL(this.router.url);
     //editor 
     $('.textarea').wysihtml5();
     //jquery validation
