@@ -1,0 +1,113 @@
+<!-- Content Header (Page header) -->
+{{message}}
+<button (click)="newMessage()">New Message</button>
+
+<section class="content-header">
+  <h1>
+    Danh mục hãng xe
+    <!-- <small>Preview</small> -->
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+    <li><a href="#">Danh mục</a></li>
+    <li class="active">Danh mục hãng xe</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+  <!-- SELECT2 EXAMPLE -->
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <h3 class="box-title">Thêm danh mục hãng xe</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <form id="frm-danh-muc-hang-xe">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Mã hãng xe:</label>
+              <input 
+                type="text" 
+                class="form-control my-colorpicker1"
+                id="ma" 
+                name="ma" 
+                required
+              >
+            </div>
+          
+            <textarea 
+              class="textarea" 
+              placeholder="Mô tả hãng xe"
+              style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+              id="mo_ta" 
+              name="mo_ta"
+            >
+            </textarea>
+            
+          </div>
+          <!-- /.col -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Tên hãng xe:</label>
+              <input 
+                type="text" 
+                class="form-control my-colorpicker1"
+                id="ten" 
+                name="ten" 
+                required
+              >
+            </div>
+
+            <input type="hidden" name="hidden_id" value="0">
+            
+            <div class="form-group">
+              <button type="reset" class="btn btn-default" id="reset">Xóa</button>
+              <button 
+                type="submit" 
+                class="btn btn-primary pull-right" 
+                id="save-danh-muc-hang-xe"
+              >
+              Lưu thay đổi</button>
+            </div>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+      <!-- /.row -->
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+  <div class="box">
+    <div class="box-header">
+      <h3 class="box-title">Danh sách danh mục hãng xe</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table id="tbl-danh-muc-hang-xe" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Mã hãng xe</th>
+          <th>Tên hãng xe</th>
+          <th>Mô tả</th>
+          <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+  </div>
+
+</section>
+<!-- /.content -->
+
