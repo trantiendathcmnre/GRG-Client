@@ -109,7 +109,7 @@ export class DanhmucphutungComponent implements OnInit {
           { data: "mo_ta", render: function (data, type, row) {
             return self.RutGonChuoi(data, LIMIT);
           }},
-          { data: "ten_dich_vu"},
+          { data: "ten_donvi"},
           {data: null,className: "text-center",render: function (data, type, row) {
             return '<i data-group="grpEdit" class="fa fa-edit pointer" title="Sửa"></i>&nbsp;&nbsp;'+
             '<i data-group="grpDelete" class="fa fa-trash pointer" title="Xóa"></i>';
