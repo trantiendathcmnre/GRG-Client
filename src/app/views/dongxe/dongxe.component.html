@@ -1,13 +1,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h3>
-    Danh mục phụ tùng
+    Danh mục dòng xe
     <!-- <small>Preview</small> -->
   </h3>
   <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
     <li><a href="#">Danh mục</a></li>
-    <li class="active">Danh mục phụ tùng</li>
+    <li class="active">Danh mục dòng xe</li>
   </ol>
 </section>
 
@@ -16,28 +16,23 @@
   <div class="box">
     <div class="box-header">
       <div class="form-group">
-        <label class="col-sm-2 control-label">Đơn vị làm việc:</label>
+        <label class="col-sm-2 control-label">Hãng xe:</label>
         <div class="col-sm-3">
           <select 
             class="form-control select2"
             style="width: 100%;"
-            id="donvi" 
-            name="donvi"
+            id="hangxe" 
+            name="hangxe"
             >
-            <option value="0" selected>Tất cả các đơn vị</option>
-            <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{dv.ten}}</option>
+            <option value="0" selected>Tất cả hãng xe</option>
+            <option *ngFor="let hx of dataHangXe" [value]=hx.id>{{ hx.ten }}</option>
           </select>
         </div>
-        <div class="col-sm-1">
-          <button type="button" class="btn btn-default pull-left" id="btn-search">
-            Duyệt
-          </button>
-        </div>
-        <div class="col-sm-1">
-          <button type="button" class="btn btn-default" id="btn-export-csv">
-            Xuất excel
-          </button>
-        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-default pull-left" id="btn-search">
+              Duyệt
+            </button>
+          </div>
         <div class="col-sm-5">
           <button type="button" class="btn btn-default pull-right" id="btn-add">
             Thêm mới
@@ -48,13 +43,13 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <table id="tbl-danh-muc-phu-tung" class="table table-bordered table-striped">
+      <table id="tbl-danh-muc-dong-xe" class="table table-bordered table-striped">
         <thead>
         <tr>
           <th>#</th>
-          <th>Tên danh mục PT</th>
+          <th>Tên dòng xe</th>
           <th>Mô tả</th>
-          <th>Thuộc đơn vị</th>
+          <th>Thuộc hãng xe</th>
           <th>Thao tác</th>
         </tr>
         </thead>
@@ -72,20 +67,20 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Thêm Danh Mục Phụ Tùng</h4>
+        <h4 class="modal-title">Thêm Danh Mục Dòng Xe</h4>
       </div>
       <div class="modal-body">
-        <form id="frm-danh-muc-phu-tung">
+        <form id="frm-danh-muc-dong-xe">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group form-group-ten">
-                <label>Tên danh mục phụ tùng:</label>
+                <label>Tên dòng xe:</label>
                 <input 
                   type="text" 
                   class="form-control my-colorpicker1"
                   id="ten" 
                   name="ten" 
-                  placeholder="Nhập tên danh mục phụ tùng"
+                  placeholder="Nhập tên dòng xe"
                   required
                 >
                 <div id="unname_ITK" class="response"></div>
@@ -93,7 +88,7 @@
             
               <textarea 
                 class="textarea" 
-                placeholder="Mô tả danh mục phụ tùng"
+                placeholder="Mô tả dòng xe"
                 style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
                 id="mo_ta" 
                 name="mo_ta"
@@ -104,15 +99,15 @@
             <!-- /.col -->
             <div class="col-md-6">
               <div class="form-group">
-                <label>Tính doanh thu cho đơn vị:</label>
+                <label>Thuộc hãng xe:</label>
                 <select 
                   class="form-control select2"
                   style="width: 100%;"
-                  id="donvi_id" 
-                  name="donvi_id"
+                  id="hangxe_id" 
+                  name="hangxe_id"
                 >
                   <option value="0" selected>Tất cả các đơn vị</option>
-                  <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{dv.ten}}</option>
+                  <option *ngFor="let hx of dataHangXe" [value]=hx.id>{{hx.ten}}</option>
                 </select>
               </div>
   
@@ -128,7 +123,7 @@
         <button 
           type="submit" 
           class="btn btn-primary pull-right" 
-          id="save-danh-muc-phu-tung"
+          id="save-danh-muc-dong-xe"
         >
         Lưu thay đổi</button>
       </div>

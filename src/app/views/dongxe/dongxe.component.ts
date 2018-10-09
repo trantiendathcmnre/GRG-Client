@@ -1,41 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Http } from '@angular/http';
-import * as moment from 'moment';
-import { HangXeService } from "../../services/hangxe.service";
-import { MenuService } from '../../services/menu.service';
+import { Router } from '@angular/router';
+import { DongXeService } from '../../services/dongxe.service';
+import { HangXeService } from '../../services/hangxe.service';
 
 const ERRORCODE = 1;
 const SUCCESSCODE = 0;
 const LIMIT = 30;
-declare var $, toastr:any;
-var self, inforData, tbl :any;
+declare var $, toastr : any;
+var self, inforData, tbl : any;
 var count:number;
 var replace:string;
-var codeOLD;
-let now = moment().format('MM_DD_YYYY_HH_mm_ss_a');
+var nameOLD;
 
 @Component({
-  selector: 'app-hangxe',
-  templateUrl: './hangxe.component.html',
-  styleUrls: ['./hangxe.component.css']
+  selector: 'app-dongxe',
+  templateUrl: './dongxe.component.html',
+  styleUrls: ['./dongxe.component.css']
 })
-export class HangxeComponent implements OnInit {
+export class DongxeComponent implements OnInit {
 
   dataHangXe:any = [ ];
-  pnotify = undefined;
-  route = undefined;
-
   constructor(
       private http: Http,
-      private hangXeService: HangXeService,
       private router:Router,
-      private menu: MenuService
+      private hangXeService: HangXeService,
+      private dongXeService: DongXeService,
   ) { }
 
   ngOnInit() {
-    
     self = this;
+    //load data hang xe
+    self.DanhMucHangXe();
     //editor 
     $('.textarea').wysihtml5();
     //jquery validation
@@ -43,15 +39,15 @@ export class HangxeComponent implements OnInit {
       return arg !== value;
     }, "Value must not equal arg.");
 
-    $('#frm-danh-muc-hang-xe').validate({
+    $('#frm-danh-muc-dong-xe').validate({
       debug: true,
       rules: {
-          ten: { required:true, maxlength: 50 },
-          ma:  { required:true, maxlength: 20 },
+          ten: { required : true, maxlength : 50 },
+          hangxe_id: { valueNotEquals: "0" }
       },
       messages: { 
-          ten:  { required:"Vui lòng nhập tên hãng xe.", maxlength:"Tên hãng chỉ tối đa 50 ký tự." },
-          ma:   { required:"Vui lòng nhập mã hãng xe.", maxlength:"Mã hãng chỉ tối đa 20 ký tự." },
+          ten: { required:"Vui lòng nhập tên dòng xe.", maxlength:"Tên dòng xe chỉ tối đa 50 ký tự." },
+          hangxe_id: { valueNotEquals:"Vui lòng chọn hãng xe."}
       },
       highlight : function (element) {
           $(element).closest('.form-control').addClass('has-error');
@@ -63,43 +59,39 @@ export class HangxeComponent implements OnInit {
       }
     });
 
-    $('#reset').on('click', function() {
-      $('#frm-danh-muc-hang-xe').validate().resetForm();
-    });
-
-    $('#frm-danh-muc-hang-xe').bind('keyup blur change', function () {
+    $('#frm-danh-muc-dong-xe').bind('keyup blur change', function () {
       var id = $('input[name=hidden_id]').val();
       if(id == 0) {
-        if ($('#frm-danh-muc-hang-xe').validate().checkForm() ) { 
-          checkCode(); 
+        if ($('#frm-danh-muc-dong-xe').validate().checkForm() ) { 
+          checkName(); 
           if(self.result_check)
-            $('#frm-danh-muc-hang-xe').removeClass('button_disabled').prop('disabled', false); 
+            $('#save-danh-muc-dong-xe').removeClass('button_disabled').prop('disabled', false); 
           else
-            $('#frm-danh-muc-hang-xe').removeClass('button_disabled').prop('disabled', true); 
+            $('#save-danh-muc-dong-xe').removeClass('button_disabled').prop('disabled', true); 
           
         } else {
-          $('#frm-danh-muc-hang-xe').addClass('button_disabled').prop('disabled', true);   
+          $('#save-danh-muc-dong-xe').addClass('button_disabled').prop('disabled', true);   
         }
       }
     });
 
-    $("#ma").bind('keyup change blur', function(){
-      checkCode();
+    $("#ten").bind('keyup change blur', function(){
+      checkName();
     });
 
-    function checkCode() {
+    function checkName() {
       var id = $('input[name=hidden_id]').val();
-      var ma = $("#ma").val().trim();
-      self.result_code = false;
+      var ten = $("#ten").val().trim();
+      self.result_name = false;
 
       $("#unname_ITK").show();         
       $.each( self.dataKT, function( key, value ) {
-        if(( ma == value.ma && value.ma != codeOLD && id != '0' ) || (ma == value.ma && id=='0')) {    
-          self.result_code = true;      
+        if(( ten == value.ten && value.ten != nameOLD && id != '0' ) || (ten == value.ten && id=='0')) {    
+          self.result_name = true;      
         }
       });
-      if(self.result_code) {
-        $("#unname_ITK").html("<label class='error'>Mã hãng xe này đã tồn tại.</label>");
+      if(self.result_name) {
+        $("#unname_ITK").html("<label class='error'>Tên dòng xe này đã tồn tại.</label>");
         $(".form-group form-group-ten").addClass('has-error');
         $(".form-control form-group-ten").addClass('has-error');
         self.result_check = false;
@@ -110,30 +102,11 @@ export class HangxeComponent implements OnInit {
     }
 
     //datatable
-    tbl = $('#tbl-danh-muc-hang-xe').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                text: 'Thêm mới',
-                className: 'btn btn-default btn-add',
-                action: function ( e, dt, node, config ) {
-                  $('input[name=hidden_id]').val(0);
-                  $('#modal-default').modal('show');
-                }
-            },
-            {
-                extend : 'csv',
-                text: 'Xuất excel',
-                className: 'btn btn-default',
-                exportOptions: {
-                  columns: [ 1, 2, 3 ]
-                },
-                title: "Danh_sach_hang_xe_"+now
-            }
-        ],
+    tbl = $('#tbl-danh-muc-dong-xe').DataTable({
         columnDefs: [
           { orderable: false, targets: [ 0, 4 ] }
         ],
+        searching: false,
         bLengthChange : false,
         iDisplayLength: 10,
         //sap xep cot 3 tang dan
@@ -160,9 +133,15 @@ export class HangxeComponent implements OnInit {
         rowId: "id",
         columns:[
           { data: null, className: "text-center", width: "20px" },
-          { data: "ma"},
-          { data: "ten"},
-          { data: "mo_ta"},
+          { data: "ten", render: function (data, type, row) {
+            // return self.RutGonChuoi(data, LIMIT);
+            return data;
+          }},
+          { data: "mo_ta", render: function (data, type, row) {
+            // return self.RutGonChuoi(data, LIMIT);
+            return data;
+          }},
+          { data: "ten_hangxe"},
           {data: null,className: "text-center",render: function (data, type, row) {
             return '<i data-group="grpEdit" class="fa fa-edit pointer" title="Sửa"></i>&nbsp;&nbsp;'+
             '<i data-group="grpDelete" class="fa fa-trash pointer" title="Xóa"></i>';
@@ -170,11 +149,10 @@ export class HangxeComponent implements OnInit {
         ],
         //load data
         initComplete: function(setting, json){
-          self.DanhMucHangXe();
+          self.DanhMucDongXe();
         },
         drawCallback: function(settings){
           self.bindTableEvents();
-          $('.dt-button').removeClass('dt-button');
         }
     });
 
@@ -185,52 +163,71 @@ export class HangxeComponent implements OnInit {
       })
     }).draw();
 
+    //click button them moi 
+    $('#btn-add').off('click').click(function(){
+      $('input[name=hidden_id]').val(0);
+      $('#modal-default').modal('show');
+    });
+
+    // chon don vi va click duyet 
+    $('#btn-search').off('click').click(function(){
+      let hangXe = $('#hangxe').val();
+      if(hangXe == 0) {
+        self.DanhMucDongXe();
+      } else {
+        self.DuyetDanhMucDongXe(hangXe);
+      }
+    });
+
     // hien modal bootstrap 
     $('#modal-default').modal({show: false, backdrop: 'static', keyboard: false }).on('show.bs.modal',function(){
       var id = $('input[name=hidden_id]').val();
       // check add 
       if(id == '0') {
-        var validator = $("#frm-danh-muc-hang-xe").validate();
+        var validator = $("#frm-danh-muc-dong-xe").validate();
         validator.resetForm();
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
-        $("#save-danh-muc-hang-xe").prop('disabled', false);
-        $('#ma').val("");
-        $('#ma').prop('disabled', false);
+        $("#save-danh-muc-dong-xe").prop('disabled', false);
         $('#ten').val("");
+        $('#ten').prop('disabled', false);
         $('#mo_ta').val("");
+        $('select[name=hangxe_id]').val("0").change();
+        $('select[name=hangxe_id]').prop('disabled', false);
       } else { // check update
-        var validator = $("#frm-danh-muc-hang-xe").validate();
+        var validator = $("#frm-danh-muc-dong-xe").validate();
         validator.resetForm();
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $('#reset').hide();
         $("#unname_ITK").hide();
-        $('#ma').val(inforData.ma);
-        $('#ma').prop('disabled', true);
         $('#ten').val(inforData.ten);
+        $('#ten').prop('disabled', true);
         $('iframe').contents().find('.wysihtml5-editor').html(inforData.mo_ta);
-        codeOLD=$('#ma').val();
+        $('select[name=hangxe_id]').val(inforData.donvi_id).change();
+        $('select[name=hangxe_id]').prop('disabled', true);
+        nameOLD=$('#ten').val();
       }
     });
 
-    // them danh muc hang xe
-    $('#save-danh-muc-hang-xe').on('click', function () {
+    // click luu de them hoac cap nhat
+    $("#save-danh-muc-dong-xe").click(function() {
       // check hidden id
       var hiddenId = $('input[name=hidden_id]').val();
       // get data form 
-      var data = $('#frm-danh-muc-hang-xe').serializeArray().reduce(function(obj, item) {
+      var data = $('#frm-danh-muc-dong-xe').serializeArray().reduce(function(obj, item) {
         obj[item.name] = item.value;
         return obj;
       }, {});
-      if(hiddenId == 0 && $('#ten').val() != "" && $('#ma').val() !="" ) {
-        self.ThemDanhMucHangXe(data);
+      if(hiddenId == 0) {
+        self.ThemDongXe(data);
+      } else {
+        self.CapNhatDongXe(data, hiddenId);
       }
-
     });
-
   }
 
+  //get danh muc hang xe
   DanhMucHangXe()
   {
     self.hangXeService.getAll().subscribe(res=>{
@@ -238,9 +235,22 @@ export class HangxeComponent implements OnInit {
         console.log(res);
         //self.router.navigate(['/']);
       } else {
+        self.dataHangXe = ( SUCCESSCODE == res.errorCode ) ? res.data : console.log(res.message);
+      }
+    });
+  }
+
+  //get danh muc dong xe
+  DanhMucDongXe()
+  {
+    self.dongXeService.getAll().subscribe(res=>{
+      if( ERRORCODE <= res.errorCode ) {
+        console.log(res);
+        //self.router.navigate(['/']);
+      } else {
         if( SUCCESSCODE == res.errorCode ) {
           //console.log(res.data);
-          //self.dataKT=res.data;
+          self.dataKT=res.data;
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
@@ -251,40 +261,61 @@ export class HangxeComponent implements OnInit {
     });
   }
 
-  ThemDanhMucHangXe(data)
+  // them danh muc dong xe
+  ThemDongXe(data)
   {
-    self.hangXeService.add(data).subscribe(res=>{
+    self.dongXeService.add(data).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         toastr.error(res.message, 'Thất bại!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
-          $('#frm-danh-muc-hang-xe').trigger("reset");
+          $('#frm-danh-muc-dong-xe').trigger("reset");
           toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
-          self.DanhMucHangXe();
+          self.DanhMucDongXe();
         } else {
-          toastr.error(res.message, 'Thất bại!');
+          toastr.error(res.message, 'Thất bại');
         }
       }
     });
   }
 
-  // cap nhat danh muc phu tung
-  CapNhatHangXe(data, id) 
+  // cap nhat danh muc dong xe
+  CapNhatDongXe(data, id) 
   {
-    self.hangXeService.update(data , id).subscribe(res=> {
+    self.dongXeService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         toastr.error(res.message, 'Thất bại!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
-          $('#frm-danh-muc-hang-xe').trigger("reset");
+          $('#frm-danh-muc-dong-xe').trigger("reset");
           toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
-          self.DanhMucHangXe();
+          self.DanhMucDongXe();
         } else {
           toastr.error(res.message, 'Thất bại');
+        }
+      }
+    });
+
+  }
+
+  // duyet danh muc dong xe theo hang xe 
+  DuyetDanhMucDongXe(hangxe)
+  {
+    self.dongXeService.search(hangxe).subscribe(res=> {
+      if( ERRORCODE <= res.errorCode ) {
+        console.log(res.message);
+        //self.router.navigate(['/']);
+      } else {
+        if( SUCCESSCODE == res.errorCode ) {
+          tbl.clear().draw();
+          tbl.rows.add(res.data);//add new data
+          tbl.columns.adjust().draw();// reraw datatable
+        } else {
+          console.log(res.message);
         }
       }
     });
@@ -296,7 +327,7 @@ export class HangxeComponent implements OnInit {
     //Xu ly update
     $('i[data-group=grpEdit]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
-      self.hangXeService.get(rowId).subscribe(res=> {
+      self.dongXeService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
           toastr.error(res.message, 'Thất bại!');
           //self.router.navigate(['/']);
@@ -315,10 +346,10 @@ export class HangxeComponent implements OnInit {
 
     //Xu lý xóa
     $('i[data-group=grpDelete]').off('click').click(function(){
-      var rowId = $(this).closest('tr').attr('id');
+      var rowId=$(this).closest('tr').attr('id');
       $.confirm({
         title: 'Thông báo !',
-        content: 'Bạn có muốn xóa hãng xe này không ?',
+        content: 'Bạn có muốn xóa dòng xe này không ?',
         type: 'red',
         typeAnimated: true,
         buttons: {
@@ -326,16 +357,17 @@ export class HangxeComponent implements OnInit {
                 text: 'Có',
                 btnClass: 'btn-danger',
                 action: function(){
-                  self.hangXeService.delete(rowId).subscribe(res=> {
+                  self.dongXeService.delete(rowId).subscribe(res=> {
                     if( ERRORCODE <= res.errorCode ) {
                       console.log(res);
                       // self.router.navigate(['/']);
                     } else {
                       if( SUCCESSCODE == res.errorCode ) {
                         toastr.success(res.message, 'Thành Công');
-                        self.DanhMucHangXe();
+                        self.DanhMucDongXe();
                       } else {
                         toastr.error(res.message, 'Thất bại');
+                        self.DanhMucDongXe();
                       }
                     }
                   });       
@@ -349,5 +381,18 @@ export class HangxeComponent implements OnInit {
       });
     });
   }
+
+  // /**
+	//  * rut gon chuoi truyen vao
+	//  * @param const limit
+	//  * @param string string
+	//  * @return string replace
+	//  */
+  // RutGonChuoi(string, limit)
+  // {
+  //   count = string.length;
+  //   replace = count > limit ? string.replace(string.substring(limit, string.length),'...') : string;
+  //   return replace;
+  // }
 
 }

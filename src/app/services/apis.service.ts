@@ -5,6 +5,7 @@ export class ApisService {
 
 constructor() { }
     baseUrl = "http://18.224.135.207:8000/";
+    exportPathDanhMucPT = 'assets/uploads/export_danh_muc_phu_tung';
 
     authentication = { 
         login: { method: 'POST', url: this.baseUrl + 'users' }
@@ -24,7 +25,8 @@ constructor() { }
         add     : { method: 'POST',   url: this.baseUrl + 'danhmucphutung' },
         update  : { method: 'PUT',    url: this.baseUrl + 'danhmucphutung/' },
         delete  : { method: 'DELETE', url: this.baseUrl + 'danhmucphutung/' },
-        search  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/search/' }
+        search  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/search/' },
+        export  : { method: 'POST',   url: this.baseUrl + 'danhmucphutung/export-csv' },
     };
 
     hangXe = {
@@ -41,7 +43,7 @@ constructor() { }
         add             :  { method: 'POST',    url: this.baseUrl + 'dongxe' },
         update          :  { method: 'PUT',     url: this.baseUrl + 'dongxe/' },
         delete          :  { method: 'DELETE',  url: this.baseUrl + 'dongxe/' },
-        getDongXeHangXe :  { method: 'GET',     url: this.baseUrl + 'dongxe/mahangxe/' }
+        search          :  { method: 'GET',     url: this.baseUrl + 'dongxe/search/' }
     };
 
 }

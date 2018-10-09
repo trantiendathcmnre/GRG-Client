@@ -12,6 +12,7 @@ import { DanhmucphutungComponent } from './views/danhmucphutung/danhmucphutung.c
 import { FooterComponent } from './views/footer/footer.component';
 import { HangxeComponent } from './views/hangxe/hangxe.component';
 import { HeaderComponent } from './views/header/header.component';
+import { DongxeComponent } from './views/dongxe/dongxe.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -19,8 +20,8 @@ import { DongXeService } from './services/dongxe.service';
 import { DonViLamViecService } from './services/donvilamviec.service';
 import { DonViTinhService } from './services/donvitinh.service';
 import { HangXeService } from './services/hangxe.service';
-import { PnotifyService } from './services/pnotify.service';
 import { MenuService } from './services/menu.service';
+
 
 
 export const router: Routes = [
@@ -32,6 +33,7 @@ export const router: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'danhmucphutung', component: DanhmucphutungComponent },
       { path: 'hangxe', component: HangxeComponent },
+      { path: 'dongxe', component: DongxeComponent },
     ]
   }
 ];
@@ -41,11 +43,12 @@ export const router: Routes = [
     AppComponent,
     AuthenticationComponent,
     DashboardComponent,
-    DanhmucphutungComponent,
     ContainerComponent,
     HeaderComponent,
     FooterComponent,
+    DanhmucphutungComponent,
     HangxeComponent,
+    DongxeComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +63,6 @@ export const router: Routes = [
     HangXeService,
     DonViLamViecService,
     DonViTinhService,
-    PnotifyService,
     MenuService
   ],
   bootstrap: [AppComponent]

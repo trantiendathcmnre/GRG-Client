@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { Router } from '@angular/router';
 import { DonViLamViecService } from '../../services/donvilamviec.service';
 import { DanhMucPhuTungService } from '../../services/danhmucphutung.service';
-import { PnotifyService } from '../../services/pnotify.service';
+import { ApisService } from '../../services/apis.service';
 
 const ERRORCODE = 1;
 const SUCCESSCODE = 0;
@@ -11,7 +11,7 @@ const LIMIT = 30;
 declare var $, toastr : any;
 var self, inforData, tbl : any;
 var count:number;
-var replace:string;
+var replace, path_file:string;
 var nameOLD;
 
 @Component({
@@ -22,14 +22,15 @@ var nameOLD;
 export class DanhmucphutungComponent implements OnInit {
 
   dataDonVi:any = [ ];
+  dataExport: any = [ ];
   pnotify = undefined;
   constructor(
       private http: Http,
       private router:Router,
+      private apisService: ApisService,
       private danhMucPhuTungService: DanhMucPhuTungService,
       private donViLamViecService: DonViLamViecService,
-      pnotifyService: PnotifyService
-  ) { this.pnotify = pnotifyService.getPNotify(); }
+  ) { }
 
   ngOnInit() {
     self = this;
@@ -168,6 +169,13 @@ export class DanhmucphutungComponent implements OnInit {
     $('#btn-add').off('click').click(function(){
       $('input[name=hidden_id]').val(0);
       $('#modal-default').modal('show');
+    });
+
+    // click button xuat excel
+    $('#btn-export-csv').off('click').click(function(){
+      path_file = self.apisService.exportPathDanhMucPT;
+      self.dataExport.push('path_file', path_file); 
+      self.XuatExcelDanhMucPhuTung(self.dataExport);
     });
 
     // chon don vi va click duyet 
@@ -322,6 +330,12 @@ export class DanhmucphutungComponent implements OnInit {
       }
     });
 
+  }
+
+  XuatExcelDanhMucPhuTung(data) {
+    self.danhMucPhuTungService.export(data).subscribe(res=> {
+      debugger
+    });
   }
 
   private bindTableEvents()
