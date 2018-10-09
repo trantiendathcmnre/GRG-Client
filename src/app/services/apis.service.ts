@@ -14,7 +14,7 @@ constructor() { }
         getAll: { method: 'GET',    url: this.baseUrl + 'donvilamviec' },
         get   : { method: 'GET',    url: this.baseUrl + 'donvilamviec/' },
         add   : { method: 'POST',   url: this.baseUrl + 'donvilamviec' },
-        update: { method: 'PUT',    url: this.baseUrl + 'donvilamviec' },
+        update: { method: 'PUT',    url: this.baseUrl + 'donvilamviec/' },
         delete: { method: 'DELETE', url: this.baseUrl + 'donvilamviec/' }
     };
 
@@ -22,15 +22,16 @@ constructor() { }
         getAll  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung' },
         get     : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/' },
         add     : { method: 'POST',   url: this.baseUrl + 'danhmucphutung' },
-        update  : { method: 'PUT',    url: this.baseUrl + 'danhmucphutung' },
-        delete  : { method: 'DELETE', url: this.baseUrl + 'danhmucphutung/' }
+        update  : { method: 'PUT',    url: this.baseUrl + 'danhmucphutung/' },
+        delete  : { method: 'DELETE', url: this.baseUrl + 'danhmucphutung/' },
+        search  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/search/' }
     };
 
-    hangXe={
+    hangXe = {
         getAll  : { method: 'GET',     url: this.baseUrl + 'hangxe' },
         get     : { method: 'GET',     url: this.baseUrl + 'hangxe/' },
         add     : { method: 'POST',    url: this.baseUrl + 'hangxe' },
-        update  : { method: 'PUT',     url: this.baseUrl + 'hangxe' },
+        update  : { method: 'PUT',     url: this.baseUrl + 'hangxe/' },
         delete  : { method: 'DELETE',  url: this.baseUrl + 'hangxe/' }
     };
 
@@ -38,7 +39,7 @@ constructor() { }
         getAll          :  { method: 'GET',     url: this.baseUrl + 'dongxe' },
         get             :  { method: 'GET',     url: this.baseUrl + 'dongxe/' },
         add             :  { method: 'POST',    url: this.baseUrl + 'dongxe' },
-        update          :  { method: 'PUT',     url: this.baseUrl + 'dongxe' },
+        update          :  { method: 'PUT',     url: this.baseUrl + 'dongxe/' },
         delete          :  { method: 'DELETE',  url: this.baseUrl + 'dongxe/' },
         getDongXeHangXe :  { method: 'GET',     url: this.baseUrl + 'dongxe/mahangxe/' }
     };

@@ -14,78 +14,11 @@
 <!-- Main content -->
 <section class="content">
 
-  <!-- SELECT2 EXAMPLE -->
-  <div class="box box-default">
-    <div class="box-header with-border">
-      <h3 class="box-title">Thêm danh mục hãng xe</h3>
-
-      <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-      </div>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-      <form id="frm-danh-muc-hang-xe">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Mã hãng xe:</label>
-              <input 
-                type="text" 
-                class="form-control my-colorpicker1"
-                id="ma" 
-                name="ma" 
-                required
-              >
-            </div>
-          
-            <textarea 
-              class="textarea" 
-              placeholder="Mô tả hãng xe"
-              style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
-              id="mo_ta" 
-              name="mo_ta"
-            >
-            </textarea>
-            
-          </div>
-          <!-- /.col -->
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Tên hãng xe:</label>
-              <input 
-                type="text" 
-                class="form-control my-colorpicker1"
-                id="ten" 
-                name="ten" 
-                required
-              >
-            </div>
-
-            <input type="hidden" name="hidden_id" value="0">
-            
-            <div class="form-group">
-              <button type="reset" class="btn btn-default" id="reset">Xóa</button>
-              <button 
-                type="submit" 
-                class="btn btn-primary pull-right" 
-                id="save-danh-muc-hang-xe"
-              >
-              Lưu thay đổi</button>
-            </div>
-          </div>
-          <!-- /.col -->
-        </div>
-      </form>
-      <!-- /.row -->
-    </div>
-    <!-- /.box-body -->
-  </div>
-  <!-- /.box -->
   <div class="box">
     <div class="box-header">
-      <h3 class="box-title">Danh sách danh mục hãng xe</h3>
+      <!-- <button type="button" class="btn btn-default pull-right" id="btn-add">
+        Thêm mới
+      </button> -->
     </div>
     <!-- /.box-header -->
     <div class="box-body">
@@ -107,4 +40,74 @@
 
 </section>
 <!-- /.content -->
+
+<div class="modal fade in" id="modal-default">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h4 class="modal-title">Thêm Hãng Xe</h4>
+        </div>
+        <div class="modal-body">
+          <form id="frm-danh-muc-hang-xe">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Mã hãng xe:</label>
+                  <input 
+                    type="text" 
+                    class="form-control my-colorpicker1"
+                    id="ma" 
+                    name="ma" 
+                    required
+                  >
+                </div>
+              
+                <textarea 
+                  class="textarea" 
+                  placeholder="Mô tả hãng xe"
+                  style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+                  id="mo_ta" 
+                  name="mo_ta"
+                >
+                </textarea>
+                
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Tên hãng xe:</label>
+                  <input 
+                    type="text" 
+                    class="form-control my-colorpicker1"
+                    id="ten" 
+                    name="ten" 
+                    required
+                  >
+                </div>
+    
+                <input type="hidden" name="hidden_id" value="0">
+                
+                
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-default pull-left" id="reset">Xóa</button>
+          <button 
+            type="submit" 
+            class="btn btn-primary pull-right" 
+            id="save-danh-muc-hang-xe"
+          >
+          Lưu thay đổi</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  
 

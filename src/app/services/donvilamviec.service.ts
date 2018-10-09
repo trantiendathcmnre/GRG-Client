@@ -27,9 +27,9 @@ export class DonViLamViecService {
     let url = this.apiService.donViLamViec.add.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
-  update(data) {
+  update(data , id) {
     //this.createHeader();   
-    let url = this.apiService.donViLamViec.update.url;
+    let url = this.apiService.donViLamViec.update.url + id;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
   delete(id) {

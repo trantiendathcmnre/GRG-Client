@@ -5,14 +5,14 @@ import { PnotifyService } from '../../services/pnotify.service';
 import { HangXeService } from "../../services/hangxe.service";
 import { MenuService } from '../../services/menu.service';
 
-const ERRORCODE = 5;
+const ERRORCODE = 1;
 const SUCCESSCODE = 0;
 const LIMIT = 30;
-declare var $:any;
-var self:any;
-var tbl:any;
+declare var $, toastr:any;
+var self, inforData, tbl :any;
 var count:number;
 var replace:string;
+var codeOLD;
 
 @Component({
   selector: 'app-hangxe',
@@ -68,15 +68,65 @@ export class HangxeComponent implements OnInit {
       $('#frm-danh-muc-hang-xe').validate().resetForm();
     });
 
+    $('#frm-danh-muc-hang-xe').bind('keyup blur change', function () {
+      var id = $('input[name=hidden_id]').val();
+      if(id == 0) {
+        if ($('#frm-danh-muc-hang-xe').validate().checkForm() ) { 
+          checkCode(); 
+          if(self.result_check)
+            $('#frm-danh-muc-hang-xe').removeClass('button_disabled').prop('disabled', false); 
+          else
+            $('#frm-danh-muc-hang-xe').removeClass('button_disabled').prop('disabled', true); 
+          
+        } else {
+          $('#frm-danh-muc-hang-xe').addClass('button_disabled').prop('disabled', true);   
+        }
+      }
+    });
+
+    $("#ma").bind('keyup change blur', function(){
+      checkCode();
+    });
+
+    function checkCode() {
+      var id = $('input[name=hidden_id]').val();
+      var ma = $("#ma").val().trim();
+      self.result_code = false;
+
+      $("#unname_ITK").show();         
+      $.each( self.dataKT, function( key, value ) {
+        if(( ma == value.ma && value.ma != codeOLD && id != '0' ) || (ma == value.ma && id=='0')) {    
+          self.result_code = true;      
+        }
+      });
+      if(self.result_code) {
+        $("#unname_ITK").html("<label class='error'>Mã hãng xe này đã tồn tại.</label>");
+        $(".form-group form-group-ten").addClass('has-error');
+        $(".form-control form-group-ten").addClass('has-error');
+        self.result_check = false;
+      } else {
+        $("#unname_ITK").html("");
+        self.result_check = true;
+      }
+    }
+
     //datatable
     tbl = $('#tbl-danh-muc-hang-xe').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                text: 'Thêm mới',
+                className: 'btn btn-default btn-add',
+                action: function ( e, dt, node, config ) {
+                  $('input[name=hidden_id]').val(0);
+                  $('#modal-default').modal('show');
+                }
+            }
+        ],
         columnDefs: [
           { orderable: false, targets: [ 0, 4 ] }
         ],
-        aLengthMenu: [
-          [ 10, 25, 50, 100, -1 ],
-          [ 10, 25, 50, 100, "Tất cả" ]
-        ],
+        bLengthChange : false,
         iDisplayLength: 10,
         //sap xep cot 3 tang dan
         order: [[1, "asc"]],
@@ -115,7 +165,8 @@ export class HangxeComponent implements OnInit {
           self.DanhMucHangXe();
         },
         drawCallback: function(settings){
-          //self.bindTableEvents();
+          self.bindTableEvents();
+          $('.dt-button').removeClass('dt-button');
         }
     });
 
@@ -125,6 +176,35 @@ export class HangxeComponent implements OnInit {
         cell.innerHTML = i + 1;
       })
     }).draw();
+
+    // hien modal bootstrap 
+    $('#modal-default').modal({show: false, backdrop: 'static', keyboard: false }).on('show.bs.modal',function(){
+      var id = $('input[name=hidden_id]').val();
+      // check add 
+      if(id == '0') {
+        var validator = $("#frm-danh-muc-hang-xe").validate();
+        validator.resetForm();
+        $('.form-control').removeClass('has-error');
+        $('.form-group').removeClass('has-error');
+        $("#save-danh-muc-hang-xe").prop('disabled', false);
+        $('#ma').val("");
+        $('#ma').prop('disabled', false);
+        $('#ten').val("");
+        $('#mo_ta').val("");
+      } else { // check update
+        var validator = $("#frm-danh-muc-hang-xe").validate();
+        validator.resetForm();
+        $('.form-control').removeClass('has-error');
+        $('.form-group').removeClass('has-error');
+        $('#reset').hide();
+        $("#unname_ITK").hide();
+        $('#ma').val(inforData.ma);
+        $('#ma').prop('disabled', true);
+        $('#ten').val(inforData.ten);
+        $('iframe').contents().find('.wysihtml5-editor').html(inforData.mo_ta);
+        codeOLD=$('#ma').val();
+      }
+    });
 
     // them danh muc hang xe
     $('#save-danh-muc-hang-xe').on('click', function () {
@@ -141,9 +221,6 @@ export class HangxeComponent implements OnInit {
 
     });
 
-  }
-  newMessage() {
-    self.menu.changeMessage("Hello from Sibling")
   }
 
   DanhMucHangXe()
@@ -170,38 +247,99 @@ export class HangxeComponent implements OnInit {
   {
     self.hangXeService.add(data).subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
-        console.log(res);
+        toastr.error(res.message, 'Thất bại!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
-          alert("Thêm thành công");
+          $('#frm-danh-muc-hang-xe').trigger("reset");
+          toastr.success(res.message, 'Thành Công');
+          $('#modal-default').modal('hide');
           self.DanhMucHangXe();
-          $('#frm-danh-muc-hang-xe').trigger('reset');
         } else {
-          console.log(res.message);
+          toastr.error(res.message, 'Thất bại!');
         }
       }
     });
   }
 
- 
-  /**
-	 * pnotify thong bao thanh cong
-	 * @param string message
-	 * @return unknown message pnotify
-	 */
-  ThongBaoThanhCong(message) 
+  // cap nhat danh muc phu tung
+  CapNhatHangXe(data, id) 
   {
-    self.pnotify.success({
-      title: 'Thành công!',
-      text: self.message,
-      type: 'success',
-      addclass: 'custom',
-      nonblock: {
-        nonblock: true
+    self.hangXeService.update(data , id).subscribe(res=> {
+      if( ERRORCODE <= res.errorCode ) {
+        toastr.error(res.message, 'Thất bại!');
+        //self.router.navigate(['/']);
+      } else {
+        if( SUCCESSCODE == res.errorCode ) {
+          $('#frm-danh-muc-hang-xe').trigger("reset");
+          toastr.success(res.message, 'Thành Công');
+          $('#modal-default').modal('hide');
+          self.DanhMucHangXe();
+        } else {
+          toastr.error(res.message, 'Thất bại');
+        }
       }
     });
+
   }
 
+  private bindTableEvents()
+  {
+    //Xu ly update
+    $('i[data-group=grpEdit]').off('click').click(function(){
+      var rowId = $(this).closest('tr').attr('id');
+      self.hangXeService.get(rowId).subscribe(res=> {
+        if(ERRORCODE <= res.errorCode) {
+          toastr.error(res.message, 'Thất bại!');
+          //self.router.navigate(['/']);
+        } else {
+          if( SUCCESSCODE == res.errorCode ) {
+            $('input[name=hidden_id]').val(rowId);
+            inforData = res.data[0];
+            $('#modal-default').modal('show');
+          }
+          else {
+            console.log(res.message);
+          }
+        }
+      });
+    });
+
+    //Xu lý xóa
+    $('i[data-group=grpDelete]').off('click').click(function(){
+      var rowId = $(this).closest('tr').attr('id');
+      $.confirm({
+        title: 'Thông báo !',
+        content: 'Bạn có muốn xóa hãng xe này không ?',
+        type: 'red',
+        typeAnimated: true,
+        buttons: {
+            tryAgain: {
+                text: 'Có',
+                btnClass: 'btn-danger',
+                action: function(){
+                  self.hangXeService.delete(rowId).subscribe(res=> {
+                    if( ERRORCODE <= res.errorCode ) {
+                      console.log(res);
+                      // self.router.navigate(['/']);
+                    } else {
+                      if( SUCCESSCODE == res.errorCode ) {
+                        toastr.success(res.message, 'Thành Công');
+                        self.DanhMucHangXe();
+                      } else {
+                        toastr.error(res.message, 'Thất bại');
+                      }
+                    }
+                  });       
+                }
+            },
+            close:{
+              text: "Không",
+              btnClass: 'btn-default'
+            }
+        }
+      });
+    });
+  }
 
 }

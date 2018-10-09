@@ -22,6 +22,7 @@ import { HangXeService } from './services/hangxe.service';
 import { PnotifyService } from './services/pnotify.service';
 import { MenuService } from './services/menu.service';
 
+
 export const router: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthenticationComponent },
@@ -44,7 +45,7 @@ export const router: Routes = [
     ContainerComponent,
     HeaderComponent,
     FooterComponent,
-    HangxeComponent
+    HangxeComponent,
   ],
   imports: [
     BrowserModule,
