@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuService } from '../../services/menu.service';
-
+declare var $:any;
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -11,7 +11,15 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
+    $('#menu-danhmucphutung').off('click').click(function(){
+      $('.active').removeClass('active');
+      $(this).parent().addClass('active');
+    });
 
+    $('#menu-hangxe').off('click').click(function(){
+      $('.active').removeClass('active');
+      $(this).parent().addClass('active');
+    });
   }
 
 }
