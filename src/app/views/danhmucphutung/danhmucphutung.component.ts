@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DonViLamViecService } from '../../services/donvilamviec.service';
 import { DanhMucPhuTungService } from '../../services/danhmucphutung.service';
 import { ApisService } from '../../services/apis.service';
+import * as moment from 'moment';
 
 const ERRORCODE = 1;
 const SUCCESSCODE = 0;
@@ -13,6 +14,7 @@ var self, inforData, tbl : any;
 var count:number;
 var replace, path_file:string;
 var nameOLD;
+let now = moment().format('MM_DD_YYYY_HH_mm_ss_a');
 
 @Component({
   selector: 'app-danhmucphutung',
@@ -174,7 +176,9 @@ export class DanhmucphutungComponent implements OnInit {
     // click button xuat excel
     $('#btn-export-csv').off('click').click(function(){
       path_file = self.apisService.exportPathDanhMucPT;
-      self.dataExport.push('path_file', path_file); 
+      self.dataExport = {
+        'path_file' : path_file + "_" + now + ".csv"
+      };
       self.XuatExcelDanhMucPhuTung(self.dataExport);
     });
 
@@ -334,7 +338,7 @@ export class DanhmucphutungComponent implements OnInit {
 
   XuatExcelDanhMucPhuTung(data) {
     self.danhMucPhuTungService.export(data).subscribe(res=> {
-      debugger
+      
     });
   }
 
