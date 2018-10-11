@@ -47,9 +47,9 @@ export class DanhMucPhuTungService {
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  export(path) {
+  export() {
     let url = this.apisService.danhMucPhuTung.export.url;
-    return this.http.post(url, path , this.headerOptions).map(response => response.json());
+    return this.http.get(url , this.headerOptions).map(response => response.json());
   }
 
   // createHeader()

@@ -175,10 +175,6 @@ export class DanhmucphutungComponent implements OnInit {
 
     // click button xuat excel
     $('#btn-export-csv').off('click').click(function(){
-      path_file = self.apisService.exportPathDanhMucPT;
-      self.dataExport = {
-        'path_file' : path_file + "_" + now + ".csv"
-      };
       self.XuatExcelDanhMucPhuTung(self.dataExport);
     });
 

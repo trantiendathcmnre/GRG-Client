@@ -5,7 +5,6 @@ export class ApisService {
 
 constructor() { }
     baseUrl = "http://18.224.135.207:8000/";
-    exportPathDanhMucPT = 'assets/uploads/export_danh_muc_phu_tung';
 
     authentication = { 
         login: { method: 'POST', url: this.baseUrl + 'users' }
@@ -26,7 +25,7 @@ constructor() { }
         update  : { method: 'PUT',    url: this.baseUrl + 'danhmucphutung/' },
         delete  : { method: 'DELETE', url: this.baseUrl + 'danhmucphutung/' },
         search  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/search/' },
-        export  : { method: 'POST',   url: this.baseUrl + 'danhmucphutung/export-csv' },
+        export  : { method: 'GET',   url: this.baseUrl + 'danhmucphutung/export-csv' },
     };
 
     hangXe = {
