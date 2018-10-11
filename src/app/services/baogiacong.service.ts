@@ -4,35 +4,47 @@ import 'rxjs/add/operator/map';
 import { ApisService } from './apis.service';
 
 @Injectable()
-export class DonViTinhService {
+export class BaoGiaCongService {
 
   private headerOptions;
   constructor(private apisService : ApisService, private http : Http) { 
   }
-  getAll() {
-    // this.createHeader();
-    let url = this.apisService.donViTinh.getAll.url;
+
+  getAll() {  
+    // this.createHeader();  
+    let url = this.apisService.baoGiaCong.getAll.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
+
   get(id) {
     // this.createHeader();
-    let url = this.apisService.donViTinh.get.url + id;
+    let url = this.apisService.baoGiaCong.get.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
+
   add(data) {
     // this.createHeader();
-    let url = this.apisService.donViTinh.add.url;
+    let url = this.apisService.baoGiaCong.add.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
+
   update(data) {
     // this.createHeader();
-    let url = this.apisService.donViTinh.update.url;
+    let url = this.apisService.baoGiaCong.update.url;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
+
   delete(id) {
     // this.createHeader();
-    let url = this.apisService.donViTinh.delete.url + id;
+    let url = this.apisService.baoGiaCong.delete.url + id;
     return this.http.delete(url, this.headerOptions).map(response => response.json());
+  }
+
+  createMabaoGiaCong()
+  {
+    // this.createHeader();
+    let url = this.apisService.baoGiaCong.getMBGC.url;
+    return this.http.get(url, this.headerOptions).map(response => response.json());
   }
   // createHeader()
   // {
@@ -52,5 +64,4 @@ export class DonViTinhService {
   //   }
   //     this.headerOptions = new RequestOptions({headers: headers});
   // }
-
 }
