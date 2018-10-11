@@ -10,12 +10,13 @@ constructor() { }
         login: { method: 'POST', url: this.baseUrl + 'users' }
     };
 
-    donViLamViec = {
-        getAll: { method: 'GET',    url: this.baseUrl + 'donvilamviec' },
-        get   : { method: 'GET',    url: this.baseUrl + 'donvilamviec/' },
-        add   : { method: 'POST',   url: this.baseUrl + 'donvilamviec' },
-        update: { method: 'PUT',    url: this.baseUrl + 'donvilamviec/' },
-        delete: { method: 'DELETE', url: this.baseUrl + 'donvilamviec/' }
+    baoGiaCong = {
+        getAll  : { method: 'GET',    url : this.baseUrl + 'baogiacong' },
+        get     : { method: 'GET',    url : this.baseUrl + 'baogiacong/' },
+        add     : { method: 'POST',   url : this.baseUrl + 'baogiacong' },
+        update  : { method: 'PUT',    url : this.baseUrl + 'baogiacong/' },
+        delete  : { method: 'DELETE', url : this.baseUrl + 'baogiacong/' },
+        getMBGC : { method: 'GET',    url : this.baseUrl + 'baogiacong/taoma/mabaogiacong' }
     };
 
     danhMucPhuTung = {
@@ -28,6 +29,31 @@ constructor() { }
         export  : { method: 'GET',   url: this.baseUrl + 'danhmucphutung/export-csv' },
     };
 
+    donViLamViec = {
+        getAll: { method: 'GET',    url: this.baseUrl + 'donvilamviec' },
+        get   : { method: 'GET',    url: this.baseUrl + 'donvilamviec/' },
+        add   : { method: 'POST',   url: this.baseUrl + 'donvilamviec' },
+        update: { method: 'PUT',    url: this.baseUrl + 'donvilamviec/' },
+        delete: { method: 'DELETE', url: this.baseUrl + 'donvilamviec/' }
+    };
+
+    donViTinh={
+        getAll  : { method: 'GET',      url : this.baseUrl + 'donvitinh' },
+        get     : { method: 'GET',      url : this.baseUrl + 'donvitinh/' },
+        add     : { method: 'POST',     url : this.baseUrl + 'donvitinh' },
+        update  : { method: 'PUT',      url : this.baseUrl + 'donvitinh/' },
+        delete  : { method: 'DELETE',   url : this.baseUrl + 'donvitinh/' }
+    };
+
+    dongXe = {
+        getAll          :  { method: 'GET',     url: this.baseUrl + 'dongxe' },
+        get             :  { method: 'GET',     url: this.baseUrl + 'dongxe/' },
+        add             :  { method: 'POST',    url: this.baseUrl + 'dongxe' },
+        update          :  { method: 'PUT',     url: this.baseUrl + 'dongxe/' },
+        delete          :  { method: 'DELETE',  url: this.baseUrl + 'dongxe/' },
+        search          :  { method: 'GET',     url: this.baseUrl + 'dongxe/search/' }
+    };
+
     hangXe = {
         getAll  : { method: 'GET',     url: this.baseUrl + 'hangxe' },
         get     : { method: 'GET',     url: this.baseUrl + 'hangxe/' },
@@ -36,13 +62,12 @@ constructor() { }
         delete  : { method: 'DELETE',  url: this.baseUrl + 'hangxe/' }
     };
 
-    dongXe={
-        getAll          :  { method: 'GET',     url: this.baseUrl + 'dongxe' },
-        get             :  { method: 'GET',     url: this.baseUrl + 'dongxe/' },
-        add             :  { method: 'POST',    url: this.baseUrl + 'dongxe' },
-        update          :  { method: 'PUT',     url: this.baseUrl + 'dongxe/' },
-        delete          :  { method: 'DELETE',  url: this.baseUrl + 'dongxe/' },
-        search          :  { method: 'GET',     url: this.baseUrl + 'dongxe/search/' }
+    nhaCungCap = {
+        getAll  : { method: 'GET',      url : this.baseUrl + 'nhacungcap' },
+        get     : { method: 'GET',      url : this.baseUrl + 'nhacungcap/' },
+        add     : { method: 'POST',     url : this.baseUrl + 'nhacungcap' },
+        update  : { method: 'PUT',      url : this.baseUrl + 'nhacungcap/' },
+        delete  : { method: 'DELETE',   url : this.baseUrl + 'nhacungcap/' }
     };
 
 }

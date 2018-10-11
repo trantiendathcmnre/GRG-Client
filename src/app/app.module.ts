@@ -13,6 +13,9 @@ import { FooterComponent } from './views/footer/footer.component';
 import { HangxeComponent } from './views/hangxe/hangxe.component';
 import { HeaderComponent } from './views/header/header.component';
 import { DongxeComponent } from './views/dongxe/dongxe.component';
+import { DonViTinhComponent } from './views/donvitinh/donvitinh.component';
+import { BaoGiaCongComponent } from './views/baogiacong/baogiacong.component';
+import { NhaCungCapComponent } from './views/nhacungcap/nhacungcap.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -21,8 +24,8 @@ import { DonViLamViecService } from './services/donvilamviec.service';
 import { DonViTinhService } from './services/donvitinh.service';
 import { HangXeService } from './services/hangxe.service';
 import { MenuService } from './services/menu.service';
-
-
+import { NhaCungCapService } from './services/nhacungcap.service';
+import { BaoGiaCongService } from './services/baogiacong.service';
 
 export const router: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -34,6 +37,9 @@ export const router: Routes = [
       { path: 'danhmucphutung', component: DanhmucphutungComponent },
       { path: 'hangxe', component: HangxeComponent },
       { path: 'dongxe', component: DongxeComponent },
+      { path: 'donvitinh', component: DonViTinhComponent },
+      { path: 'baogiacong', component: BaoGiaCongComponent },
+      { path: 'nhacungcap', component: NhaCungCapComponent },
     ]
   }
 ];
@@ -49,6 +55,9 @@ export const router: Routes = [
     DanhmucphutungComponent,
     HangxeComponent,
     DongxeComponent,
+    DonViTinhComponent,
+    BaoGiaCongComponent,
+    NhaCungCapComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,12 +67,14 @@ export const router: Routes = [
   ],
   providers: [
     ApisService,
+    BaoGiaCongService,
     DanhMucPhuTungService,
     DongXeService,
     HangXeService,
     DonViLamViecService,
     DonViTinhService,
-    MenuService
+    MenuService,
+    NhaCungCapService,
   ],
   bootstrap: [AppComponent]
 })
