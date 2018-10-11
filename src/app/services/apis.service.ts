@@ -26,7 +26,7 @@ constructor() { }
         update  : { method: 'PUT',    url: this.baseUrl + 'danhmucphutung/' },
         delete  : { method: 'DELETE', url: this.baseUrl + 'danhmucphutung/' },
         search  : { method: 'GET',    url: this.baseUrl + 'danhmucphutung/search/' },
-        export  : { method: 'POST',   url: this.baseUrl + 'danhmucphutung/export-csv' },
+        export  : { method: 'GET',   url: this.baseUrl + 'danhmucphutung/export-csv' },
     };
 
     hangXe = {

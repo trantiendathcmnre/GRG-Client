@@ -21,6 +21,9 @@ import { DonViLamViecService } from './services/donvilamviec.service';
 import { DonViTinhService } from './services/donvitinh.service';
 import { HangXeService } from './services/hangxe.service';
 import { MenuService } from './services/menu.service';
+import { DonViTinhComponent } from './views/donvitinh/donvitinh.component';
+import { BaoGiaCongComponent } from './views/baogiacong/baogiacong.component';
+import { NhaCungCapComponent } from './views/nhacungcap/nhacungcap.component';
 
 
 
@@ -34,6 +37,9 @@ export const router: Routes = [
       { path: 'danhmucphutung', component: DanhmucphutungComponent },
       { path: 'hangxe', component: HangxeComponent },
       { path: 'dongxe', component: DongxeComponent },
+      { path: 'donvitinh', component: DonViTinhComponent },
+      { path: 'baogiacong', component: BaoGiaCongComponent },
+      { path: 'nhacungcap', component: NhaCungCapComponent },
     ]
   }
 ];
@@ -49,6 +55,9 @@ export const router: Routes = [
     DanhmucphutungComponent,
     HangxeComponent,
     DongxeComponent,
+    DonViTinhComponent,
+    BaoGiaCongComponent,
+    NhaCungCapComponent,
   ],
   imports: [
     BrowserModule,

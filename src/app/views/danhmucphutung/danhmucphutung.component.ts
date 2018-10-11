@@ -175,11 +175,7 @@ export class DanhmucphutungComponent implements OnInit {
 
     // click button xuat excel
     $('#btn-export-csv').off('click').click(function(){
-      path_file = self.apisService.exportPathDanhMucPT;
-      self.dataExport = {
-        'path_file' : path_file + "_" + now + ".csv"
-      };
-      self.XuatExcelDanhMucPhuTung(self.dataExport);
+      self.XuatExcelDanhMucPhuTung();
     });
 
     // chon don vi va click duyet 
@@ -336,8 +332,8 @@ export class DanhmucphutungComponent implements OnInit {
 
   }
 
-  XuatExcelDanhMucPhuTung(data) {
-    self.danhMucPhuTungService.export(data).subscribe(res=> {
+  XuatExcelDanhMucPhuTung() {
+    self.danhMucPhuTungService.export().subscribe(res=> {
       
     });
   }
