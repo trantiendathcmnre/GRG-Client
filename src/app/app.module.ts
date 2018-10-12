@@ -16,6 +16,7 @@ import { DongxeComponent } from './views/dongxe/dongxe.component';
 import { DonViTinhComponent } from './views/donvitinh/donvitinh.component';
 import { BaoGiaCongComponent } from './views/baogiacong/baogiacong.component';
 import { NhaCungCapComponent } from './views/nhacungcap/nhacungcap.component';
+import { DonViLamViecComponent } from './views/donvilamviec/donvilamviec.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -27,6 +28,7 @@ import { MenuService } from './services/menu.service';
 import { NhaCungCapService } from './services/nhacungcap.service';
 import { BaoGiaCongService } from './services/baogiacong.service';
 
+
 export const router: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthenticationComponent },
@@ -35,6 +37,7 @@ export const router: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'danhmucphutung', component: DanhmucphutungComponent },
+      { path: 'donvilamviec', component: DonViLamViecComponent },
       { path: 'hangxe', component: HangxeComponent },
       { path: 'dongxe', component: DongxeComponent },
       { path: 'donvitinh', component: DonViTinhComponent },
@@ -58,6 +61,7 @@ export const router: Routes = [
     DonViTinhComponent,
     BaoGiaCongComponent,
     NhaCungCapComponent,
+    DonViLamViecComponent,
   ],
   imports: [
     BrowserModule,
