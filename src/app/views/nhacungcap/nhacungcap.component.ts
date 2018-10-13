@@ -123,7 +123,7 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
                       } else {
                         if( SUCCESSCODE == res.errorCode ) {
                           toastr.success(res.message, 'Thành Công');
-                          self.DanhMucNhaCungCap();
+                          self.DanhSachNhaCungCap();
                         } else {
                           toastr.error(res.message, 'Thất bại');
                         }
