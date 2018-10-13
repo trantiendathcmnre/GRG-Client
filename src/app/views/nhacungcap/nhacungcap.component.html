@@ -16,16 +16,36 @@
   
     <div class="box">
       <div class="box-header">
-        <!-- <button type="button" class="btn btn-default pull-right" id="btn-add">
-          Thêm mới
-        </button> -->
+        <div class="col-md-6">
+          <div class="row justify-content-start">
+            <a id="deleteClient" class="client-action mr-2 ml-2"><u>Delete</u></a>
+            <a id="enableClient" class="client-action mr-2 ml-2"><u>Enable</u></a>
+            <a id="disableClient" class="client-action mr-2 ml-2"><u>Disable</u></a>
+            <label class="ml-2"><input id="check-all" type="checkbox" class="flat-red"></label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <button type="button" class="btn btn-default pull-right" id="btn-add">
+            Thêm mới
+          </button>
+        </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
-        <table id="tbl-nha-cung-cap" class="table table-bordered table-striped">
+        <!-- <table style="display:none" id="tbl-nha-cung-cap" class="table table-bordered table-striped">
           <thead>
           <tr>
-            <th>#</th>
+            <th>
+              <div class="form-group">
+                <label>
+                  <input 
+                    id="check-all"
+                    type="checkbox" 
+                    class="flat-red"
+                  >
+                </label>
+              </div>
+            </th>
             <th>Nhà cung cấp</th>
             <th>Địa chỉ</th>
             <th>Email</th>
@@ -36,7 +56,67 @@
           </tr>
           </thead>
           <tbody></tbody>
-        </table>
+        </table> -->
+
+        <div class="col">
+
+          <div *ngFor="let ncc of dataNhaCungCap" class="row client-row">
+            <div class="col-1 billing-col">
+              <div class="form-group">
+                <label class="container">
+                  <input 
+                    type="checkbox" 
+                    (change)="checkValue( ncc.id, $event )">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-2 billing-col">
+              <div class="inline-block padding-block-md">
+                <img class="img-fluid rounded img-client" alt="" src="http://rwamittu.com/wp-content/themes/white/assets/images/placeholder.jpg">
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                <label class="custom-control m-t-sm">
+                  <h2>
+                    <b>{{ ncc.ten }}</b>
+                  </h2>
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-1 m-t-sm">
+                  <i class="custom-control fa fa-envelope" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-6 m-t-sm">
+                  <label class="">{{ ncc.email }} </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 m-t-xs">
+                  <i class="custom-control fa fa-map-marker" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-6 m-t-xs">
+                  <label class="">{{ ncc.dia_chi }}</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 m-t-xs">
+                  <i class="custom-control fa fa-globe" aria-hidden="true"></i>
+                </div>
+                <div class="col-sm-6 m-t-xs">
+                  <label class="">{{ ncc.dien_thoai }}</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 m-t-xs">
+                  <a class="custom-control m-t-xs" (click)="GetNhaCungCapById( ncc.id )"><u>Edit Client Information</u></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
       <!-- /.box-body -->
     </div>
@@ -73,6 +153,7 @@
                     style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
                     id="dia_chi" 
                     name="dia_chi"
+                    required
                   >
                   </textarea>
                   
@@ -99,36 +180,30 @@
                       name="dien_thoai" 
                     >
                   </div>
+
+                  <div class="form-group">
+                    <label>Website:</label>
+                    <input 
+                      type="text" 
+                      class="form-control my-colorpicker1"
+                      id="website" 
+                      name="website" 
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label>Fax:</label>
+                    <input 
+                      type="text" 
+                      class="form-control my-colorpicker1"
+                      id="fax" 
+                      name="fax" 
+                    >
+                  </div>
+      
+                  <input type="hidden" name="hidden_id" value="0">
                 </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Website:</label>
-                      <input 
-                        type="text" 
-                        class="form-control my-colorpicker1"
-                        id="website" 
-                        name="website" 
-              
-                      >
-                    </div>
-  
-                    <div class="form-group">
-                      <label>Fax:</label>
-                      <input 
-                        type="text" 
-                        class="form-control my-colorpicker1"
-                        id="fax" 
-                        name="fax" 
-
-                      >
-                    </div>
-        
-                    <input type="hidden" name="hidden_id" value="0">
-                    
-                    
-                  </div>
-                <!-- /.col -->
               </div>
             </form>
           </div>
@@ -137,7 +212,7 @@
             <button 
               type="submit" 
               class="btn btn-primary pull-right" 
-              id="save-danh-muc-hang-xe"
+              id="save-danh-muc-nha-cung-cap"
             >
             Lưu thay đổi</button>
           </div>
