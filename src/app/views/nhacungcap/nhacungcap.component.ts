@@ -139,7 +139,6 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
         });
       }
     });
-
     //datatable
     // tbl = $('#tbl-nha-cung-cap').DataTable({
     //     dom: 'Bfrtip',
