@@ -5,4 +5,7 @@
 .form-group.has-error label {
     color: #dd4b39;
 }
+.box-header{
+    padding-top: 30px
+}
       

@@ -16,7 +16,7 @@
   <div class="box">
     <div class="box-header">
       <div class="form-group">
-        <label class="col-sm-2 control-label">Đơn vị làm việc:</label>
+        <label class="col-sm-2 control-label">{{ unit_of_work }}</label>
         <div class="col-sm-3">
           <select 
             class="form-control select2"
@@ -24,23 +24,23 @@
             id="donvi" 
             name="donvi"
             >
-            <option value="0" selected>Tất cả các đơn vị</option>
-            <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{dv.ten}}</option>
+            <option value="0" selected>{{ all_of_unit }}</option>
+            <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{ dv.ten }}</option>
           </select>
         </div>
         <div class="col-sm-1">
-          <button type="button" class="btn btn-default pull-left" id="btn-search">
-            Duyệt
+          <button type="button" class="btn btn-example  pull-left" id="btn-search">
+            {{ btn_search }}
           </button>
         </div>
         <div class="col-sm-1">
-          <button type="button" class="btn btn-default" id="btn-export-csv">
-            Xuất excel
+          <button type="button" class="btn btn-example " id="btn-export-csv">
+            {{ btn_export }}
           </button>
         </div>
         <div class="col-sm-5">
-          <button type="button" class="btn btn-default pull-right" id="btn-add">
-            Thêm mới
+          <button type="button" class="btn btn-example  pull-right" id="btn-add">
+            {{ btn_new }}
           </button>
         </div>
         
@@ -48,14 +48,15 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <table id="tbl-danh-muc-phu-tung" class="table table-bordered table-striped">
+      <table id="tbl-danh-muc-phu-tung" class="table table-striped">
         <thead>
         <tr>
           <th>#</th>
-          <th>Tên danh mục PT</th>
-          <th>Mô tả</th>
-          <th>Thuộc đơn vị</th>
-          <th>Thao tác</th>
+          <th>{{ name_of_category }}</th>
+          <th>{{ description }}</th>
+          <th>{{ unit_of_work }}</th>
+          <th class="hidden">Created at</th>
+          <th>{{ action }}</th>
         </tr>
         </thead>
         <tbody></tbody>

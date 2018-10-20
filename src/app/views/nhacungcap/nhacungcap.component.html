@@ -22,6 +22,11 @@
             <a id="enableClient" class="client-action mr-2 ml-2"><u>Enable</u></a>
             <a id="disableClient" class="client-action mr-2 ml-2"><u>Disable</u></a>
             <label class="ml-2"><input id="check-all" type="checkbox" class="flat-red"></label>
+            <label class="container">
+              <input 
+                type="checkbox" id="test">
+              <span class="checkmark test"></span>
+            </label>
           </div>
         </div>
         <div class="col-md-6">
@@ -81,6 +86,7 @@
                 <label class="custom-control m-t-sm">
                   <h2>
                     <b>{{ ncc.ten }}</b>
+                    <span *ngIf=" ncc.status == 'DISABLED'" class="badge bg-red">{{ ncc.status }}</span>
                   </h2>
                 </label>
               </div>
@@ -130,7 +136,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span></button>
-            <h4 class="modal-title">Thêm Nhà Cung Cấp</h4>
+            <h4 class="modal-title"></h4>
           </div>
           <div class="modal-body">
             <form id="frm-nha-cung-cap">

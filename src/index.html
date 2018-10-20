@@ -5,7 +5,7 @@
   <base href="/">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Dashboard</title>
+  <title>Phú Thông Garage</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -40,6 +40,10 @@
   <link rel="stylesheet" href="assets/plugins/toastr/toastr.min.css"/>
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" href="assets/plugins/iCheck/all.css"/>
+  <!-- Loader css -->
+  <link rel="stylesheet" href="assets/dist/css/spin.css"/>
+  <!-- Custom css -->
+  <link rel="stylesheet" href="assets/dist/css/custom.css"/>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -51,6 +55,19 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+
+  <div id="loader">
+    <div class="bg-loader"></div>
+    <div class="loader-spin">
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+      <div class="bar4"></div>
+      <div class="bar5"></div>
+      <div class="bar6"></div>
+    </div>
+  </div>
+
   <app-root></app-root>
   <!-- jQuery 3 -->
   <script src="assets/bower_components/jquery/dist/jquery.min.js"></script>
@@ -94,6 +111,8 @@
   <script src="assets/plugins/iCheck/icheck.min.js"></script> 
   <!-- Provider js -->
   <script src="assets/dist/js/provider.js"></script>
+  <!-- Loader js -->
+  <script src="assets/dist/js/spin.js"></script>
 
 </body>
 </html>

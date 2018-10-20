@@ -1,0 +1,58 @@
+.btn-example {
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 10px;
+    background-color: #97BE63;
+    border: 1px solid #97BE63;
+}
+.btn-example:hover {
+    color: #212529;
+}
+.btn-primary-action {
+    display: inline-block;
+    color: #fff;
+    background-color: #97BE63;
+    border-color: #97BE63;
+    cursor: pointer;
+    padding: 0;
+    width: 37px;
+    height: 35px;
+}
+.btn-primary-action i {
+    line-height: 35px;
+}
+i {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    vertical-align: baseline;
+}
+.jconfirm .jconfirm-box.jconfirm-type-red {
+    border-top: none;
+}
+.m-r-xs {
+    margin-right: 5px;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #97BE63;
+    border-color: #97BE63;
+}
+.pointer{
+    margin-right: .5rem;
+    font-size: 15px
+}
+.pointer:hover {
+    color: #97BE63;
+}
+.text-capitalize {
+    text-transform: capitalize!important;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    vertical-align: baseline;
+}

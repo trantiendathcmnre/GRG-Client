@@ -11,8 +11,8 @@ const SUCCESSCODE = 0;
 const LIMIT = 30;
 declare var $, toastr : any;
 var self, inforData, tbl : any;
-var count:number;
-var replace, path_file:string;
+var count: number;
+var replace: string;
 var nameOLD;
 let now = moment().format('MM_DD_YYYY_HH_mm_ss_a');
 
@@ -26,16 +26,25 @@ export class DanhmucphutungComponent implements OnInit {
   dataDonVi:any = [ ];
   dataExport: any = [ ];
   pnotify = undefined;
+  btn_new = 'New Category';
+  btn_search = 'Search';
+  btn_export = 'Export';
+  all_of_unit = 'All of Unit';
+  unit_of_work = 'Unit of Work';
+  name_of_category = 'Name of Category';
+  description = 'Description';
+  action = 'Action';
   constructor(
       private http: Http,
       private router:Router,
       private apisService: ApisService,
       private danhMucPhuTungService: DanhMucPhuTungService,
       private donViLamViecService: DonViLamViecService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     self = this;
+    $("#loader").css("display", "block");
     //load data don vi lam viec
     self.DanhSachDonViLamViec();
     //editor 
@@ -110,15 +119,15 @@ export class DanhmucphutungComponent implements OnInit {
     //datatable
     tbl = $('#tbl-danh-muc-phu-tung').DataTable({
         columnDefs: [
-          { orderable: false, targets: [ 0, 4 ] }
+          { orderable: false, targets: [ 0, 2, 4, 5 ] }
         ],
         searching: false,
         bLengthChange : false,
         iDisplayLength: 10,
         //sap xep cot 3 tang dan
-        order: [[1, "asc"]],
+        order: [[4, "desc"]],
         aaData: null,
-        language: 
+        /*language: 
         {
             "sProcessing"   : "Đang xử lý...",
             "sLengthMenu"   : "Xem _MENU_ mục",
@@ -135,7 +144,7 @@ export class DanhmucphutungComponent implements OnInit {
                 "sNext"       :   "Tiếp",
                 "sLast"       :   "Cuối"
             }
-        },
+        },*/
         rowId: "id",
         columns:[
           { data: null, className: "text-center", width: "20px" },
@@ -146,9 +155,10 @@ export class DanhmucphutungComponent implements OnInit {
             return self.RutGonChuoi(data, LIMIT);
           }},
           { data: "ten_donvi"},
-          {data: null,className: "text-center",render: function (data, type, row) {
-            return '<i data-group="grpEdit" class="fa fa-edit pointer" title="Sửa"></i>&nbsp;&nbsp;'+
-            '<i data-group="grpDelete" class="fa fa-trash pointer" title="Xóa"></i>';
+          { data: "created_at", className: "hidden" },
+          {data: null,className: "text-capitalize",render: function (data, type, row) {
+            return  '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Edit Category" ><i class="fa fa-edit"></i></a>' +
+                    '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Category" ><i class="fa fa-trash"></i></a>';
           }}
         ],
         //load data
@@ -180,6 +190,7 @@ export class DanhmucphutungComponent implements OnInit {
 
     // chon don vi va click duyet 
     $('#btn-search').off('click').click(function(){
+      $("#loader").css("display", "block");
       let donVi = $('#donvi').val();
       if(donVi == 0) {
         self.DanhMucPhuTung();
@@ -221,6 +232,7 @@ export class DanhmucphutungComponent implements OnInit {
 
     // click luu de them hoac cap nhat
     $("#save-danh-muc-phu-tung").click(function() {
+      $("#loader").css("display", "block");
       // check hidden id
       var hiddenId = $('input[name=hidden_id]').val();
       // get data form 
@@ -256,6 +268,7 @@ export class DanhmucphutungComponent implements OnInit {
     self.danhMucPhuTungService.getAll().subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
         console.log(res);
+        $("#loader").css("display", "none");
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
@@ -264,8 +277,10 @@ export class DanhmucphutungComponent implements OnInit {
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
+          $("#loader").css("display", "none");
         } else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -276,6 +291,7 @@ export class DanhmucphutungComponent implements OnInit {
   {
     self.danhMucPhuTungService.add(data).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
+        $("#loader").css("display", "none");
         toastr.error(res.message, 'Thất bại!');
         //self.router.navigate(['/']);
       } else {
@@ -286,6 +302,7 @@ export class DanhmucphutungComponent implements OnInit {
           self.DanhMucPhuTung();
         } else {
           toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -296,6 +313,7 @@ export class DanhmucphutungComponent implements OnInit {
   {
     self.danhMucPhuTungService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
+        $("#loader").css("display", "none");
         toastr.error(res.message, 'Thất bại!');
         //self.router.navigate(['/']);
       } else {
@@ -305,6 +323,7 @@ export class DanhmucphutungComponent implements OnInit {
           $('#modal-default').modal('hide');
           self.DanhMucPhuTung();
         } else {
+          $("#loader").css("display", "none");
           toastr.error(res.message, 'Thất bại');
         }
       }
@@ -318,14 +337,17 @@ export class DanhmucphutungComponent implements OnInit {
     self.danhMucPhuTungService.search(donvi).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         console.log(res.message);
+        $("#loader").css("display", "none");
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
+          $("#loader").css("display", "none");
         } else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -334,14 +356,14 @@ export class DanhmucphutungComponent implements OnInit {
 
   XuatExcelDanhMucPhuTung() {
     self.danhMucPhuTungService.export().subscribe(res=> {
-      
+       
     });
   }
 
   private bindTableEvents()
   {
     //Xu ly update
-    $('i[data-group=grpEdit]').off('click').click(function(){
+    $('a[data-group=grpEdit]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
       self.danhMucPhuTungService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
@@ -355,13 +377,14 @@ export class DanhmucphutungComponent implements OnInit {
           }
           else {
             console.log(res.message);
+            
           }
         }
       });
     });
 
     //Xu lý xóa
-    $('i[data-group=grpDelete]').off('click').click(function(){
+    $('a[data-group=grpDelete]').off('click').click(function(){
       var rowId=$(this).closest('tr').attr('id');
       $.confirm({
         title: 'Thông báo !',

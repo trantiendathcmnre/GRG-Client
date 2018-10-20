@@ -39,6 +39,18 @@ export class NhaCungCapService {
     let url = this.apisService.nhaCungCap.delete.url + id;
     return this.http.delete(url, this.headerOptions).map(response => response.json());
   }
+
+  disable(id) {
+    // this.createHeader(); 
+    let url = this.apisService.nhaCungCap.disable.url + id;
+    return this.http.put(url, this.headerOptions).map(response => response.json());
+  }
+
+  enable(id) {
+    // this.createHeader(); 
+    let url = this.apisService.nhaCungCap.enable.url + id;
+    return this.http.put(url, this.headerOptions).map(response => response.json());
+  }
   // createHeader()
   // {
   //   let user: any = this.cookies.getObject('user');

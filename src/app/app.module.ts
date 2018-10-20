@@ -27,6 +27,7 @@ import { HangXeService } from './services/hangxe.service';
 import { MenuService } from './services/menu.service';
 import { NhaCungCapService } from './services/nhacungcap.service';
 import { BaoGiaCongService } from './services/baogiacong.service';
+import { LangService } from './services/lang.service';
 
 
 export const router: Routes = [
@@ -79,6 +80,7 @@ export const router: Routes = [
     DonViTinhService,
     MenuService,
     NhaCungCapService,
+    LangService
   ],
   bootstrap: [AppComponent]
 })

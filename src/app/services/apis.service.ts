@@ -67,7 +67,9 @@ constructor() { }
         get     : { method: 'GET',      url : this.baseUrl + 'nhacungcap/' },
         add     : { method: 'POST',     url : this.baseUrl + 'nhacungcap' },
         update  : { method: 'PUT',      url : this.baseUrl + 'nhacungcap/' },
-        delete  : { method: 'DELETE',   url : this.baseUrl + 'nhacungcap/' }
+        delete  : { method: 'DELETE',   url : this.baseUrl + 'nhacungcap/' },
+        disable  : { method: 'PUT',      url : this.baseUrl + 'nhacungcap/disable/' },
+        enable  : { method: 'PUT',      url : this.baseUrl + 'nhacungcap/enable/' },
     };
 
 }
