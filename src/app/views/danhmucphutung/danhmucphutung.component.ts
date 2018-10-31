@@ -26,21 +26,35 @@ export class DanhmucphutungComponent implements OnInit {
   dataDonVi:any = [ ];
   dataExport: any = [ ];
   pnotify = undefined;
+  category_of_accessary = 'Category of Accessary';
+  category = 'Category';
+  home = 'Home';
   btn_new = 'New Category';
   btn_search = 'Search';
   btn_export = 'Export';
   all_of_unit = 'All of Unit';
+  please_select = 'Please Select';
   unit_of_work = 'Unit of Work';
+  created_at = 'Created at';
+  add_category = 'Add New Category';
+  cal_revenue_of_unit = 'Calculate Revenue for Units';
   name_of_category = 'Name of Category';
   description = 'Description';
   action = 'Action';
+  save = 'Save';
+  reset = 'Reset';
+  cancel = 'Cancel';
   constructor(
       private http: Http,
       private router:Router,
       private apisService: ApisService,
       private danhMucPhuTungService: DanhMucPhuTungService,
       private donViLamViecService: DonViLamViecService,
-  ) {}
+  ) {
+    toastr.options = {
+      "positionClass": "toast-top-center"
+    };
+  }
 
   ngOnInit() {
     self = this;
@@ -48,7 +62,7 @@ export class DanhmucphutungComponent implements OnInit {
     //load data don vi lam viec
     self.DanhSachDonViLamViec();
     //editor 
-    $('.textarea').wysihtml5();
+    //$('.textarea').wysihtml5();
     //jquery validation
     $.validator.addMethod("valueNotEquals", function(value, element, arg){
       return arg !== value;
@@ -61,12 +75,13 @@ export class DanhmucphutungComponent implements OnInit {
           donvi_id: { valueNotEquals: "0" }
       },
       messages: { 
-          ten: { required:"Vui lòng nhập tên danh mục phụ tùng.", maxlength:"Tên danh mục phụ tùng chỉ tối đa 50 ký tự." },
-          donvi_id: { valueNotEquals:"Vui lòng chọn đơn vị tính doanh thu."}
+          ten: { required:"Please input name of category.", maxlength:"Parts catalog name is limited to 50 characters." },
+          donvi_id: { valueNotEquals:"You have to select at least 1 option"}
       },
       highlight : function (element) {
           $(element).closest('.form-control').addClass('has-error');
           $(element).closest('.form-group').addClass('has-error');
+          $('.no_error').removeClass('has-error');
       },
       unhighlight : function (element) {
           $(element).closest('.form-control').removeClass('has-error');
@@ -90,7 +105,7 @@ export class DanhmucphutungComponent implements OnInit {
       }
     });
 
-    $("#ten").bind('keyup change blur', function(){
+    $("#ten").bind('keyup change blur click', function(){
       checkName();
     });
 
@@ -99,19 +114,19 @@ export class DanhmucphutungComponent implements OnInit {
       var ten = $("#ten").val().trim();
       self.result_name = false;
 
-      $("#unname_ITK").show();         
+      $("#error").show();         
       $.each( self.dataKT, function( key, value ) {
         if(( ten == value.ten && value.ten != nameOLD && id != '0' ) || (ten == value.ten && id=='0')) {    
           self.result_name = true;      
         }
       });
       if(self.result_name) {
-        $("#unname_ITK").html("<label class='error'>Tên danh mục phụ tùng này đã tồn tại.</label>");
-        $(".form-group form-group-ten").addClass('has-error');
-        $(".form-control form-group-ten").addClass('has-error');
+        $("#error").html("Parts catalog name is existed.");
+        $("#ten").addClass('error');
         self.result_check = false;
       } else {
-        $("#unname_ITK").html("");
+        $("#error").html("");
+        $("#ten").removeClass('error');
         self.result_check = true;
       }
     }
@@ -148,15 +163,15 @@ export class DanhmucphutungComponent implements OnInit {
         rowId: "id",
         columns:[
           { data: null, className: "text-center", width: "20px" },
-          { data: "ten", render: function (data, type, row) {
+          { data: "ten", width: "200px" , render: function (data, type, row) {
             return self.RutGonChuoi(data, LIMIT);
           }},
-          { data: "mo_ta", render: function (data, type, row) {
+          { data: "mo_ta",width: "400px", render: function (data, type, row) {
             return self.RutGonChuoi(data, LIMIT);
           }},
-          { data: "ten_donvi"},
+          { data: "ten_donvi", width: "200px"},
           { data: "created_at", className: "hidden" },
-          {data: null,className: "text-capitalize",render: function (data, type, row) {
+          {data: null, width: "100px", className: "text-capitalize",render: function (data, type, row) {
             return  '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Edit Category" ><i class="fa fa-edit"></i></a>' +
                     '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Category" ><i class="fa fa-trash"></i></a>';
           }}
@@ -184,7 +199,7 @@ export class DanhmucphutungComponent implements OnInit {
     });
 
     // click button xuat excel
-    $('#btn-export-csv').off('click').click(function(){
+    $('#btn-export-csv').click(function(){
       self.XuatExcelDanhMucPhuTung();
     });
 
@@ -206,6 +221,7 @@ export class DanhmucphutungComponent implements OnInit {
       if(id == '0') {
         var validator = $("#frm-danh-muc-phu-tung").validate();
         validator.resetForm();
+        $('.modal-title').html('Add New Category');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $("#save-danh-muc-phu-tung").prop('disabled', false);
@@ -217,13 +233,13 @@ export class DanhmucphutungComponent implements OnInit {
       } else { // check update
         var validator = $("#frm-danh-muc-phu-tung").validate();
         validator.resetForm();
+        $('.modal-title').html('Update Category');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
-        $('#reset').hide();
-        $("#unname_ITK").hide();
+        $("#error").hide();
         $('#ten').val(inforData.ten);
         $('#ten').prop('disabled', true);
-        $('iframe').contents().find('.wysihtml5-editor').html(inforData.mo_ta);
+        $('#mo_ta').val(inforData.mo_ta);
         $('select[name=donvi_id]').val(inforData.donvi_id).change();
         $('select[name=donvi_id]').prop('disabled', true);
         nameOLD=$('#ten').val();
@@ -292,16 +308,16 @@ export class DanhmucphutungComponent implements OnInit {
     self.danhMucPhuTungService.add(data).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         $("#loader").css("display", "none");
-        toastr.error(res.message, 'Thất bại!');
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-phu-tung').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
+          toastr.success(res.message, 'Done!');
           $('#modal-default').modal('hide');
           self.DanhMucPhuTung();
         } else {
-          toastr.error(res.message, 'Thất bại');
+          toastr.error(res.message, 'Error!');
           $("#loader").css("display", "none");
         }
       }
@@ -314,17 +330,17 @@ export class DanhmucphutungComponent implements OnInit {
     self.danhMucPhuTungService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         $("#loader").css("display", "none");
-        toastr.error(res.message, 'Thất bại!');
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-phu-tung').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
+          toastr.success(res.message, 'Done!');
           $('#modal-default').modal('hide');
           self.DanhMucPhuTung();
         } else {
           $("#loader").css("display", "none");
-          toastr.error(res.message, 'Thất bại');
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -356,7 +372,7 @@ export class DanhmucphutungComponent implements OnInit {
 
   XuatExcelDanhMucPhuTung() {
     self.danhMucPhuTungService.export().subscribe(res=> {
-       
+      window.open(self.apisService.baseUrl + "uploads/" + res.data, '_blank');
     });
   }
 
@@ -367,7 +383,7 @@ export class DanhmucphutungComponent implements OnInit {
       var rowId = $(this).closest('tr').attr('id');
       self.danhMucPhuTungService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
-          toastr.error(res.message, 'Thất bại!');
+          toastr.error(res.message, 'Error!');
           //self.router.navigate(['/']);
         } else {
           if( SUCCESSCODE == res.errorCode ) {
@@ -387,14 +403,18 @@ export class DanhmucphutungComponent implements OnInit {
     $('a[data-group=grpDelete]').off('click').click(function(){
       var rowId=$(this).closest('tr').attr('id');
       $.confirm({
-        title: 'Thông báo !',
-        content: 'Bạn có muốn xóa danh mục phụ tùng này không ?',
+        title: 'Delete Category',
+        content: 'Are you sure to delete the category?',
         type: 'red',
         typeAnimated: true,
         buttons: {
+            close:{
+              text: "No",
+              btnClass: 'btn-secondary'
+            },
             tryAgain: {
-                text: 'Có',
-                btnClass: 'btn-danger',
+                text: 'Yes',
+                btnClass: 'btn-example',
                 action: function(){
                   self.danhMucPhuTungService.delete(rowId).subscribe(res=> {
                     if( ERRORCODE <= res.errorCode ) {
@@ -402,19 +422,15 @@ export class DanhmucphutungComponent implements OnInit {
                       // self.router.navigate(['/']);
                     } else {
                       if( SUCCESSCODE == res.errorCode ) {
-                        toastr.success(res.message, 'Thành Công');
+                        toastr.success(res.message, 'Done!');
                         self.DanhMucPhuTung();
                       } else {
-                        toastr.error(res.message, 'Thất bại');
+                        toastr.error(res.message, 'Error!');
                         self.DanhMucPhuTung();
                       }
                     }
                   });       
                 }
-            },
-            close:{
-              text: "Không",
-              btnClass: 'btn-default'
             }
         }
       });

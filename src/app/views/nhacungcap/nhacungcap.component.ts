@@ -22,6 +22,23 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
   dataNhaCungCap:any = [ ];
   dataRowId:any = [ ];
   route = undefined;
+  providers = 'Providers List';
+  home = 'Home'; 
+  categories = 'Categories';
+  delete = 'Delete';
+  enable = 'Enable';
+  disable = 'Disable';
+  new_provider = 'New Provider';
+  edit_provider = 'Edit Provider Information';
+  name = 'Provider Name';
+  address = 'Provider Address';
+  email = 'Provider Email';
+  phone = 'Provider Phone';
+  website = 'Provider Website';
+  fax = 'Provider Fax';
+  cancel = 'Cancel';
+  save = 'Save';
+
   public isChecked: boolean;
   constructor(
       private nhaCungCapService: NhaCungCapService,
@@ -35,9 +52,12 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
   ngOnInit() {
     
     self = this;
+    // loader
+    $("#loader").css("display", "block");
+    // load danh sach nha cung cap
     self.DanhSachNhaCungCap();
     //editor 
-    $('.textarea').wysihtml5();
+    // $('.textarea').wysihtml5();
 
     //jquery validation
     $.validator.addMethod("valueNotEquals", function(value, element, arg){
@@ -52,9 +72,9 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
           dia_chi:{ required:true, maxlength: 255 },
       },
       messages: { 
-          ten:  { required:"Vui lòng nhập tên nhà cung cấp", maxlength:"Tên nhà cung cấp chỉ tối đa 200 ký tự." },
-          email:   { required:"Vui lòng nhập email nhà cung cấp", maxlength:"Email nhà cung cấp chỉ tối đa 255 ký tự." },
-          dia_chi:   { required:"Vui lòng nhập mã hãng xe.", maxlength:"Địa chỉ nhà cung cấp tối đa 255 ký tự." },
+          ten:  { required:"Please input name of provider.", maxlength:"Name of provider is limited to 200 characters." },
+          email:   { required:"Please input email of provider.", maxlength:"Email of provider is limited to 255 characters." },
+          dia_chi:   { required:"Please input address of provider.", maxlength:"Address of provider is limited to 255 characters." },
       },
       highlight : function (element) {
           $(element).closest('.form-control').addClass('has-error');
@@ -64,10 +84,6 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
           $(element).closest('.form-control').removeClass('has-error');
           $(element).closest('.form-group').removeClass('has-error');
       }
-    });
-
-    $('#reset').on('click', function() {
-      $('#frm-nha-cung-cap').validate().resetForm();
     });
 
     $('#frm-nha-cung-cap').bind('keyup blur change', function () {
@@ -91,50 +107,62 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
     });
 
     $('#enableClient').on('click', function() {
-      toastr.error('Please choose provider need enable!', 'Thất bại');
+      $("#loader").css("display", "block");
+      if(self.dataRowId.length == 0) {
+        $("#loader").css("display", "none");
+        toastr.error('Please choose provider need enable!', 'Error!');
+      } else {
+        self.EnableNhaCungCap(self.dataRowId);
+      }
     });
 
     $('#disableClient').on('click', function() {
+      $("#loader").css("display", "block");
       if(self.dataRowId.length == 0) {
-        toastr.error('Please choose provider need disable!', 'Thất bại');
+        $("#loader").css("display", "none");
+        toastr.error('Please choose provider need disable!', 'Error!');
       } else {
+        self.DisableNhaCungCap(self.dataRowId);
       }
     });
 
     $('#deleteClient').on('click', function() {
       if(self.dataRowId.length == 0) {
-        toastr.error('Vui lòng chọn nhà cung cấp cần xóa!', 'Thất bại');
+        toastr.error('Please choose provider need delete!', 'Error!');
       } else {
         $.confirm({
-          title: 'Thông báo !',
-          content: 'Bạn có muốn xóa hãng xe này không ?',
+          title: 'Delete Provider',
+          content: 'Are you sure to delete the provider?',
           type: 'red',
           typeAnimated: true,
           buttons: {
+              close:{
+                text: "No",
+                btnClass: 'btn-secondary'
+              },
               tryAgain: {
-                  text: 'Có',
-                  btnClass: 'btn-danger',
+                  text: 'Yes',
+                  btnClass: 'btn-example',
                   action: function(){
+                    $("#loader").css("display", "block");
                     self.nhaCungCapService.delete(self.dataRowId).subscribe(res=> {
-                      
                       if( ERRORCODE <= res.errorCode ) {
-                        console.log(res);
+                        $("#loader").css("display", "none");
+                        toastr.error(res.message, 'Error!');
                         // self.router.navigate(['/']);
                       } else {
                         if( SUCCESSCODE == res.errorCode ) {
-                          toastr.success(res.message, 'Thành Công');
+                          toastr.success(res.message, 'Done!');
                           self.DanhSachNhaCungCap();
                         } else {
-                          toastr.error(res.message, 'Thất bại');
+                          $("#loader").css("display", "none");
+                          toastr.error(res.message, 'Error!');
                         }
                       }
                     });       
                   }
-              },
-              close:{
-                text: "Không",
-                btnClass: 'btn-default'
               }
+              
           }
         });
       }
@@ -147,13 +175,13 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
       if(id == '0') {
         var validator = $("#frm-nha-cung-cap").validate();
         validator.resetForm();
-        $('.modal-title').html('Thêm Nhà Cung Cấp');
+        $('.modal-title').html('Add New Provider');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $("#save-danh-muc-nha-cung-cap").prop('disabled', false);
         $('#ten').val("");
         $('#ten').prop('disabled', false);
-        $('iframe').contents().find('.wysihtml5-editor').html("");
+        $('#dia_chi').val("");
         $('#dien_thoai').val("");
         $('#email').val("");
         $('#website').val("");
@@ -161,18 +189,18 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
       } else { // check update
         var validator = $("#frm-nha-cung-cap").validate();
         validator.resetForm();
-        $('.modal-title').html('Cập nhật Nhà Cung Cấp');
+        $('.modal-title').html('Update Provider');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $('#reset').hide();
-        $("#unname_ITK").hide();
+        $("#error").hide();
         $('#ten').val(inforData.ten);
         $('#ten').prop('disabled', true);
         $('#dien_thoai').val(inforData.dien_thoai);
         $('#email').val(inforData.email);
         $('#website').val(inforData.website);
         $('#fax').val(inforData.fax);
-        $('iframe').contents().find('.wysihtml5-editor').html(inforData.dia_chi);
+        $('#dia_chi').val(inforData.dia_chi);
       }
     });
 
@@ -228,12 +256,15 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
     self.nhaCungCapService.getAll().subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
         console.log(res);
+        $("#loader").css("display", "none");
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           self.dataNhaCungCap=res.data;
+          $("#loader").css("display", "none");
         } else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -263,16 +294,18 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
   {
     self.nhaCungCapService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-hang-xe').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
+          toastr.success(res.message, 'Done!');
           $('#modal-default').modal('hide');
           self.DanhSachNhaCungCap();
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -281,16 +314,19 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
   GetNhaCungCapById(id) {
     self.nhaCungCapService.get(id).subscribe(res=> {
       if(ERRORCODE <= res.errorCode) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        console.log(res.message);
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('input[name=hidden_id]').val(rowId);
           inforData = res.data[0];
+          $("#loader").css("display", "none");
           $('#modal-default').modal('show');
         }
         else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -299,33 +335,39 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
   EnableNhaCungCap(id) {
     self.nhaCungCapService.enable(id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
-          toastr.success(res.message, 'Thành Công');
+          toastr.success(res.message, 'Done!');
           self.DanhSachNhaCungCap();
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
+    self.dataRowId = [];
   }
 
   DisableNhaCungCap(id) {
     self.nhaCungCapService.disable(id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
-          toastr.success(res.message, 'Thành Công');
+          toastr.success(res.message, 'Done!');
           self.DanhSachNhaCungCap();
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
+    self.dataRowId = [];
   }
 
   private bindTableEvents()
@@ -334,15 +376,18 @@ export class NhaCungCapComponent implements OnInit,AfterViewInit {
     $('i[data-group=grpEdit]').off('click').click(function(){
       self.nhaCungCapService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
-          toastr.error(res.message, 'Thất bại!');
+          $("#loader").css("display", "none");
+          console.log(res.message);
           //self.router.navigate(['/']);
         } else {
           if( SUCCESSCODE == res.errorCode ) {
             $('input[name=hidden_id]').val(rowId);
             inforData = res.data[0];
+            $("#loader").css("display", "none");
             $('#modal-default').modal('show');
           }
           else {
+            $("#loader").css("display", "none");
             console.log(res.message);
           }
         }

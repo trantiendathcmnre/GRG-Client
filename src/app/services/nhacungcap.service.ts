@@ -51,6 +51,12 @@ export class NhaCungCapService {
     let url = this.apisService.nhaCungCap.enable.url + id;
     return this.http.put(url, this.headerOptions).map(response => response.json());
   }
+
+  getEnable() {
+    // this.createHeader(); 
+    let url = this.apisService.nhaCungCap.getEnable.url;
+    return this.http.get(url, this.headerOptions).map(response => response.json());
+  }
   // createHeader()
   // {
   //   let user: any = this.cookies.getObject('user');

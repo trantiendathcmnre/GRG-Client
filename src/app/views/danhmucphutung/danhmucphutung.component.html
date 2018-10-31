@@ -1,13 +1,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h3>
-    Danh mục phụ tùng
-    <!-- <small>Preview</small> -->
-  </h3>
+  <h1>
+    <b>{{ category_of_accessary }}</b>
+  </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-    <li><a href="#">Danh mục</a></li>
-    <li class="active">Danh mục phụ tùng</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> {{ home }}</a></li>
+    <li><a href="#">{{ category }}</a></li>
+    <li class="active">{{ category_of_accessary }}</li>
   </ol>
 </section>
 
@@ -16,7 +15,7 @@
   <div class="box">
     <div class="box-header">
       <div class="form-group">
-        <label class="col-sm-2 control-label">{{ unit_of_work }}</label>
+        <label class="col-sm-2 control-label">{{ unit_of_work }}:</label>
         <div class="col-sm-3">
           <select 
             class="form-control select2"
@@ -33,7 +32,7 @@
             {{ btn_search }}
           </button>
         </div>
-        <div class="col-sm-1">
+        <div class="col-md-1">
           <button type="button" class="btn btn-example " id="btn-export-csv">
             {{ btn_export }}
           </button>
@@ -55,7 +54,7 @@
           <th>{{ name_of_category }}</th>
           <th>{{ description }}</th>
           <th>{{ unit_of_work }}</th>
-          <th class="hidden">Created at</th>
+          <th class="hidden">{{ created_at }}</th>
           <th>{{ action }}</th>
         </tr>
         </thead>
@@ -73,65 +72,85 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Thêm Danh Mục Phụ Tùng</h4>
+        <h4 class="modal-title"></h4>
       </div>
       <div class="modal-body">
         <form id="frm-danh-muc-phu-tung">
           <div class="row">
             <div class="col-md-6">
-              <div class="form-group form-group-ten">
-                <label>Tên danh mục phụ tùng:</label>
-                <input 
-                  type="text" 
-                  class="form-control my-colorpicker1"
-                  id="ten" 
-                  name="ten" 
-                  placeholder="Nhập tên danh mục phụ tùng"
-                  required
-                >
-                <div id="unname_ITK" class="response"></div>
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-group-ten">
+                      <label class="no_error">{{ name_of_category }}</label> <span class="required"> *</span>
+                      <input 
+                        type="text" 
+                        class="form-control my-colorpicker1"
+                        id="ten" 
+                        name="ten" 
+                        placeholder="Input name of category"
+                        required
+                      >
+                      <div id="error" class="error"></div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="no_error">{{ cal_revenue_of_unit }}</label> <span class="required"> *</span>
+                    <select 
+                      class="form-control select2"
+                      style="width: 100%;"
+                      id="donvi_id" 
+                      name="donvi_id"
+                    >
+                      <option value="0" selected>{{ please_select }}</option>
+                      <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{dv.ten}}</option>
+                    </select>
+                  </div>
+      
+                  <input type="hidden" name="hidden_id" value="0">
+                  
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>{{ description }}</label>
+                    <textarea 
+                      class="textarea" 
+                      placeholder="Decription of category"
+                      style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+                      id="mo_ta" 
+                      name="mo_ta"
+                    >
+                    </textarea>
+                  </div>
+                </div>
               </div>
-            
-              <textarea 
-                class="textarea" 
-                placeholder="Mô tả danh mục phụ tùng"
-                style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
-                id="mo_ta" 
-                name="mo_ta"
-              >
-              </textarea>
-              
             </div>
-            <!-- /.col -->
             <div class="col-md-6">
-              <div class="form-group">
-                <label>Tính doanh thu cho đơn vị:</label>
-                <select 
-                  class="form-control select2"
-                  style="width: 100%;"
-                  id="donvi_id" 
-                  name="donvi_id"
-                >
-                  <option value="0" selected>Tất cả các đơn vị</option>
-                  <option *ngFor="let dv of dataDonVi" [value]=dv.id>{{dv.ten}}</option>
-                </select>
-              </div>
-  
-              <input type="hidden" name="hidden_id" value="0">
-              
+              <p>
+                <strong>New Categories</strong> <br>
+              </p>
+              <span>
+                  Category Information
+              </span>
+              <span class="d-block">
+                Create new category of accessary to classify for accessary. 
+              </span>
+              <span>
+                  New category have to require name of category and unit of work. Unit of work to calculate revenue if units. 
+              </span>
             </div>
-            <!-- /.col -->
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="reset" class="btn btn-default pull-left" id="reset">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">{{ cancel }}</button>
         <button 
           type="submit" 
-          class="btn btn-primary pull-right" 
+          class="btn btn-example" 
           id="save-danh-muc-phu-tung"
         >
-        Lưu thay đổi</button>
+        {{ save }}</button>
       </div>
     </div>
     <!-- /.modal-content -->

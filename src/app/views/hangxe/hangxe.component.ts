@@ -25,19 +25,34 @@ export class HangxeComponent implements OnInit {
   dataHangXe:any = [ ];
   pnotify = undefined;
   route = undefined;
+  automaker_list = 'Automaker List';
+  home = 'Home';
+  categories = 'Categories';
+  automaker_code = 'Automaker Code';
+  automaker_name = 'Automaker Name';
+  description = 'Description';
+  action = 'Action';
+  cancel = 'Cancel';
+  save = 'Save';
+
 
   constructor(
       private http: Http,
       private hangXeService: HangXeService,
       private router:Router,
       private menu: MenuService
-  ) { }
+  ) { 
+    toastr.options = {
+      "positionClass": "toast-top-center"
+    };
+  }
 
   ngOnInit() {
     
     self = this;
+    $("#loader").css("display", "block");
     //editor 
-    $('.textarea').wysihtml5();
+    // $('.textarea').wysihtml5();
     //jquery validation
     $.validator.addMethod("valueNotEquals", function(value, element, arg){
       return arg !== value;
@@ -50,12 +65,13 @@ export class HangxeComponent implements OnInit {
           ma:  { required:true, maxlength: 20 },
       },
       messages: { 
-          ten:  { required:"Vui lòng nhập tên hãng xe.", maxlength:"Tên hãng chỉ tối đa 50 ký tự." },
-          ma:   { required:"Vui lòng nhập mã hãng xe.", maxlength:"Mã hãng chỉ tối đa 20 ký tự." },
+          ten:  { required:"Please input name of automaker.", maxlength:"Name of automaker is limited to 50 characters." },
+          ma:   { required:"Please input code of autoamker.", maxlength:"Code of automaker is limited to 50 characters." },
       },
       highlight : function (element) {
           $(element).closest('.form-control').addClass('has-error');
           $(element).closest('.form-group').addClass('has-error');
+          $('#error').addClass('error');
       },
       unhighlight : function (element) {
           $(element).closest('.form-control').removeClass('has-error');
@@ -92,19 +108,19 @@ export class HangxeComponent implements OnInit {
       var ma = $("#ma").val().trim();
       self.result_code = false;
 
-      $("#unname_ITK").show();         
+      $("#error").show();         
       $.each( self.dataKT, function( key, value ) {
         if(( ma == value.ma && value.ma != codeOLD && id != '0' ) || (ma == value.ma && id=='0')) {    
           self.result_code = true;      
         }
       });
       if(self.result_code) {
-        $("#unname_ITK").html("<label class='error'>Mã hãng xe này đã tồn tại.</label>");
+        $("#error").html("Code of automaker existed.");
         $(".form-group form-group-ten").addClass('has-error');
         $(".form-control form-group-ten").addClass('has-error');
         self.result_check = false;
       } else {
-        $("#unname_ITK").html("");
+        $("#error").html("");
         self.result_check = true;
       }
     }
@@ -114,8 +130,8 @@ export class HangxeComponent implements OnInit {
         dom: 'Bfrtip',
         buttons: [
             {
-                text: 'Thêm mới',
-                className: 'btn btn-default btn-add',
+                text: 'New Automaker',
+                className: 'btn btn-example btn-add',
                 action: function ( e, dt, node, config ) {
                   $('input[name=hidden_id]').val(0);
                   $('#modal-default').modal('show');
@@ -123,23 +139,23 @@ export class HangxeComponent implements OnInit {
             },
             {
                 extend : 'csv',
-                text: 'Xuất excel',
-                className: 'btn btn-default',
+                text: 'Export CSV',
+                className: 'btn btn-example',
                 exportOptions: {
                   columns: [ 1, 2, 3 ]
                 },
-                title: "Danh_sach_hang_xe_"+now
+                title: "Danh_sach_hang_xe_" + now
             }
         ],
         columnDefs: [
-          { orderable: false, targets: [ 0, 4 ] }
+          { orderable: false, targets: [ 0, 3, 4 ] }
         ],
         bLengthChange : false,
         iDisplayLength: 10,
         //sap xep cot 3 tang dan
-        order: [[1, "asc"]],
+        order: [[1, "desc"]],
         aaData: null,
-        language: 
+        /*language: 
         {
             "sProcessing"   : "Đang xử lý...",
             "sLengthMenu"   : "Xem _MENU_ mục",
@@ -156,16 +172,16 @@ export class HangxeComponent implements OnInit {
                 "sNext"       :   "Tiếp",
                 "sLast"       :   "Cuối"
             }
-        },
+        },*/
         rowId: "id",
         columns:[
           { data: null, className: "text-center", width: "20px" },
-          { data: "ma"},
-          { data: "ten"},
-          { data: "mo_ta"},
-          {data: null,className: "text-center",render: function (data, type, row) {
-            return '<i data-group="grpEdit" class="fa fa-edit pointer" title="Sửa"></i>&nbsp;&nbsp;'+
-            '<i data-group="grpDelete" class="fa fa-trash pointer" title="Xóa"></i>';
+          { data: "ma", width: "200px"},
+          { data: "ten", width: "200px"},
+          { data: "mo_ta", className: "text-justify", width: "400px"},
+          {data: null, width: "100px", className: "text-center",render: function (data, type, row) {
+            return  '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Edit Automaker" ><i class="fa fa-edit"></i></a>' +
+                    '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Automaker" ><i class="fa fa-trash"></i></a>';
           }}
         ],
         //load data
@@ -192,6 +208,7 @@ export class HangxeComponent implements OnInit {
       if(id == '0') {
         var validator = $("#frm-danh-muc-hang-xe").validate();
         validator.resetForm();
+        $('.modal-title').html('Add New Automaker');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $("#save-danh-muc-hang-xe").prop('disabled', false);
@@ -202,14 +219,14 @@ export class HangxeComponent implements OnInit {
       } else { // check update
         var validator = $("#frm-danh-muc-hang-xe").validate();
         validator.resetForm();
+        $('.modal-title').html('Update Automaker');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
-        $('#reset').hide();
-        $("#unname_ITK").hide();
+        $("#error").hide();
         $('#ma').val(inforData.ma);
         $('#ma').prop('disabled', true);
         $('#ten').val(inforData.ten);
-        $('iframe').contents().find('.wysihtml5-editor').html(inforData.mo_ta);
+        $('#mo_ta').val(inforData.mo_ta);
         codeOLD=$('#ma').val();
       }
     });
@@ -225,6 +242,8 @@ export class HangxeComponent implements OnInit {
       }, {});
       if(hiddenId == 0 && $('#ten').val() != "" && $('#ma').val() !="" ) {
         self.ThemDanhMucHangXe(data);
+      } else {
+        self.CapNhatHangXe(data, hiddenId);
       }
 
     });
@@ -236,6 +255,7 @@ export class HangxeComponent implements OnInit {
     self.hangXeService.getAll().subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
         console.log(res);
+        $("#loader").css("display", "none");
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
@@ -244,8 +264,10 @@ export class HangxeComponent implements OnInit {
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
+          $("#loader").css("display", "none");
         } else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -255,16 +277,18 @@ export class HangxeComponent implements OnInit {
   {
     self.hangXeService.add(data).subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-hang-xe').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
           self.DanhMucHangXe();
+          toastr.success(res.message, 'Done!');
         } else {
-          toastr.error(res.message, 'Thất bại!');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -275,16 +299,18 @@ export class HangxeComponent implements OnInit {
   {
     self.hangXeService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-hang-xe').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
           self.DanhMucHangXe();
+          toastr.success(res.message, 'Done!');
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -294,11 +320,11 @@ export class HangxeComponent implements OnInit {
   private bindTableEvents()
   {
     //Xu ly update
-    $('i[data-group=grpEdit]').off('click').click(function(){
+    $('a[data-group=grpEdit]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
       self.hangXeService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
-          toastr.error(res.message, 'Thất bại!');
+          console.log(res.message);
           //self.router.navigate(['/']);
         } else {
           if( SUCCESSCODE == res.errorCode ) {
@@ -314,36 +340,39 @@ export class HangxeComponent implements OnInit {
     });
 
     //Xu lý xóa
-    $('i[data-group=grpDelete]').off('click').click(function(){
+    $('a[data-group=grpDelete]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
       $.confirm({
-        title: 'Thông báo !',
-        content: 'Bạn có muốn xóa hãng xe này không ?',
+        title: 'Delete Automaker',
+        content: 'Are you sure to delete the automaker?',
         type: 'red',
         typeAnimated: true,
         buttons: {
+            close:{
+              text: "No",
+              btnClass: 'btn-secondary'
+            },
             tryAgain: {
-                text: 'Có',
-                btnClass: 'btn-danger',
+                text: 'Yes',
+                btnClass: 'btn-example',
                 action: function(){
+                  $("#loader").css("display", "block");
                   self.hangXeService.delete(rowId).subscribe(res=> {
                     if( ERRORCODE <= res.errorCode ) {
-                      console.log(res);
+                      $("#loader").css("display", "none");
+                      toastr.error(res.message, 'Error!');
                       // self.router.navigate(['/']);
                     } else {
                       if( SUCCESSCODE == res.errorCode ) {
-                        toastr.success(res.message, 'Thành Công');
                         self.DanhMucHangXe();
+                        toastr.success(res.message, 'Done!');
                       } else {
-                        toastr.error(res.message, 'Thất bại');
+                        $("#loader").css("display", "none");
+                        toastr.error(res.message, 'Error!');
                       }
                     }
                   });       
                 }
-            },
-            close:{
-              text: "Không",
-              btnClass: 'btn-default'
             }
         }
       });

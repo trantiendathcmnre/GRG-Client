@@ -1,3 +1,118 @@
-<p>
-  donvilamviec works!
-</p>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    <b>Unit Of Works</b>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li><a href="#">Categories</a></li>
+    <li class="active">Unit Of Works</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+  <!-- SELECT2 EXAMPLE -->
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <h3 class="box-title title-detect"></h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <form id="frm-don-vi-lam-viec">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-ten">
+                  <label class="no_error">Name Unit Of Work</label> <span class="required"> *</span>
+                  <input 
+                    type = "text" 
+                    class = "form-control my-colorpicker1"
+                    id = "ten" 
+                    name = "ten" 
+                    placeholder = "Input unit of work"
+                    required
+                  >
+                  <div id="error" class="error"></div>
+                </div>
+              </div>
+              
+              <div class="col-md-12">
+                <label class="no_error">Description</label>
+                <textarea 
+                  class="textarea" 
+                  placeholder="Description unit of work"
+                  style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+                  id="mo_ta" 
+                  name="mo_ta"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <p>
+                <strong>New Unit Of Work</strong> <br>
+              </p>
+              <span>
+                  Unit Of Work Information
+              </span>
+              <span class="d-block">
+                Create new Unit Of Work to manage employees and calculate quote for work. 
+              </span>
+              <span>
+                New unit of work have to require name . You only can set the description when update. 
+              </span>
+            </div>
+            <div class="row">
+              <button type="reset" class="btn btn-secondary pull-left m-t-70" id="reset">Reset</button>
+              <button type="button" class="btn btn-example pull-right m-t-70 m-r-25" id="save-don-vi-lam-viec">Save Changes</button>
+            </div>
+            
+          </div>
+          <input type="hidden" name="hidden_id" value="0"> 
+        </div>
+      </form>
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+
+  <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Unit Of Work List</h3>
+  
+        <div class="box-tools pull-right">
+          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          
+        </div>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <table id="tbl-don-vi-lam-viec" class="table table-striped">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->  
+
+  
+
+</section>
+<!-- /.content -->

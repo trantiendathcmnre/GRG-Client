@@ -1,13 +1,13 @@
 
 <section class="content-header">
   <h1>
-    Danh mục hãng xe
-    <!-- <small>Preview</small> -->
+    <b>{{ automaker_list }}</b>
+    
   </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-    <li><a href="#">Danh mục</a></li>
-    <li class="active">Danh mục hãng xe</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> {{ home }}</a></li>
+    <li><a href="#">{{ categories }}</a></li>
+    <li class="active">{{ automaker_list }}</li>
   </ol>
 </section>
 
@@ -22,14 +22,14 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <table id="tbl-danh-muc-hang-xe" class="table table-bordered table-striped">
+      <table id="tbl-danh-muc-hang-xe" class="table table-striped">
         <thead>
         <tr>
           <th>#</th>
-          <th>Mã hãng xe</th>
-          <th>Tên hãng xe</th>
-          <th>Mô tả</th>
-          <th>Thao tác</th>
+          <th>{{ automaker_code }}</th>
+          <th>{{ automaker_name }}</th>
+          <th>{{ description }}</th>
+          <th>{{ action }}</th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -47,62 +47,81 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span></button>
-          <h4 class="modal-title">Thêm Hãng Xe</h4>
+          <h4 class="modal-title"></h4>
         </div>
         <div class="modal-body">
           <form id="frm-danh-muc-hang-xe">
             <div class="row">
               <div class="col-md-6">
-                <div class="form-group">
-                  <label>Mã hãng xe:</label>
-                  <input 
-                    type="text" 
-                    class="form-control my-colorpicker1"
-                    id="ma" 
-                    name="ma" 
-                    required
-                  >
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="no_error">{{ automaker_code }}</label> <span class="required"> *</span>
+                      <input 
+                        type="text" 
+                        class="form-control my-colorpicker1"
+                        id="ma" 
+                        name="ma" 
+                        placeholder="Input code of automaker"
+                        required
+                      >
+                      <div id="error" class="error"></div>
+                    </div> 
+                  </div>
+
+                  <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="no_error">{{ automaker_name }}</label> <span class="required"> *</span>
+                      <input 
+                        type="text" 
+                        class="form-control my-colorpicker1"
+                        id="ten" 
+                        name="ten"
+                        placeholder="Input name of automaker" 
+                        required
+                      >
+                    </div>
+                    <input type="hidden" name="hidden_id" value="0">  
+                  </div>
+                  
+                  <div class="col-md-12">
+                    <label class="no_error">{{ description }}</label> 
+                    <textarea 
+                      class="textarea" 
+                      placeholder="Description of automaker"
+                      style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+                      id="mo_ta" 
+                      name="mo_ta"
+                    >
+                    </textarea>
+                  </div>
                 </div>
-              
-                <textarea 
-                  class="textarea" 
-                  placeholder="Mô tả hãng xe"
-                  style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
-                  id="mo_ta" 
-                  name="mo_ta"
-                >
-                </textarea>
-                
               </div>
-              <!-- /.col -->
               <div class="col-md-6">
-                <div class="form-group">
-                  <label>Tên hãng xe:</label>
-                  <input 
-                    type="text" 
-                    class="form-control my-colorpicker1"
-                    id="ten" 
-                    name="ten" 
-                    required
-                  >
-                </div>
-    
-                <input type="hidden" name="hidden_id" value="0">
-                
-                
+                <p>
+                  <strong>New Automaker</strong> <br>
+                </p>
+                <span>
+                    Automaker Information
+                </span>
+                <span class="d-block">
+                  Create new automaker to manage vehicle of automaker. To manage the accessary.
+                </span>
+                <span>
+                    New automaker have to require name of automaker and code of automaker. When update automaker, you can edit name and description of automaker. 
+                </span>
               </div>
-              <!-- /.col -->
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="reset" class="btn btn-default pull-left" id="reset">Xóa</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">{{ cancel }}</button>
           <button 
             type="submit" 
-            class="btn btn-primary pull-right" 
+            class="btn btn-example pull-right" 
             id="save-danh-muc-hang-xe"
           >
-          Lưu thay đổi</button>
+         {{ save }}</button>
         </div>
       </div>
       <!-- /.modal-content -->

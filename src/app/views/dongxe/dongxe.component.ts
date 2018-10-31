@@ -21,19 +21,39 @@ var nameOLD;
 export class DongxeComponent implements OnInit {
 
   dataHangXe:any = [ ];
+  vehicles_list = 'Vehicles List';
+  home = 'Home';
+  categories = 'Categories';
+  automakers = 'Automakers';
+  all_of_automakers = 'All of Automaker';
+  search = 'Search';
+  new_vehicle = 'New Vehicle';
+  name_of_vehicle = 'Name of Vehicle';
+  description = 'Description';
+  automaker = 'Automaker';
+  action = 'Action';
+  please_select = 'Please Select';
+  cancel = 'Cancel';
+  save = 'Save';
+
   constructor(
       private http: Http,
       private router:Router,
       private hangXeService: HangXeService,
       private dongXeService: DongXeService,
-  ) { }
+  ) { 
+    toastr.options = {
+      "positionClass": "toast-top-center"
+    };
+  }
 
   ngOnInit() {
     self = this;
+    $("#loader").css("display", "block");
     //load data hang xe
     self.DanhMucHangXe();
     //editor 
-    $('.textarea').wysihtml5();
+    // $('.textarea').wysihtml5();
     //jquery validation
     $.validator.addMethod("valueNotEquals", function(value, element, arg){
       return arg !== value;
@@ -46,12 +66,13 @@ export class DongxeComponent implements OnInit {
           hangxe_id: { valueNotEquals: "0" }
       },
       messages: { 
-          ten: { required:"Vui lòng nhập tên dòng xe.", maxlength:"Tên dòng xe chỉ tối đa 50 ký tự." },
-          hangxe_id: { valueNotEquals:"Vui lòng chọn hãng xe."}
+          ten: { required:"Please input nam of vehicle.", maxlength:"Name of vehicle is limited to 50 characters." },
+          hangxe_id: { valueNotEquals:"You have to select at least 1 option."}
       },
       highlight : function (element) {
           $(element).closest('.form-control').addClass('has-error');
           $(element).closest('.form-group').addClass('has-error');
+          $('.no_error').removeClass('has-error');
       },
       unhighlight : function (element) {
           $(element).closest('.form-control').removeClass('has-error');
@@ -75,7 +96,7 @@ export class DongxeComponent implements OnInit {
       }
     });
 
-    $("#ten").bind('keyup change blur', function(){
+    $("#ten").bind('keyup change blur click', function(){
       checkName();
     });
 
@@ -91,12 +112,12 @@ export class DongxeComponent implements OnInit {
         }
       });
       if(self.result_name) {
-        $("#unname_ITK").html("<label class='error'>Tên dòng xe này đã tồn tại.</label>");
-        $(".form-group form-group-ten").addClass('has-error');
-        $(".form-control form-group-ten").addClass('has-error');
+        $("#error").html("Name of vehicle is existed.");
+        $("#ten").addClass('error');
         self.result_check = false;
       } else {
-        $("#unname_ITK").html("");
+        $("#error").html("");
+        $("#ten").removeClass('error');
         self.result_check = true;
       }
     }
@@ -104,7 +125,7 @@ export class DongxeComponent implements OnInit {
     //datatable
     tbl = $('#tbl-danh-muc-dong-xe').DataTable({
         columnDefs: [
-          { orderable: false, targets: [ 0, 4 ] }
+          { orderable: false, targets: [ 0, 2, 4 ] }
         ],
         searching: false,
         bLengthChange : false,
@@ -112,39 +133,21 @@ export class DongxeComponent implements OnInit {
         //sap xep cot 3 tang dan
         order: [[1, "asc"]],
         aaData: null,
-        language: 
-        {
-            "sProcessing"   : "Đang xử lý...",
-            "sLengthMenu"   : "Xem _MENU_ mục",
-            "sZeroRecords"  : "Không tìm thấy dòng nào phù hợp",
-            "sInfo"         : "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
-            "sInfoEmpty"    : "Đang xem 0 đến 0 trong tổng số 0 mục",
-            "sInfoFiltered" : "(được lọc từ _MAX_ mục)",
-            "sInfoPostFix"  : "",
-            "sSearch"       : "Tìm:",
-            "sUrl"          : "",
-            "oPaginate"     : {
-                "sFirst"      :   "Đầu",
-                "sPrevious"   :   "Trước",
-                "sNext"       :   "Tiếp",
-                "sLast"       :   "Cuối"
-            }
-        },
         rowId: "id",
         columns:[
           { data: null, className: "text-center", width: "20px" },
-          { data: "ten", render: function (data, type, row) {
+          { data: "ten", width: "200px", render: function (data, type, row) {
             // return self.RutGonChuoi(data, LIMIT);
             return data;
           }},
-          { data: "mo_ta", render: function (data, type, row) {
+          { data: "mo_ta", width: "400px", render: function (data, type, row) {
             // return self.RutGonChuoi(data, LIMIT);
             return data;
           }},
-          { data: "ten_hangxe"},
-          {data: null,className: "text-center",render: function (data, type, row) {
-            return '<i data-group="grpEdit" class="fa fa-edit pointer" title="Sửa"></i>&nbsp;&nbsp;'+
-            '<i data-group="grpDelete" class="fa fa-trash pointer" title="Xóa"></i>';
+          { data: "ten_hangxe", width: "200px"},
+          {data: null, width: "100px", className: "text-center",render: function (data, type, row) {
+            return  '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Edit Vehicle" ><i class="fa fa-edit"></i></a>' +
+                    '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Vehicle" ><i class="fa fa-trash"></i></a>';
           }}
         ],
         //load data
@@ -171,6 +174,7 @@ export class DongxeComponent implements OnInit {
 
     // chon don vi va click duyet 
     $('#btn-search').off('click').click(function(){
+      $("#loader").css("display", "block");
       let hangXe = $('#hangxe').val();
       if(hangXe == 0) {
         self.DanhMucDongXe();
@@ -186,6 +190,7 @@ export class DongxeComponent implements OnInit {
       if(id == '0') {
         var validator = $("#frm-danh-muc-dong-xe").validate();
         validator.resetForm();
+        $('.modal-title').html('Add New Vehicle');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $("#save-danh-muc-dong-xe").prop('disabled', false);
@@ -197,21 +202,23 @@ export class DongxeComponent implements OnInit {
       } else { // check update
         var validator = $("#frm-danh-muc-dong-xe").validate();
         validator.resetForm();
+        $('.modal-title').html('Update Vehicle');
         $('.form-control').removeClass('has-error');
         $('.form-group').removeClass('has-error');
         $('#reset').hide();
-        $("#unname_ITK").hide();
+        $("#error").hide();
         $('#ten').val(inforData.ten);
         $('#ten').prop('disabled', true);
-        $('iframe').contents().find('.wysihtml5-editor').html(inforData.mo_ta);
-        $('select[name=hangxe_id]').val(inforData.donvi_id).change();
+        $('#mo_ta').val(inforData.mo_ta);
+        $('select[name=hangxe_id]').val(inforData.hangxe_id).change();
         $('select[name=hangxe_id]').prop('disabled', true);
-        nameOLD=$('#ten').val();
+        nameOLD = $('#ten').val();
       }
     });
 
     // click luu de them hoac cap nhat
     $("#save-danh-muc-dong-xe").click(function() {
+      $("#loader").css("display", "block");
       // check hidden id
       var hiddenId = $('input[name=hidden_id]').val();
       // get data form 
@@ -245,6 +252,7 @@ export class DongxeComponent implements OnInit {
   {
     self.dongXeService.getAll().subscribe(res=>{
       if( ERRORCODE <= res.errorCode ) {
+        $("#loader").css("display", "none");
         console.log(res);
         //self.router.navigate(['/']);
       } else {
@@ -254,7 +262,9 @@ export class DongxeComponent implements OnInit {
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
+          $("#loader").css("display", "none");
         } else {
+          $("#loader").css("display", "none");
           console.log(res.message);
         }
       }
@@ -266,16 +276,18 @@ export class DongxeComponent implements OnInit {
   {
     self.dongXeService.add(data).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-dong-xe').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
           self.DanhMucDongXe();
+          toastr.success(res.message, 'Done!');
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -286,16 +298,18 @@ export class DongxeComponent implements OnInit {
   {
     self.dongXeService.update(data , id).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
-        toastr.error(res.message, 'Thất bại!');
+        $("#loader").css("display", "none");
+        toastr.error(res.message, 'Error!');
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           $('#frm-danh-muc-dong-xe').trigger("reset");
-          toastr.success(res.message, 'Thành Công');
           $('#modal-default').modal('hide');
           self.DanhMucDongXe();
+          toastr.success(res.message, 'Done!');
         } else {
-          toastr.error(res.message, 'Thất bại');
+          $("#loader").css("display", "none");
+          toastr.error(res.message, 'Error!');
         }
       }
     });
@@ -308,14 +322,17 @@ export class DongxeComponent implements OnInit {
     self.dongXeService.search(hangxe).subscribe(res=> {
       if( ERRORCODE <= res.errorCode ) {
         console.log(res.message);
+        $("#loader").css("display", "none");
         //self.router.navigate(['/']);
       } else {
         if( SUCCESSCODE == res.errorCode ) {
           tbl.clear().draw();
           tbl.rows.add(res.data);//add new data
           tbl.columns.adjust().draw();// reraw datatable
+          $("#loader").css("display", "none");
         } else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       }
     });
@@ -325,11 +342,11 @@ export class DongxeComponent implements OnInit {
   private bindTableEvents()
   {
     //Xu ly update
-    $('i[data-group=grpEdit]').off('click').click(function(){
+    $('a[data-group=grpEdit]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
       self.dongXeService.get(rowId).subscribe(res=> {
         if(ERRORCODE <= res.errorCode) {
-          toastr.error(res.message, 'Thất bại!');
+          console.log(res.message);
           //self.router.navigate(['/']);
         } else {
           if( SUCCESSCODE == res.errorCode ) {
@@ -345,37 +362,36 @@ export class DongxeComponent implements OnInit {
     });
 
     //Xu lý xóa
-    $('i[data-group=grpDelete]').off('click').click(function(){
+    $('a[data-group=grpDelete]').off('click').click(function(){
       var rowId=$(this).closest('tr').attr('id');
       $.confirm({
-        title: 'Thông báo !',
-        content: 'Bạn có muốn xóa dòng xe này không ?',
+        title: 'Delete Vehicle',
+        content: 'Are you sure to delete the vehicle?',
         type: 'red',
         typeAnimated: true,
         buttons: {
+            close:{
+              text: "No",
+              btnClass: 'btn-secondary'
+            },
             tryAgain: {
-                text: 'Có',
-                btnClass: 'btn-danger',
+                text: 'Yes',
+                btnClass: 'btn-example',
                 action: function(){
                   self.dongXeService.delete(rowId).subscribe(res=> {
                     if( ERRORCODE <= res.errorCode ) {
-                      console.log(res);
+                      toastr.error(res.message, 'Error!');
                       // self.router.navigate(['/']);
                     } else {
                       if( SUCCESSCODE == res.errorCode ) {
-                        toastr.success(res.message, 'Thành Công');
+                        toastr.success(res.message, 'Done!');
                         self.DanhMucDongXe();
                       } else {
-                        toastr.error(res.message, 'Thất bại');
-                        self.DanhMucDongXe();
+                        toastr.error(res.message, 'Error!');
                       }
                     }
                   });       
                 }
-            },
-            close:{
-              text: "Không",
-              btnClass: 'btn-default'
             }
         }
       });

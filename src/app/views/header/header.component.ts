@@ -8,7 +8,17 @@ declare var $:any;
 })
 export class HeaderComponent implements OnInit {
 
-  
+  categories = 'Categories';
+  quote_lists = 'Quote Lists';
+  category_of_accessaries = 'Category of Accessaries';
+  vehicles = 'Vehicles';
+  automakers = 'Automakers';
+  unit_of_works = 'Unit of Works';
+  unit_of_calculations = 'Unit of Calculations'; 
+  providers = 'Providers';
+  order_management = 'Orders Management';
+  create_orders = 'Create Orders';
+
   constructor(private apisService : ApisService) {
   }
 
@@ -41,6 +51,14 @@ export class HeaderComponent implements OnInit {
       case '/admin/nhacungcap' : 
           $('.danhmuc').addClass('active menu-open');
           $('#menu-nhacungcap').parent().addClass('active');
+          break;
+      case '/admin/lapphieudat' : 
+          $('.danhmuc').addClass('active menu-open');
+          $('#menu-lapphieudat').parent().addClass('active');
+          break;
+      case '/admin/danhsachphieudat' : 
+          $('.danhmuc').addClass('active menu-open');
+          $('#menu-danhsachphieudat').parent().addClass('active');
           break;
     }
     $('#menu-danhmucphutung').off('click').click(function(){
@@ -83,6 +101,18 @@ export class HeaderComponent implements OnInit {
       $('.active').removeClass('active');
       $(this).parent().addClass('active');
       $('.danhmuc').addClass('active menu-open');
+    });
+
+    $('#menu-lapphieudat').off('click').click(function(){
+      $('.active').removeClass('active');
+      $(this).parent().addClass('active');
+      $('.order').addClass('active menu-open');
+    });
+
+    $('#menu-danhsachphieudat').off('click').click(function(){
+      $('.active').removeClass('active');
+      $(this).parent().addClass('active');
+      $('.order').addClass('active menu-open');
     });
   }
 

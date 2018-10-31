@@ -5,7 +5,7 @@
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>PT</b>G</span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>PhuThong</b>Garage</span>
+    <span class="logo-lg"><b>P.THONG</b>Garage</span>
   </a>
 
   <!-- Header Navbar: style can be found in header.less -->
@@ -269,61 +269,37 @@
 <aside class="main-sidebar">
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel">
-      <div class="pull-left image">
-        <img src="assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-      </div>
-      <div class="pull-left info">
-        <p>Alexander Pierce</p>
-        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-      </div>
-    </div>
-    <!-- search form -->
-    <form action="#" method="get" class="sidebar-form">
-      <div class="input-group">
-        <input type="text" name="q" class="form-control" placeholder="Search...">
-        <span class="input-group-btn">
-              <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                <i class="fa fa-search"></i>
-              </button>
-            </span>
-      </div>
-    </form>
-    <!-- /.search form -->
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header">MAIN NAVIGATION</li>
       <li class="treeview danhmuc">
         <a href="#">
-          <i class="fa fa-dashboard"></i> <span>Danh mục</span>
+          <i class="fa fa-dashboard"></i> <span>{{ categories }}</span>
           <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a routerLink="/admin/baogiacong" id="menu-baogiacong"><i class="fa fa-circle-o"></i> Báo giá công</a></li>
-          <li><a routerLink="/admin/danhmucphutung" id="menu-danhmucphutung"><i class="fa fa-circle-o"></i> Danh mục phụ tùng</a></li>
-          <li><a routerLink="/admin/dongxe" id="menu-dongxe"><i class="fa fa-circle-o"></i> Dòng xe</a></li>
-          <li><a routerLink="/admin/hangxe" id="menu-hangxe"><i class="fa fa-circle-o"></i> Hãng xe</a></li>
-          <li><a routerLink="/admin/donvilamviec" id="menu-donvilamviec"><i class="fa fa-circle-o"></i> Đơn vị làm việc</a></li>
-          <li><a routerLink="/admin/donvitinh" id="menu-donvitinh"><i class="fa fa-circle-o"></i> Đơn vị tính</a></li>
-          <li><a routerLink="/admin/nhacungcap" id="menu-nhacungcap"><i class="fa fa-circle-o"></i> Nhà cung cấp</a></li>
+          <li><a routerLink="/admin/baogiacong" id="menu-baogiacong"><i class="fa fa-circle-o"></i> {{ quote_lists }}</a></li>
+          <li><a routerLink="/admin/danhmucphutung" id="menu-danhmucphutung"><i class="fa fa-circle-o"></i> {{ category_of_accessaries }}</a></li>
+          <li><a routerLink="/admin/dongxe" id="menu-dongxe"><i class="fa fa-circle-o"></i> {{ vehicles }}</a></li>
+          <li><a routerLink="/admin/hangxe" id="menu-hangxe"><i class="fa fa-circle-o"></i> {{ automakers }}</a></li>
+          <li><a routerLink="/admin/donvilamviec" id="menu-donvilamviec"><i class="fa fa-circle-o"></i> {{ unit_of_works }}</a></li>
+          <li><a routerLink="/admin/donvitinh" id="menu-donvitinh"><i class="fa fa-circle-o"></i> {{ unit_of_calculations }}</a></li>
+          <li><a routerLink="/admin/nhacungcap" id="menu-nhacungcap"><i class="fa fa-circle-o"></i> {{ providers }}</a></li>
         </ul>
       </li>
-      <li class="treeview">
+      <li class="treeview order">
         <a href="#">
           <i class="fa fa-files-o"></i>
-          <span>Layout Options</span>
+          <span>{{ order_management }}</span>
           <span class="pull-right-container">
-            <span class="label label-primary pull-right">4</span>
+            <span class="label label-primary pull-right">2</span>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-          <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-          <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-          <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+          <li><a routerLink="/admin/lapphieudat" id="menu-lapphieudat"><i class="fa fa-circle-o"></i> {{ create_orders }} </a></li>
+          <li><a routerLink="/admin/danhsachphieudat" id="menu-danhsachphieudat"><i class="fa fa-circle-o"></i> {{ order_management }}</a></li>
         </ul>
       </li>
       <li>

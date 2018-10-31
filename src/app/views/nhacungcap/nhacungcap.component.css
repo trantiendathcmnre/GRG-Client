@@ -159,6 +159,9 @@ a {
 .m-t-sm {
     margin-top: 10px;
 }
+.m-l-sm {
+    margin-left: 10px;
+}
 .rounded {
     border-radius: .25rem!important;
 }
@@ -172,4 +175,7 @@ a {
 }
 label {
     font-weight: normal;
+}
+.box-header{
+    padding-top: 25px
 }

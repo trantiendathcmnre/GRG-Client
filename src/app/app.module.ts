@@ -17,6 +17,8 @@ import { DonViTinhComponent } from './views/donvitinh/donvitinh.component';
 import { BaoGiaCongComponent } from './views/baogiacong/baogiacong.component';
 import { NhaCungCapComponent } from './views/nhacungcap/nhacungcap.component';
 import { DonViLamViecComponent } from './views/donvilamviec/donvilamviec.component';
+import { LapPhieuDatComponent } from './views/lapphieudat/lapphieudat.component';
+import { DanhSachPhieuDatComponent } from './views/danhsachphieudat/danhsachphieudat.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -28,6 +30,8 @@ import { MenuService } from './services/menu.service';
 import { NhaCungCapService } from './services/nhacungcap.service';
 import { BaoGiaCongService } from './services/baogiacong.service';
 import { LangService } from './services/lang.service';
+import { LapPhieuDatService } from './services/lapphieudat.service';
+import { PhuTungService } from './services/phutung.service';
 
 
 export const router: Routes = [
@@ -44,6 +48,8 @@ export const router: Routes = [
       { path: 'donvitinh', component: DonViTinhComponent },
       { path: 'baogiacong', component: BaoGiaCongComponent },
       { path: 'nhacungcap', component: NhaCungCapComponent },
+      { path: 'lapphieudat', component: LapPhieuDatComponent },
+      { path: 'danhsachphieudat', component: DanhSachPhieuDatComponent },
     ]
   }
 ];
@@ -63,6 +69,8 @@ export const router: Routes = [
     BaoGiaCongComponent,
     NhaCungCapComponent,
     DonViLamViecComponent,
+    LapPhieuDatComponent,
+    DanhSachPhieuDatComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +88,9 @@ export const router: Routes = [
     DonViTinhService,
     MenuService,
     NhaCungCapService,
-    LangService
+    LangService,
+    LapPhieuDatService,
+    PhuTungService
   ],
   bootstrap: [AppComponent]
 })

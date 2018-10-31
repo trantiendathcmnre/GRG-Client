@@ -1,13 +1,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h3>
-    Danh mục dòng xe
+  <h1>
+    <b>{{ vehicles_list }}</b>
     <!-- <small>Preview</small> -->
-  </h3>
+  </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-    <li><a href="#">Danh mục</a></li>
-    <li class="active">Danh mục dòng xe</li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> {{ home }}</a></li>
+    <li><a href="#">{{ categories }}</a></li>
+    <li class="active">{{ vehicles_list }}</li>
   </ol>
 </section>
 
@@ -16,7 +16,7 @@
   <div class="box">
     <div class="box-header">
       <div class="form-group">
-        <label class="col-sm-2 control-label">Hãng xe:</label>
+        <label class="col-sm-2 control-label">{{ automakers }}:</label>
         <div class="col-sm-3">
           <select 
             class="form-control select2"
@@ -24,18 +24,18 @@
             id="hangxe" 
             name="hangxe"
             >
-            <option value="0" selected>Tất cả hãng xe</option>
+            <option value="0" selected>{{ all_of_automakers }}</option>
             <option *ngFor="let hx of dataHangXe" [value]=hx.id>{{ hx.ten }}</option>
           </select>
         </div>
         <div class="col-sm-2">
-            <button type="button" class="btn btn-default pull-left" id="btn-search">
-              Duyệt
+            <button type="button" class="btn btn-example pull-left" id="btn-search">
+              {{ search }}
             </button>
           </div>
         <div class="col-sm-5">
-          <button type="button" class="btn btn-default pull-right" id="btn-add">
-            Thêm mới
+          <button type="button" class="btn btn-example pull-right" id="btn-add">
+            {{ new_vehicle }}
           </button>
         </div>
         
@@ -43,14 +43,14 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <table id="tbl-danh-muc-dong-xe" class="table table-bordered table-striped">
+      <table id="tbl-danh-muc-dong-xe" class="table table-striped">
         <thead>
         <tr>
           <th>#</th>
-          <th>Tên dòng xe</th>
-          <th>Mô tả</th>
-          <th>Thuộc hãng xe</th>
-          <th>Thao tác</th>
+          <th>{{ name_of_vehicle }}</th>
+          <th>{{ description }}</th>
+          <th>{{ automaker }}</th>
+          <th>{{ action }}</th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -67,65 +67,84 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Thêm Danh Mục Dòng Xe</h4>
+        <h4 class="modal-title"></h4>
       </div>
       <div class="modal-body">
         <form id="frm-danh-muc-dong-xe">
           <div class="row">
             <div class="col-md-6">
-              <div class="form-group form-group-ten">
-                <label>Tên dòng xe:</label>
-                <input 
-                  type="text" 
-                  class="form-control my-colorpicker1"
-                  id="ten" 
-                  name="ten" 
-                  placeholder="Nhập tên dòng xe"
-                  required
-                >
-                <div id="unname_ITK" class="response"></div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group form-group-ten">
+                    <label class="no_error">{{ name_of_vehicle }}</label> <span class="required"> *</span>
+                    <input 
+                      type = "text" 
+                      class = "form-control my-colorpicker1"
+                      id = "ten" 
+                      name = "ten" 
+                      placeholder = "Input name of vehicle"
+                      required
+                    >
+                    <div id="error" class="error"></div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="no_error">{{ automaker }}</label> <span class="required"> *</span>
+                    <select 
+                      class = "form-control select2"
+                      style = "width: 100%;"
+                      id = "hangxe_id" 
+                      name = "hangxe_id"
+                    >
+                      <option value="0" selected>{{ please_select }}</option>
+                      <option *ngFor="let hx of dataHangXe" [value]= hx.id>{{ hx.ten }}</option>
+                    </select>
+                  </div>
+                  <input type="hidden" name="hidden_id" value="0"> 
+                </div>
+                
+                <div class="col-md-12">
+                  <label class="no_error">{{ description }}</label>
+                  <textarea 
+                    class="textarea" 
+                    placeholder="Description of vehicle"
+                    style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+                    id="mo_ta" 
+                    name="mo_ta"
+                  >
+                  </textarea>
+                </div>
               </div>
-            
-              <textarea 
-                class="textarea" 
-                placeholder="Mô tả dòng xe"
-                style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
-                id="mo_ta" 
-                name="mo_ta"
-              >
-              </textarea>
-              
             </div>
-            <!-- /.col -->
+
             <div class="col-md-6">
-              <div class="form-group">
-                <label>Thuộc hãng xe:</label>
-                <select 
-                  class="form-control select2"
-                  style="width: 100%;"
-                  id="hangxe_id" 
-                  name="hangxe_id"
-                >
-                  <option value="0" selected>Tất cả các đơn vị</option>
-                  <option *ngFor="let hx of dataHangXe" [value]=hx.id>{{hx.ten}}</option>
-                </select>
-              </div>
-  
-              <input type="hidden" name="hidden_id" value="0">
-              
+              <p>
+                <strong>New Vehicle</strong> <br>
+              </p>
+              <span>
+                  Vehicle Information
+              </span>
+              <span class="d-block">
+                Create new Vehicle to know the vehicle which attach automaker. 
+              </span>
+              <span>
+                New vehicle have to require name of vehicle and automaker. You only can set the description of vehicle when update. 
+              </span>
             </div>
-            <!-- /.col -->
+    
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="reset" class="btn btn-default pull-left" id="reset">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">{{ cancel }}</button>
         <button 
           type="submit" 
-          class="btn btn-primary pull-right" 
+          class="btn btn-example pull-right" 
           id="save-danh-muc-dong-xe"
         >
-        Lưu thay đổi</button>
+        {{ save }}</button>
       </div>
     </div>
     <!-- /.modal-content -->

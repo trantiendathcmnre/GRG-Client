@@ -24,9 +24,9 @@ export class DonViTinhService {
     let url = this.apisService.donViTinh.add.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
-  update(data) {
+  update(data, id) {
     // this.createHeader();
-    let url = this.apisService.donViTinh.update.url;
+    let url = this.apisService.donViTinh.update.url + id;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
   delete(id) {
