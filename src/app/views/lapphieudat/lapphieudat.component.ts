@@ -10,8 +10,9 @@ import { PhuTungService } from '../../services/phutung.service';
 import { NhaCungCapService } from '../../services/nhacungcap.service';
 import { ApisService } from '../../services/apis.service';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
-declare var $, moment, event, toastr: any;
+declare var $, event, toastr: any;
 var self: any;
 var tbl , tbl1, tbl2: any;
 var check = true;
@@ -80,7 +81,9 @@ export class LapPhieuDatComponent implements OnInit {
     $("#loader").css("display", "block");
     //Date picker
     $('#datepicker').datepicker({
-      autoclose: true
+      autoclose: true,
+      todayHighlight: true,
+      setDate: 'today'
     });
     self.code_generate = self.apisService.generateID(16);
     $(".select2").select2({
@@ -93,22 +96,30 @@ export class LapPhieuDatComponent implements OnInit {
     self.getDataDongXe();
     self.getDataDMPhuTung();
     self.getEnableNhaCungCap();
-    // $('#MANCC').on('select2:select', function (e) {
-    //   tbl1.clear().draw();
-    // });
+
+    $('#nha_cung_cap').on('select2:select', function (e) {
+      tbl1.clear().draw();
+    });
+
     $('#btn_phu_tung_dat').click(function(){
       var check = true;
       var so_luong_dat = $('#so_luong_dat').val();
-      if(so_luong_dat.trim()=='') {
+      var so_luong_ton = $('#so_luong_ton').html();
+      // console.log(Number(so_luong_dat.trim()), Number(so_luong_ton));
+      if( so_luong_dat.trim() == '' ) {
         toastr.error('Please input amount.', 'Error!');
         return false;
       }
-      if( Number(so_luong_dat.trim())==0) {
+      if( Number(so_luong_dat.trim()) == 0 ) {
         toastr.error('Amount has more than 0', 'Error!');
         return false;
       }
-
-      var rowId = $('#id_phu_tung').text();
+      
+      if( Number(so_luong_dat.trim()) > Number(so_luong_ton) ) {
+        toastr.error('Amount can not more than inventory', 'Error!');
+        return false;
+      }
+      var rowId = Number($('#id_phu_tung').text());
       tbl1.rows().eq(0).each( function ( index ) {
         var s = tbl1.cell(index,1).data();
         var row = tbl1.row( index );
@@ -117,13 +128,15 @@ export class LapPhieuDatComponent implements OnInit {
           tbl1.cell(index,4).nodes()[0].textContent = Number(so_luong_dat) + Number(soLuongOLD);
           check = false;
           $('.sh').addClass('d-none');
-          return false;
+          return;
         }
+        
       });
 
       if( !!check ) {
         self.phuTungService.get(rowId).subscribe(res=> {
-          if(res.errorCode>=5) {
+          debugger
+          if( res.errorCode >= 5 ) {
             tbl1.row.add(
               [
                 '',
@@ -200,16 +213,16 @@ export class LapPhieuDatComponent implements OnInit {
       },
       rowId: "id_phu_tung",
       columns:[
-        {data: null, className: "text-center"},
-        {data: "id_phu_tung"},
-        {data: "ten_phu_tung"},
-        {data: "ten_danh_muc_phu_tung"},
-        {data: "ten_dong_xe"},
-        {data: "ten_hang_xe"},
+        { data: null, className: "text-center" },
+        { data: "id_phu_tung" },
+        { data: "ten_phu_tung" },
+        { data: "ten_danh_muc_phu_tung" },
+        { data: "ten_dong_xe" },
+        { data: "ten_hang_xe" },
         // {data: "xuat_xu"},
-        {data: "anh"},        
-        {data: "so_luong_ton"},
-        {data: null,className: "text-center",render: function (data, type, row){
+        { data: "anh" },        
+        { data: "so_luong_ton" },
+        { data: null, className: "text-center",render: function ( data, type, row ){
           return '<btn data-group="grpSelectPhuTung" class="btn btn-example pointer">Choose</btn>';
         }}
       ],
@@ -227,12 +240,11 @@ export class LapPhieuDatComponent implements OnInit {
 
     $('#btn_Luu').click(function(){
       //thong tin phieu dat hang
-      self.data={"data":[],"phieu":{}}
-      var id_nha_cung_cap=$('select[name=MANCC]').val();
-      if(id_nha_cung_cap=='')
-      {
+      self.data = { "data":[], "phieu":{} }
+      var id_nha_cung_cap = $('select[name=MANCC]').val();
+      if( id_nha_cung_cap == '') {
         self.PNotify('Vui lòng chọn nhà cung cấp','error');
-      return;
+        return false;
       }
       var MAPHIEUDATHANG=$('#MAPHIEUDATHANG').val();
       var GHICHU_PD=$('#GHICHU_PD').val();
@@ -247,8 +259,7 @@ export class LapPhieuDatComponent implements OnInit {
         var item={"id_phu_tung":id_phu_tung,"SOLUONGDAT":SOLUONGDAT};
         self.data.data.push(item);
         } );
-        if(self.data.data.length==0)
-        {
+        if(self.data.data.length==0) {
         self.PNotify('Vui lòng chọn phụ tùng để đặt hàng','error');
         return;
         }
@@ -361,7 +372,8 @@ export class LapPhieuDatComponent implements OnInit {
       }
     });
   }
-  private loadReader(){
+
+  private loadReader() {
     var id_hang_xe = $('#automaker').val();
     var id_dong_xe = $('#vehicle').val();
     var id_danh_muc_phu_tung = $('#category_of_accesary').val();
@@ -380,52 +392,50 @@ export class LapPhieuDatComponent implements OnInit {
         }
       }
     });
-}
-private bindTableEventsPhuTungThem()
-{
-  $('btn[data-group=grpSelectPhuTung]').off('click').click(function(){
-    var rowId = $(this).closest('tr').attr('id');
-    self.phuTungService.get(rowId).subscribe( res=> {
-      if(res.errorCode == 0 ) {
-        $('#id_phu_tung').text(res.data.id_danh_muc_phu_tung);
-        $('#ten_phu_tung').text(res.data.ten_phu_tung);
-        $('#so_luong_ton').text(res.data.so_luong_ton);
-        $('.sh').removeClass('d-none');
-        $('#SOLUONGDAT').val('');
-      }
-      else
-        console.log(res.message);
-      $('#modelDSPhuTung').modal('hide');
+  }
 
+  private bindTableEventsPhuTungThem() {
+    $('btn[data-group=grpSelectPhuTung]').off('click').click(function(){
+      var rowId = $(this).closest('tr').attr('id');
+      self.phuTungService.get(rowId).subscribe( res=> {
+        if(res.errorCode == 0 ) {
+          $('#id_phu_tung').html(res.data[0].id_danh_muc_phu_tung);
+          $('#ten_phu_tung').html(res.data[0].ten);
+          $('#so_luong_ton').html(res.data[0].so_luong_ton);
+          $('#so_luong_dat').val('');
+          $('.sh').removeClass('d-none');
+        }
+        else
+          console.log(res.message);
+        $('#modelDSPhuTung').modal('hide');
+
+      });
     });
-  });
-}
-private Events()
-{
-  $('button[data-group=grpDelete]').off('click').click(function(){
-    tbl1
-      .row( $(this).parents('tr') )
-      .remove()
-      .draw();
-  });
-}
-private getEnableNhaCungCap()
-{
-  self.nhaCungCapService.getEnable().subscribe(res=>{
-    
-    if(res.errorCode >= 5) {
-      console.log(res);
-      // self.router.navigate(['/']);
-    } else {
-      self.dataNCC = res.data;
-    }
-  });
-}
-private isNumberKey(evt)
-{
-var charCode = (evt.which) ? evt.which : event.keyCode
-if (charCode > 31 && (charCode < 48 || charCode > 57))
-return false;
-return true;
-}
+  }
+
+  private Events() {
+    $('button[data-group=grpDelete]').off('click').click(function(){
+      tbl1.row( $(this).parents('tr') ).remove().draw();
+    });
+  }
+
+  private getEnableNhaCungCap() {
+    self.nhaCungCapService.getEnable().subscribe(res=>{
+      
+      if(res.errorCode >= 5) {
+        console.log(res);
+        // self.router.navigate(['/']);
+      } else {
+        self.dataNCC = res.data;
+      }
+    });
+  }
+  
+  private isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+    else
+      return true;
+  }
 }

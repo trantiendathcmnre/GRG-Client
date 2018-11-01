@@ -120,9 +120,16 @@ export class DonViLamViecComponent implements OnInit {
           { data: null, className: "text-center", width: "20px" },
           { data: "ten", width: "200px"},
           { data: "mo_ta", className: "text-justify", width: "400px"},
+          { data: "status", width: "20px", render: function (data, type, row) {
+            if(data == 'USE') {
+              return '<small class="label bg-green">Enabled</small>';
+            } else {
+              return '<small class="label bg-red">Disabled</small>';
+            }
+          }},
           {data: null, width: "100px", className: "text-center",render: function (data, type, row) {
             return  '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Edit Automaker" ><i class="fa fa-edit"></i></a>' +
-                    '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Automaker" ><i class="fa fa-trash"></i></a>';
+                    '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Disable Automaker" ><i class="fa fa-eye-slash"></i></a>';
           }}
         ],
         //load data
@@ -278,8 +285,8 @@ export class DonViLamViecComponent implements OnInit {
     $('a[data-group=grpDelete]').off('click').click(function(){
       var rowId = $(this).closest('tr').attr('id');
       $.confirm({
-        title: 'Delete Unit Of Work',
-        content: 'Are you sure to delete the unit of work?',
+        title: 'Disabled Unit Of Work',
+        content: 'Are you sure to disable the unit of work?',
         type: 'red',
         typeAnimated: true,
         buttons: {
@@ -300,7 +307,7 @@ export class DonViLamViecComponent implements OnInit {
                     } else {
                       if( SUCCESSCODE == res.errorCode ) {
                         self.danhSachDonViLamViec();
-                        toastr.success(res.message, 'Done!');
+                        toastr.success('Disabled Success!', 'Done!');
                       } else {
                         $("#loader").css("display", "none");
                         toastr.error(res.message, 'Error!');

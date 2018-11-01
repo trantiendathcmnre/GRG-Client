@@ -70,7 +70,7 @@
                                         <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" class="form-control pull-right" id="datepicker" value="1996-10-20">
+                                        <input type="text" class="form-control pull-right" id="datepicker">
                                     </div>
                                     <!-- /.input group -->
                                     </div>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="col-md-12">
                     <h5 class="page-header"></h5>
-                    <div class="row sh">
+                    <div class="row sh d-none">
                         <div class="col-md-4">
                             {{ name_accessary }} :
                         </div>
@@ -135,7 +135,7 @@
                             <span id="so_luong_ton" class="font-weight-bold float-left"></span> 
                         </div>
                     </div>
-                    <div class="row m-t-20 sh">
+                    <div class="row m-t-20 sh d-none">
                         <div class="form-group">
                             <label class="col-sm-1 control-label">Ammount:</label>
                             <div class="col-sm-5">
@@ -260,214 +260,3 @@
     <!-- /.modal-dialog -->
     </div>
 
-<!-- ************************************************************* -->
-<div class="breadcrumb-holder">
-        <ul class="breadcrumb">
-          <li class="breadcrumb-item"><a routerLink="">Trang chủ</a></li>
-          <li class="breadcrumb-item active">Đặt hàng</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-md-auto mr-auto h5 text-primary">LẬP PHIẾU ĐẶT HÀNG</div>
-                <div class="col-md-auto nonep"><button class="btn btn-primary" id="btn_Luu"><i class="far fa-save"></i> Lưu phiếu đặt</button></div>
-                <div class="col-md-auto nonep"><button class="btn btn-outline-teal"><i class="far fa-plus-square"></i> Tạo phiếu mới</button></div>
-                <div class="col-md-auto nonep"><button class="btn btn-outline-cyan" routerLink="/admin/danhsachphieudat"><i class="fa fa-share"></i> Quản lý đặt</button></div>
-            </div>
-        </div>
-        <div class="card-body">
-        <form>
-            <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Mã Phiếu:</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" id="MAPHIEUDATHANG" readonly>
-                            </div>
-                        </div>
-                </div>
-                <div class="col-sm-6">
-                        <div class="row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Ngày Lập:</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" id="NgayLapPD">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Ghi Chú:</label>
-                            <div class="col-sm-9">
-                            <input type="text" class="form-control" id="GHICHU_PD">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Nhà Cung Cấp:</label>
-                            <div class="col-sm-9">
-                                <!-- <select style="width: 100%;"  name="MANCC" class="form-control" id="MANCC">
-                                    <option></option>
-                                    <option *ngFor="let ncc of dataNCC" [value]=ncc.ID_NCC>{{ncc.TENNCC}}</option>
-                                </select> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-              <div class="offset-6 col-sm-6">
-                  <div class="row form-group">
-                      <div class="offset-3 col-sm-9">
-                          <button class="btn btn-primary form-control" id="btn_open">Chọn phụ tùng để đặt</button>
-                      </div>
-                  </div>  
-              </div>
-          </div>
-        </div>
-        <!--  -->
-       <div class="row pt-3 pb-3 d-none sh" style="border-top:2px solid #f0f3f5;">
-           <div class="col-sm-auto">
-              Tên phụ tùng:
-           </div>
-           <div class="col-sm-3">
-                <span id="id_phu_tung" hidden></span>
-                <span id="ten_phu_tung" class="font-weight-bold float-left">Gầm xe</span>
-          </div>
-          <div class="col-sm-auto">
-               Số lượng tồn:
-          </div>
-          <div class="col-sm-2">
-              <span id="SOLUONGTON" class="font-weight-bold float-left">0</span> 
-          </div>
-       </div>
-        <!--  -->
-        <div class="row d-none sh" style="border-bottom:2px solid #f0f3f5;">
-          <div class="col-sm-5">
-            <div id="SL" class="">
-              <div class="row"><label for="" class="col-sm-5 col-form-label"><span class="float-left">Nhập số lượng:</span></label></div>
-              <div class="row pb-2">
-                <div class="col-sm-12">
-                    <input class="form-control" autocomplete="off" type="text" name="SOLUONGDAT" id="SOLUONGDAT" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-2">
-              <div id="ADD" class="">
-                  <div class="row"><label for="" class="col-sm-5 col-form-label text-white">N</label></div>
-                  <div class="row pb-2">
-                    <div class="col-sm-6">
-                        <button class="btn btn-primary form-control" id="btn_AddPhuTungDat"><i class="fas fa-plus-circle"></i> Thêm</button>
-                    </div>
-                  </div>
-                </div>
-          </div>
-        </div>
-            <!-- Table -->
-        <div class="card mt-2">
-          <div class="card-header h5">
-              DANH SÁCH PHỤ TÙNG CẦN ĐẶT
-          </div>
-          <div class="card-body">
-              <table class="table table-bordered hover stripe" id="chi_tiet_phieu_dat_table">
-                  <thead>
-                    <tr>
-                      <th class="text-center" style="width: 5%;">#</th>
-                      <th>Mã phụ tùng</th>
-                      <th>Tên phụ tùng</th>
-                      <th>Đơn vị tính</th>
-                      <th style="width: 10%;">Số lượng</th>
-                      <th style="width: 5%;"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
-          </div>
-        </div>
-        </form>
-        </div>
-      <!-- modal danh sach phu tung -->
-      <div class="modal fade bd-example-modal-lg" id="modelDSPhuTung" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-              <div class="modal-header modalkhachhang">
-                <h5 class="modal-title text-primary" id="exampleModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-                    </div>
-                      <div class="modal-body">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="row">
-                                          <div class="col-sm-4"><span class="float-right col-form-label">Hãng xe</span></div>
-                                          <div class="col-sm-8">
-                                            <select name="MAHANGXE" id="MAHANGXE_SEARCH" class="form-control select2" style="width: 100%;">
-                                              <option value="0">Tất cả</option>
-                                              <option *ngFor="let hx of dataHangXe" [value]=hx.MAHANGXE>{{hx.TENHANGXE}}</option>
-                                            </select>
-                                          </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="row">
-                                          <div class="col-sm-4"><span class="float-right col-form-label">Dòng xe</span></div>
-                                          <div class="col-sm-8">
-                                            <select name="LOAIPHIEUKHAM" id="MADONGXE_SEARCH" class="form-control select2" style="width: 100%;">
-                                              <option value="0">Tất cả</option>
-                                              <option *ngFor="let dx of dataDongXe" [value]=dx.MADONGXE>{{dx.TENDONGXE}}</option>
-                                            </select>
-                                          </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="row">
-                                          <div class="col-sm-4"><span class="float-right col-form-label">Danh mục</span></div>
-                                          <div class="col-sm-8">
-                                            <select name="MADMPHUTUNG" id="MADMPHUTUNG_SEARCH" class="form-control select2" style="width: 100%;">
-                                              <option value="0">Tất cả</option>
-                                              <option *ngFor="let dm of dataDMPhuTung" [value]=dm.MADMPHUTUNG>{{dm.TENDMPHUTUNG}}</option>
-                                            </select>
-                                          </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-1 form-control"style="border:none;background-color:transparent;"><button class="btn btn-primary" >Tìm kiếm</button></div>
-                                </div>
-                          </div>
-                        <div class="card-body">
-                              <table class="table table-bordered"id="phutungthem" style="width:100%;">
-                                  <thead>
-                                    <tr>
-                                      <th>#</th>
-                                      <th>Mã phụ tùng</th>
-                                      <th>Tên phụ tùng</th>
-                                      <th>Danh mục</th>
-                                      <th>Dòng xe</th>
-                                      <th>Hãng xe</th>
-                                      <th>Hình ảnh</th>
-                                      <th>Số lượng tồn</th>
-                                      <th></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                  </tbody>
-                                </table>
-                          </div>
-                        </div>
-                    </div>
-                    <!-- Dong card -->
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</button>
-                  </div>
-                </div>
-              </div>
-          </div> 
-    
-        
