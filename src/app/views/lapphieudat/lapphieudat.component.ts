@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {Http,Headers,Response, RequestOptions} from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
 import { LapPhieuDatService } from '../../services/lapphieudat.service';
 import { HangXeService } from '../../services/hangxe.service';
 import { DongXeService } from '../../services/dongxe.service';
@@ -9,6 +7,8 @@ import { DanhMucPhuTungService } from '../../services/danhmucphutung.service';
 import { PhuTungService } from '../../services/phutung.service';
 import { NhaCungCapService } from '../../services/nhacungcap.service';
 import { ApisService } from '../../services/apis.service';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 
@@ -79,13 +79,18 @@ export class LapPhieuDatComponent implements OnInit {
   ngOnInit() {
     self = this;
     $("#loader").css("display", "block");
-    //Date picker
-    $('#datepicker').datepicker({
-      autoclose: true,
-      todayHighlight: true,
-      setDate: 'today'
+    $('#datepicker').daterangepicker({
+      singleDatePicker: true,
+      // autoApply: false,
+      locale: {
+        format: 'YYYY-MM-DD HH:mm:ss',   
+      },
+      timePicker: true,
+      timePicker24Hour: true,
+      timePickerSeconds:true
     });
-    self.code_generate = self.apisService.generateID(16);
+    
+    
     $(".select2").select2({
       placeholder: {
         id: '0', // the value of the option
@@ -102,56 +107,70 @@ export class LapPhieuDatComponent implements OnInit {
     });
 
     $('#btn_phu_tung_dat').click(function(){
+      $("#loader").css("display", "block");
       var check = true;
       var so_luong_dat = $('#so_luong_dat').val();
-      var so_luong_ton = $('#so_luong_ton').html();
+      var so_luong_ton = $('#so_luong_ton').val();
+      var rowId = $('#id_phu_tung').val();
+
       // console.log(Number(so_luong_dat.trim()), Number(so_luong_ton));
       if( so_luong_dat.trim() == '' ) {
+        $("#loader").css("display", "none");
         toastr.error('Please input amount.', 'Error!');
         return false;
       }
-      if( Number(so_luong_dat.trim()) == 0 ) {
+      if( Number(so_luong_dat) == 0 ) {
+        $("#loader").css("display", "none");
         toastr.error('Amount has more than 0', 'Error!');
         return false;
       }
       
-      if( Number(so_luong_dat.trim()) > Number(so_luong_ton) ) {
+      if( Number(so_luong_dat) > Number(so_luong_ton) ) {
+        $("#loader").css("display", "none");
         toastr.error('Amount can not more than inventory', 'Error!');
         return false;
       }
-      var rowId = Number($('#id_phu_tung').text());
+      
       tbl1.rows().eq(0).each( function ( index ) {
-        var s = tbl1.cell(index,1).data();
-        var row = tbl1.row( index );
-        if( s == rowId ) {
-          var soLuongOLD = tbl1.cell(index, 4).nodes()[0].textContent;
-          tbl1.cell(index,4).nodes()[0].textContent = Number(so_luong_dat) + Number(soLuongOLD);
-          check = false;
+        var checkRow = tbl1.cell(index,1).data();
+        var soLuongOLD = tbl1.cell(index, 4).nodes()[0].textContent;
+        var tong = Number(so_luong_dat) + Number(soLuongOLD);
+        if( checkRow == rowId ) {
+          if( tong > Number(so_luong_ton) ) {
+            toastr.error('Amount can not more than inventory', 'Error!');
+            check = false;
+            $("#loader").css("display", "none");
+            return false;
+          }
+          tbl1.cell(index, 4).nodes()[0].textContent = tong;
           $('.sh').addClass('d-none');
-          return;
+          $('#so_luong_dat').val('');
+          check = false;
         }
-        
+        $("#loader").css("display", "none");
+        return true;
       });
 
       if( !!check ) {
         self.phuTungService.get(rowId).subscribe(res=> {
-          debugger
-          if( res.errorCode >= 5 ) {
+          if( res.errorCode == 0 ) {
             tbl1.row.add(
               [
                 '',
-                res.data[0].id_phu_tung,
-                res.data[0].ten_phu_tung,
-                res.data[0].TENDVT,
-                Number(so_luong_dat),
-                '<button type="button" data-group="grpDelete" class="btn btn-outline-danger" data-dismiss="modal">Xóa</button>'
+                res.data[0].id,
+                res.data[0].ten,
+                res.data[0].ten_don_vi_tinh,
+                so_luong_dat,
+                '<a class="btn btn-primary-action m-r-xs" data-group="grpDelete" title="Delete Automaker" ><i class="fa fa-trash"></i></a>'
               ]
             ).draw(false);
             $('.sh').addClass('d-none');
-            $('#SOLUONGDAT').val('');
+            $('#so_luong_dat').val('');
+            $("#loader").css("display", "none");
           } else {
             console.log(res);
-            self.router.navigate(['/']);
+            $("#loader").css("display", "none");
+            //self.router.navigate(['/']);
           }
         });
       }
@@ -175,13 +194,16 @@ export class LapPhieuDatComponent implements OnInit {
     });
   
     $('#choose_accessary').on('click', function () {
+      $("#loader").css("display", "block");
       var id_nha_cung_cap = $('#nha_cung_cap').val();
       if( id_nha_cung_cap == '0') {
         toastr.error('Please choose the provider.', 'Error!');
+        $("#loader").css("display", "none");
         return false;
       }
       self.loadReader();
       $('#modal-default').modal('show');
+      $("#loader").css("display", "none");
     });
 
     tbl1 = $("#chi_tiet_phieu_dat_table").DataTable({
@@ -193,7 +215,7 @@ export class LapPhieuDatComponent implements OnInit {
         "sZeroRecords":  "Please choose accessary need order"
       },
       initComplete: function(setting, json){
-        $("#loader").css("display", "none");
+        //$("#loader").css("display", "none");
       },
       drawCallback: function( settings ) {
         self.Events();
@@ -238,58 +260,56 @@ export class LapPhieuDatComponent implements OnInit {
       }
     });
 
-    $('#btn_Luu').click(function(){
+    $('#btn_save').click(function(){
       //thong tin phieu dat hang
       self.data = { "data":[], "phieu":{} }
-      var id_nha_cung_cap = $('select[name=MANCC]').val();
+      var id_nha_cung_cap = $('#nha_cung_cap').val();
       if( id_nha_cung_cap == '') {
-        self.PNotify('Vui lòng chọn nhà cung cấp','error');
         return false;
       }
-      var MAPHIEUDATHANG=$('#MAPHIEUDATHANG').val();
-      var GHICHU_PD=$('#GHICHU_PD').val();
-      var kq= $('#NgayLapPD').val();
-      var k= moment(kq,"DD-MM-YYYY HH:mm");
-      var NGAYLAPPD=moment(k).format("YYYY-MM-DD HH:mm");
-      self.data.phieu={"MAPHIEUDATHANG":MAPHIEUDATHANG,"NGAYLAPPD":NGAYLAPPD,"id_nha_cung_cap":id_nha_cung_cap,"NGUOILAPPHIEUDAT":self.ACCOUNT,"GHICHU_PD":GHICHU_PD};
+      var ma = $('#ma').val();
+      var mo_ta  = $('#mo_ta').val();
+      var created_at = $('#datepicker').val();
+      self.data.phieu = {
+          "ma": ma,
+          "ngay_lap": created_at,
+          "id_nha_cung_cap": id_nha_cung_cap,
+          "nguoi_lap": "",
+          "ghi_chu": mo_ta
+      };
       //chi tiet phu tung dat hang
       tbl1.rows().eq(0).each( function ( index ) {
-        var id_phu_tung=tbl1.cell(index,1).data();
-        var SOLUONGDAT=Number(tbl1.cell(index,4).nodes()[0].textContent);
-        var item={"id_phu_tung":id_phu_tung,"SOLUONGDAT":SOLUONGDAT};
+        var id_phu_tung = tbl1.cell(index,1).data();
+        var so_luong_dat = Number(tbl1.cell(index,4).nodes()[0].textContent);
+        var item = {
+            "id_phu_tung": id_phu_tung,
+            "so_luong_dat": so_luong_dat
+        };
         self.data.data.push(item);
-        } );
-        if(self.data.data.length==0) {
-        self.PNotify('Vui lòng chọn phụ tùng để đặt hàng','error');
-        return;
-        }
-        //dua du lieu xuong server
-        console.log(self.data);
-        self.lapPhieuDatService.add(self.data).subscribe(res => {
-          if(res.errorCode>=5)
-          {
-            console.log(res);
-            self.router.navigate(['/']);
-          }
-          else
-          {
-            if(res.errorCode==0)
-            {
-              // self.PNotify('Lập phiếu thành công !\nMã Phiếu:'+res.data.MAPHIEUDATHANG,'success');
-              
-              $('select[name=MANCC]').val('').change();
-              tbl1.clear().draw();
-              self.createMaPhieuDat();
+      });
 
-            }
-            else
-            {
-              self.PNotify('Lập phiếu không thành công !','error');
-            }
+      if(self.data.data.length==0) {
+        toastr.error('Please choose the accessary to order.', 'Error!');
+        return;
+      }
+  
+      self.lapPhieuDatService.add(self.data).subscribe(res => {
+          if( res.errorCode != 0 ) {
+            console.log(res);
+            toastr.error('Create order failed.', 'Error!');
+            // self.router.navigate(['/']);
+          }
+          else {
+            $('#nha_cung_cap').val('').change();
+            tbl1.clear().draw();
+            self.createCode();
+            toastr.success(res.message, 'Done!');
           }
       });
-      });
-    }
+    });
+
+    self.createCode();
+  }
   
   private update_STT()
   {
@@ -297,32 +317,6 @@ export class LapPhieuDatComponent implements OnInit {
       tbl1
        .cell( index,0 ) // note that you could actually pass in 'this' as the row selector!
        .data(index+1).draw();
-    });
-  }
-  
-  private createMaPhieuDat()
-  {
-    self.lapPhieuDatService.createMaPhieuDat().subscribe(res => {
-      if(res.errorCode>=5)
-      {
-        console.log(res);
-        self.router.navigate(['/']);
-      }
-      else
-      {
-        if(res.errorCode==0)
-        {
-          //console.log(res);
-          if(res.data[0].MAPHIEUDAT)
-          $('#MAPHIEUDATHANG').val('PD'+res.data[0].MAPHIEUDAT);
-          else
-          $('#MAPHIEUDATHANG').val('PD000001');
-        }
-        else
-        {
-          $('#MAPHIEUDATHANG').val('');
-        }
-      }
     });
   }
 
@@ -399,34 +393,36 @@ export class LapPhieuDatComponent implements OnInit {
       var rowId = $(this).closest('tr').attr('id');
       self.phuTungService.get(rowId).subscribe( res=> {
         if(res.errorCode == 0 ) {
-          $('#id_phu_tung').html(res.data[0].id_danh_muc_phu_tung);
-          $('#ten_phu_tung').html(res.data[0].ten);
-          $('#so_luong_ton').html(res.data[0].so_luong_ton);
+          $('#id_phu_tung').val(res.data[0].id);
+          $('#ten_phu_tung').val(res.data[0].ten);
+          $('#so_luong_ton').val(res.data[0].so_luong_ton);
           $('#so_luong_dat').val('');
+          
           $('.sh').removeClass('d-none');
         }
         else
           console.log(res.message);
-        $('#modelDSPhuTung').modal('hide');
+        $('#modal-default').modal('hide');
 
       });
     });
   }
 
   private Events() {
-    $('button[data-group=grpDelete]').off('click').click(function(){
+    $('a[data-group=grpDelete]').off('click').click(function(){
       tbl1.row( $(this).parents('tr') ).remove().draw();
     });
   }
 
   private getEnableNhaCungCap() {
-    self.nhaCungCapService.getEnable().subscribe(res=>{
+    self.nhaCungCapService.getEnable().subscribe(res=> {
       
       if(res.errorCode >= 5) {
         console.log(res);
         // self.router.navigate(['/']);
       } else {
         self.dataNCC = res.data;
+        $("#loader").css("display", "none");
       }
     });
   }
@@ -437,5 +433,16 @@ export class LapPhieuDatComponent implements OnInit {
       return false;
     else
       return true;
+  }
+
+  private createCode() {
+    self.lapPhieuDatService.generate().subscribe(res=> {
+      if(res.errorCode >= 5) {
+        console.log(res);
+        // self.router.navigate(['/']);
+      } else {
+        self.code_generate = res.data;
+      }
+    });
   }
 }

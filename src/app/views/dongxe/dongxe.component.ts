@@ -129,7 +129,7 @@ export class DongxeComponent implements OnInit {
         ],
         searching: false,
         bLengthChange : false,
-        iDisplayLength: 10,
+        iDisplayLength: 15,
         //sap xep cot 3 tang dan
         order: [[1, "asc"]],
         aaData: null,

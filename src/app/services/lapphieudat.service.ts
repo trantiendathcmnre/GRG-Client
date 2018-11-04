@@ -16,48 +16,58 @@ export class LapPhieuDatService {
     let url = this.apisService.lapPhieuDat.getAll.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
+
   get(id) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.get.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
+
   add(data) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.add.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
+
   update(data) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.update.url;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
+
   delete(id) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.delete.url + id;
     return this.http.delete(url, this.headerOptions).map(response => response.json());
   }
-  getNCC(id)
-  {
+
+  getNCC(id) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.getNCC.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json()); 
   }
-  createMaPhieuDat()
-  {
+
+  createMaPhieuDat() {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.getMPD.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
-  xacnhanPD(data)
-  {
+
+  xacnhanPD(data) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.xacnhanPD.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
-  getPD(id)
-  {
+
+  getPD(id) {
     // this.createHeader();
     let url = this.apisService.lapPhieuDat.getPD.url + id;
+    return this.http.get(url, this.headerOptions).map(response => response.json());
+  }
+
+  generate() {
+    // this.createHeader();   
+    let url = this.apisService.lapPhieuDat.generate.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
   /*createHeader()

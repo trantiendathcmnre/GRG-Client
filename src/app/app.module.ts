@@ -19,6 +19,8 @@ import { NhaCungCapComponent } from './views/nhacungcap/nhacungcap.component';
 import { DonViLamViecComponent } from './views/donvilamviec/donvilamviec.component';
 import { LapPhieuDatComponent } from './views/lapphieudat/lapphieudat.component';
 import { DanhSachPhieuDatComponent } from './views/danhsachphieudat/danhsachphieudat.component';
+import { KhachHangComponent } from './views/khachhang/khachhang.component';
+import { NotFoundComponent } from './views/notfound/notfound.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -32,6 +34,8 @@ import { BaoGiaCongService } from './services/baogiacong.service';
 import { LangService } from './services/lang.service';
 import { LapPhieuDatService } from './services/lapphieudat.service';
 import { PhuTungService } from './services/phutung.service';
+import { KhachHangService } from './services/khachhang.service';
+
 
 
 export const router: Routes = [
@@ -50,8 +54,10 @@ export const router: Routes = [
       { path: 'nhacungcap', component: NhaCungCapComponent },
       { path: 'lapphieudat', component: LapPhieuDatComponent },
       { path: 'danhsachphieudat', component: DanhSachPhieuDatComponent },
+      { path: 'khachhang', component: KhachHangComponent },
     ]
-  }
+  },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
@@ -71,6 +77,8 @@ export const router: Routes = [
     DonViLamViecComponent,
     LapPhieuDatComponent,
     DanhSachPhieuDatComponent,
+    KhachHangComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,7 +98,8 @@ export const router: Routes = [
     NhaCungCapService,
     LangService,
     LapPhieuDatService,
-    PhuTungService
+    PhuTungService,
+    KhachHangService,
   ],
   bootstrap: [AppComponent]
 })

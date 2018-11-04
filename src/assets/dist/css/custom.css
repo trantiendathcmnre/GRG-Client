@@ -2,6 +2,9 @@ u:hover {
     color: #0056b3;
     text-decoration: underline;
 }
+.border-none{
+    border: none;
+}
 .btn-example {
     color: #fff;
     cursor: pointer;
@@ -85,6 +88,9 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
 }
 .jconfirm .jconfirm-box.jconfirm-type-red {
     border-top: none;
+}
+.range_inputs{
+    display: none;
 }
 .p-t-md {
     padding-top: 15px;

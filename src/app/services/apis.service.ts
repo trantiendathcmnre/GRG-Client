@@ -83,6 +83,7 @@ constructor() { }
         delete:   { method: 'DELETE', url: this.baseUrl + 'lapphieudat/'},
         xacnhanPD:{ method: 'POST',   url: this.baseUrl + 'lapphieudat/dsphieudat/xacnhan'},
         getPD:    { method: 'GET',    url: this.baseUrl + 'lapphieudat/phieu/'},
+        generate: { method: 'GET',    url: this.baseUrl + 'lapphieudat/generate'}
     };
 
     phuTung = {
@@ -90,12 +91,21 @@ constructor() { }
         get:        { method: 'GET',    url: this.baseUrl + 'phutung/' },
         getNCC:     { method: 'GET',    url: this.baseUrl + 'phutung/ncc/' },
         add:        { method: 'POST',   url: this.baseUrl + 'phutung' },
-        update:     { method: 'PUT',    url: this.baseUrl + 'phutung' },
+        update:     { method: 'PUT',    url: this.baseUrl + 'phutung/' },
         delete:     { method: 'DELETE', url: this.baseUrl + 'phutung/' },
         getDVT:     { method: 'GET',    url: this.baseUrl + 'phutung/DVT/DVT' },
         getMPT:     { method: 'GET',    url: this.baseUrl + 'phutung/taoma/maphutung' },
         searchPT:   { method: 'GET',    url: this.baseUrl + 'phutung/admin/' },
         searchAllPT:{ method: 'GET',    url: this.baseUrl + 'phutung/all/admin/' },
+    };
+
+    khachHang = {
+        getAll:     { method: 'GET',    url: this.baseUrl + 'khachhang' },
+        get:        { method: 'GET',    url: this.baseUrl + 'khachhang/' },
+        add:        { method: 'POST',   url: this.baseUrl + 'khachhang' },
+        update:     { method: 'PUT',    url: this.baseUrl + 'khachhang/' },
+        delete:     { method: 'DELETE', url: this.baseUrl + 'khachhang/' },
+        generate:   { method: 'GET',    url: this.baseUrl + 'khachhang/generate'}
     };
 
     generateID(length = null) {

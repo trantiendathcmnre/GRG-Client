@@ -24,7 +24,7 @@
                         <button type="button" class="btn btn-example  pull-right" id="btn-add">
                                 <i class="fa fa-plus-square"></i> {{ btn_new }}
                         </button>
-                        <button type="button" class="btn btn-example pull-right" >
+                        <button type="button" class="btn btn-example pull-right" id="btn_save">
                             <i class="fa fa-save"></i> {{ btn_save }}
                         </button>
                     </div>
@@ -70,7 +70,7 @@
                                         <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" class="form-control pull-right" id="datepicker">
+                                        <input type="text" class="form-control pull-right created_at" id="datepicker">
                                     </div>
                                     <!-- /.input group -->
                                     </div>
@@ -121,18 +121,18 @@
                 <div class="col-md-12">
                     <h5 class="page-header"></h5>
                     <div class="row sh d-none">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             {{ name_accessary }} :
                         </div>
-                        <div class="col-md-3">
-                            <span id="id_phu_tung" hidden></span>
-                            <span id="ten_phu_tung" class="font-weight-bold float-left"></span>
+                        <div class="col-md-5">
+                            <input id="id_phu_tung" type="hidden">
+                            <input type="text" id="ten_phu_tung" class="font-weight-bold float-left border-none" readonly>
                         </div>
                         <div class="col-md-3">
                             {{ inventory }} :
                         </div>
                         <div class="col-md-2">
-                            <span id="so_luong_ton" class="font-weight-bold float-left"></span> 
+                            <input type="number" id="so_luong_ton" class="font-weight-bold float-left border-none" readonly> 
                         </div>
                     </div>
                     <div class="row m-t-20 sh d-none">
