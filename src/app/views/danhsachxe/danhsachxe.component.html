@@ -1,0 +1,287 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    <b>Repair Management</b>
+    <!-- <small>Preview</small> -->
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+    <li><a href="#">Repair Management</a></li>
+    <li class="active">Cars List</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+      <div class="box-header">
+          <div class="form-group">
+            <div class="col-sm-6">
+              <div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label">Status:</label>
+                  <div class="col-sm-9">
+                      <select name="trang_thai" class="form-control select2" id="trang_thai">
+                          <option value="-1">Please select</option>
+                          <option value="1">Active</option>
+                          <option value="0">Not Approve</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-example pull-right">
+                New Cars
+                </a>
+            </div>
+          
+          </div>
+      </div>
+    <!-- /.box-header -->
+      <div class="box-body">
+          <table id="dsxe" class="table table-striped" >
+              <thead>
+              <tr>
+                  <th>Vehicle</th>
+                  <th>Customer</th>
+                  <th>License Plates</th>
+                  <th>VIN Number</th>
+                  <th>Frame Number</th>
+                  <th>Color</th>
+                  <th>Updated At</th>
+                  <th>Status</th>
+                  <th>Action</th>
+              </tr>
+              </thead>
+              <tbody></tbody>
+          </table>
+      </div>
+      <!-- /.box-body -->
+  </div>
+
+</section>
+
+<div class="modal fade in" id="exampleModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Order Detail</h4>
+      </div>
+      <div class="modal-body">
+          <form >
+              <div class="row">
+                  <input type="hidden" id="id_ncc">
+                  <div class="col-md-6">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="form-group form-group-ten">
+                                  <label class="no_error">Code Of Order</label>
+                                  <input 
+                                      type = "text" 
+                                      class = "form-control my-colorpicker1"
+                                      id = "ma_phieu_dat_hang" 
+                                      name = "ma_phieu_dat_hang" 
+                                      placeholder = "Code Of Order"
+                                      readonly
+                                  >
+                              </div>
+                          </div>
+          
+
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                  <label class="no_error">Created On</label>
+                                  <input 
+                                      type="text"
+                                      class = "form-control"
+                                      style = "width: 100%;"
+                                      id = "ngay_lap" 
+                                      name = "ngay_lap"
+                                      placeholder="Created On"
+                                      readonly
+                                  >
+                              </div>
+                          </div>
+
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                  <label class="no_error">Sum Of Accessary</label>
+                                  <input 
+                                      type="text"
+                                      class = "form-control"
+                                      style = "width: 100%;"
+                                      id = "tong_so_phu_tung" 
+                                      name = "tong_so_phu_tung"
+                                      placeholder="Sum Of Accessary"
+                                      readonly
+                                  >
+                              </div>
+                          </div>   
+                      </div>
+                  </div>
+      
+                  <div class="col-md-6">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                  <label class="no_error">Creater</label>
+                                  <input 
+                                      type="text"
+                                      class = "form-control"
+                                      style = "width: 100%;"
+                                      id = "nguoi_lap" 
+                                      name = "nguoi_lap"
+                                      placeholder="Creater "
+                                      readonly
+                                  >
+                              </div>
+                          </div>
+
+                          <div class="col-md-12">
+                              <div class="form-group">
+                                  <label class="no_error">Provider</label>
+                                  <input 
+                                      type="text"
+                                      class = "form-control"
+                                      style = "width: 100%;"
+                                      id = "ten_ncc" 
+                                      name = "ten_ncc"
+                                      placeholder="Provider"
+                                      readonly
+                                  >
+                              </div>
+                          </div>
+
+                          <div class="col-md-12">
+                              <label class="no_error">Note</label>
+                              <textarea 
+                                  class="textarea" 
+                                  placeholder="Node Of Order"
+                                  style="width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #ccc; padding: 10px;"
+                                  id="ghi_chu" 
+                                  name="ghi_chu"
+                                  
+                              ></textarea>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row capnhatDH">
+                  <h5 class="page-header"></h5>
+                  <form class="form-horizontal">
+                      <div class="box-body">
+                          <div class="form-group row">
+                              <label class="col-sm-1 control-label no_error">Automaker</label>
+                              <div class="col-sm-5">
+                                  <select 
+                                      class="form-control select2"
+                                      style="width: 100%;"
+                                      id="id_hang_xe" 
+                                      name="id_hang_xe"
+                                      >
+                                  <option value="0" selected>Please select</option>
+                                  <option *ngFor="let hx of dataHangXe" [value] = hx.id> {{ hx.ten }} </option>
+                                  </select>
+                              </div>
+                          
+                              <label class="col-sm-1 control-label no_error">Vehicle</label>
+                              <div class="col-sm-5">
+                                  <select 
+                                      class="form-control select2"
+                                      style="width: 100%;"
+                                      id="id_dong_xe" 
+                                      name="id_dong_xe"
+                                  >
+                                  <option value="0" selected>Please Select</option>
+                                  <option *ngFor="let dx of dataDongXe" [value] = dx.id> {{ dx.ten }} </option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <div class="col-sm-1">
+                              </div>
+                              <label class="col-sm-3 control-label no_error">Category Of Accesary</label>
+                              <div class="col-sm-5">
+                                  <select 
+                                      class="form-control select2"
+                                      style="width: 100%;"
+                                      id="id_danh_muc_phu_tung" 
+                                      name="id_danh_muc_phu_tung"
+                                  >
+                                  <option value="0" selected>Please select</option>
+                                  <option *ngFor="let dm of dataDMPhuTung" [value] = dm.id> {{ dm.ten }} </option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row justify-content-center p-t-md">
+                              <div class="col-sm-6"></div>
+                              <button type="button" class="btn btn-example" id="btn_tim_kiem">
+                                  Search
+                              </button>
+                          </div>
+                          <div class="form-group row">
+                              <div class="col-sm-1">
+                              </div>
+                              <label class="col-sm-3 control-label no_error">Accessary</label>
+                              <div class="col-sm-5">
+                                  <select 
+                                      style="width: 100%;" 
+                                      name="id_phu_tung" 
+                                      class="form-control select2" 
+                                      id="id_phu_tung"
+                                  >
+                                      <option value="0" selected>Please select</option>
+                                      <option *ngFor="let pt of dataPhuTung" [value]= pt.id_phu_tung >{{ pt.id_phu_tung }} - {{ pt.ten_phu_tung }} ({{ pt.so_luong_ton }}) </option>
+
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <div class="m-t-20 sl d-none">
+                  <div class="form-group row">
+                      <div class="col-sm-1">
+                      </div>
+                      <label class="col-sm-3 control-label no_error ">Ammount:</label>
+                      <div class="col-sm-5">
+                          <input type="number" class="form-control" id="so_luong_dat" placeholder="Ammount" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                      </div>
+                  </div>
+                  <div class="form-group row justify-content-center p-t-md">
+                      <div class="col-sm-6">
+                      </div>
+                      <button class="btn btn-example" id="btn_them_phu_tung_dat"> Add</button>
+                  </div>
+              </div>
+              <h5 class="page-header"></h5>
+              <div class="row">
+                  <table class="table table-sm table-striped" id="chitiet" style="width:100%">
+                      <thead>
+                          <tr>
+                          <th class="text-center">#</th>
+                          <th>Accessary Code</th>
+                          <th>Accessary Name</th>
+                          <th>Unit Of Calculation</th>
+                          <th>Ammount</th>
+                          <th></th>
+                          </tr>
+                      </thead>
+                      <tbody></tbody>
+                  </table>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Cancel</button>
+          <button type="button" class="btn btn-example d-none" id="btn_in_phieu">Print</button>
+          <button type="button" class="btn btn-example d-none" id="btn_cap_nhat">Update</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- **** -->

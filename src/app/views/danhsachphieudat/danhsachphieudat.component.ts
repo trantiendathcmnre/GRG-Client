@@ -368,13 +368,13 @@ export class DanhSachPhieuDatComponent implements OnInit {
         { data: "ghi_chu"},
         { data: "trang_thai", className: "text-center",render: function(data) {
           if(data == '1')
-            return '<span class="badge badge-warning text-light">Not Approved</span>';
+            return '<span class="badge bg-yellow">Not Approved</span>';
           else if(data == '2')
-            return '<span class="badge badge-primary">Waiting</span>';
+            return '<span class="badge bg-blue">Pending</span>';
           else if( data == '3')
-              return '<span class="badge badge-success">Imported Ware</span>';
+              return '<span class="badge bg-green">Approved</span>';
           else
-              return '<span class="badge badge-danger">Canceled</span>';
+              return '<span class="badge bg-red">Canceled</span>';
         }},
         { data: "trang_thai",className: "text-center" ,render: function (data, type, row) {
           if(data!='3') {

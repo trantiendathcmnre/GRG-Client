@@ -21,6 +21,9 @@ import { LapPhieuDatComponent } from './views/lapphieudat/lapphieudat.component'
 import { DanhSachPhieuDatComponent } from './views/danhsachphieudat/danhsachphieudat.component';
 import { KhachHangComponent } from './views/khachhang/khachhang.component';
 import { NotFoundComponent } from './views/notfound/notfound.component';
+import { DanhSachXeComponent } from './views/danhsachxe/danhsachxe.component';
+import { TiepNhanSuaChuaComponent } from './views/tiepnhansuachua/tiepnhansuachua.component';
+import { DonHangComponent } from './views/donhang/donhang.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -35,6 +38,10 @@ import { LangService } from './services/lang.service';
 import { LapPhieuDatService } from './services/lapphieudat.service';
 import { PhuTungService } from './services/phutung.service';
 import { KhachHangService } from './services/khachhang.service';
+import { XeService } from './services/xe.service';
+import { DonHangService } from './services/donhang.service';
+import { LapPhieuKhamService } from './services/lapphieukham.service';
+import { NhanVienService } from './services/nhanvien.service';
 
 
 
@@ -55,6 +62,9 @@ export const router: Routes = [
       { path: 'lapphieudat', component: LapPhieuDatComponent },
       { path: 'danhsachphieudat', component: DanhSachPhieuDatComponent },
       { path: 'khachhang', component: KhachHangComponent },
+      { path: 'danhsachxe', component: DanhSachXeComponent },
+      { path: 'tiepnhansuachua', component: TiepNhanSuaChuaComponent },
+      { path: 'donhang', component: DonHangComponent },
     ]
   },
   { path: '**', component: NotFoundComponent },
@@ -79,6 +89,9 @@ export const router: Routes = [
     DanhSachPhieuDatComponent,
     KhachHangComponent,
     NotFoundComponent,
+    DanhSachXeComponent,
+    TiepNhanSuaChuaComponent,
+    DonHangComponent,
   ],
   imports: [
     BrowserModule,
@@ -100,6 +113,10 @@ export const router: Routes = [
     LapPhieuDatService,
     PhuTungService,
     KhachHangService,
+    XeService,
+    DonHangService,
+    LapPhieuKhamService,
+    NhanVienService
   ],
   bootstrap: [AppComponent]
 })
