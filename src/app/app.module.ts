@@ -42,6 +42,7 @@ import { XeService } from './services/xe.service';
 import { DonHangService } from './services/donhang.service';
 import { LapPhieuKhamService } from './services/lapphieukham.service';
 import { NhanVienService } from './services/nhanvien.service';
+import { TinhThanhPhoService } from './services/tinhthanhpho.service';
 
 
 
@@ -116,7 +117,8 @@ export const router: Routes = [
     XeService,
     DonHangService,
     LapPhieuKhamService,
-    NhanVienService
+    NhanVienService,
+    TinhThanhPhoService
   ],
   bootstrap: [AppComponent]
 })

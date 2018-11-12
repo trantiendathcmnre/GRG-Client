@@ -271,167 +271,91 @@
   <section class="sidebar">
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
-      <li class="header">MAIN NAVIGATION</li>
       <li class="treeview danhmuc">
         <a href="#">
-          <i class="fa fa-dashboard"></i> <span>{{ categories }}</span>
+          <i class="fa fa-dashboard"></i> <span>Quản lý danh mục</span>
           <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a routerLink="/admin/baogiacong" id="menu-baogiacong"><i class="fa fa-circle-o"></i> {{ quote_lists }}</a></li>
-          <li><a routerLink="/admin/danhmucphutung" id="menu-danhmucphutung"><i class="fa fa-circle-o"></i> {{ category_of_accessaries }}</a></li>
-          <li><a routerLink="/admin/dongxe" id="menu-dongxe"><i class="fa fa-circle-o"></i> {{ vehicles }}</a></li>
-          <li><a routerLink="/admin/hangxe" id="menu-hangxe"><i class="fa fa-circle-o"></i> {{ automakers }}</a></li>
-          <li><a routerLink="/admin/donvilamviec" id="menu-donvilamviec"><i class="fa fa-circle-o"></i> {{ unit_of_works }}</a></li>
-          <li><a routerLink="/admin/donvitinh" id="menu-donvitinh"><i class="fa fa-circle-o"></i> {{ unit_of_calculations }}</a></li>
-          <li><a routerLink="/admin/nhacungcap" id="menu-nhacungcap"><i class="fa fa-circle-o"></i> {{ providers }}</a></li>
+          <li><a routerLink="/admin/baogiacong" id="menu-baogiacong"><i class="fa fa-circle-o"></i> Danh mục chi phí</a></li>
+          <li><a routerLink="/admin/danhmucphutung" id="menu-danhmucphutung"><i class="fa fa-circle-o"></i> Danh mục phụ tùng</a></li>
+          <li><a routerLink="/admin/dongxe" id="menu-dongxe"><i class="fa fa-circle-o"></i>Quản lý dòng xe</a></li>
+          <li><a routerLink="/admin/hangxe" id="menu-hangxe"><i class="fa fa-circle-o"></i>Quản lý hãng xe</a></li>
+          <li><a routerLink="/admin/donvilamviec" id="menu-donvilamviec"><i class="fa fa-circle-o"></i>Quản lý đơn vị làm việc</a></li>
+          <li><a routerLink="/admin/donvitinh" id="menu-donvitinh"><i class="fa fa-circle-o"></i>Quản lý đơn vị tính</a></li>
+          <li><a routerLink="/admin/nhacungcap" id="menu-nhacungcap"><i class="fa fa-circle-o"></i>Quản lý nhà cung cấp</a></li>
         </ul>
       </li>
       <li class="treeview order">
         <a href="#">
           <i class="fa fa-files-o"></i>
-          <span>{{ order_management }}</span>
+          <span>Quản lý đặt hàng</span>
           <span class="pull-right-container">
             <span class="label label-primary pull-right">2</span>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a routerLink="/admin/lapphieudat" id="menu-lapphieudat"><i class="fa fa-circle-o"></i> {{ create_orders }} </a></li>
-          <li><a routerLink="/admin/danhsachphieudat" id="menu-danhsachphieudat"><i class="fa fa-circle-o"></i> {{ order_management }}</a></li>
+          <li><a routerLink="/admin/lapphieudat" id="menu-lapphieudat"><i class="fa fa-circle-o"></i>Lập phiếu đặt</a></li>
+          <li><a routerLink="/admin/danhsachphieudat" id="menu-danhsachphieudat"><i class="fa fa-circle-o"></i>Danh sách phiếu đặt</a></li>
         </ul>
       </li>
-      <!-- <li class="treeview">
+      <li class="treeview">
         <a href="#">
           <i class="fa fa-pie-chart"></i>
-          <span>Charts</span>
+          <span>Kế toán</span>
           <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>
-          <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-          <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-          <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Công nợ nhà cung cấp</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Quản lý chi phí</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Quản lý bảo hiểm</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Quản lý công nợ</a></li>
         </ul>
-      </li> -->
+      </li>
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-edit"></i> <span>Quản lý kho vật tư</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ><i class="fa fa-circle-o"></i> Kiểm kê vật tư</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Cập nhật thông tin vật tư</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Quản lý nhập kho</a></li>
+          <li><a ><i class="fa fa-circle-o"></i> Quản lý xuất kho</a></li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-table"></i> <span>Quản lý khách hàng</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ><i class="fa fa-circle-o"></i>Thông tin khách hàng</a></li>
+        </ul>
+      </li>
       <li class="treeview repair">
         <a href="#">
           <i class="fa fa-laptop"></i>
-          <span>Repair Management</span>
+          <span>Quản lý sửa chữa</span>
           <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a routerLink="/admin/danhsachxe" id="menu-danhsachxe"><i class="fa fa-circle-o"></i> Cars List</a></li>
-          <li><a routerLink="/admin/tiepnhansuachua" id="menu-tiepnhansuachua"><i class="fa fa-circle-o"></i>Repair Enclitic</a></li>
-          <li><a routerLink="/admin/donhang" id="menu-donhang"><i class="fa fa-circle-o"></i> Repair Quote</a></li>
+          <li><a routerLink="/admin/danhsachxe" id="menu-danhsachxe"><i class="fa fa-circle-o"></i>Danh sách xe</a></li>
+          <li><a routerLink="/admin/tiepnhansuachua" id="menu-tiepnhansuachua"><i class="fa fa-circle-o"></i>Tiếp nhận sửa chữa</a></li>
+          <li><a ><i class="fa fa-circle-o"></i>Lịch sử sửa chữa</a></li>
+          <li><a routerLink="/admin/donhang" id="menu-donhang"><i class="fa fa-circle-o"></i>Quản lý báo giá sửa chữa</a></li>
         </ul>
       </li>
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-edit"></i> <span>Forms</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li><a href="pages/forms/general.html"><i class="fa fa-circle-o"></i> General Elements</a></li>
-          <li><a href="pages/forms/advanced.html"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
-          <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
-        </ul>
-      </li>
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-table"></i> <span>Tables</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i> Simple tables</a></li>
-          <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i> Data tables</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="pages/calendar.html">
-          <i class="fa fa-calendar"></i> <span>Calendar</span>
-          <span class="pull-right-container">
-            <small class="label pull-right bg-red">3</small>
-            <small class="label pull-right bg-blue">17</small>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="pages/mailbox/mailbox.html">
-          <i class="fa fa-envelope"></i> <span>Mailbox</span>
-          <span class="pull-right-container">
-            <small class="label pull-right bg-yellow">12</small>
-            <small class="label pull-right bg-green">16</small>
-            <small class="label pull-right bg-red">5</small>
-          </span>
-        </a>
-      </li>
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-folder"></i> <span>Examples</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-          <li><a href="pages/examples/profile.html"><i class="fa fa-circle-o"></i> Profile</a></li>
-          <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-          <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-          <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-          <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-          <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-          <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
-          <li><a href="pages/examples/pace.html"><i class="fa fa-circle-o"></i> Pace Page</a></li>
-        </ul>
-      </li>
-      <li class="treeview">
-        <a href="#">
-          <i class="fa fa-share"></i> <span>Multilevel</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
-          <li class="treeview">
-            <a href="#"><i class="fa fa-circle-o"></i> Level One
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
-              <li class="treeview">
-                <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                  <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
-                </a>
-                <ul class="treeview-menu">
-                  <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                  <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
-        </ul>
-      </li>
-      <li><a href="https://adminlte.io/docs"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
-      <li class="header">LABELS</li>
-      <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-      <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-      <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
     </ul>
   </section>
   <!-- /.sidebar -->

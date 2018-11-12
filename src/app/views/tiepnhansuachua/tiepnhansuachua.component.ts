@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -11,14 +11,15 @@ import { LapPhieuKhamService } from '../../services/lapphieukham.service';
 import { HangXeService } from '../../services/hangxe.service';
 import { DongXeService } from '../../services/dongxe.service';
 import { DonHangService } from '../../services/donhang.service';
+import { TinhThanhPhoService } from '../../services/tinhthanhpho.service';
 import * as moment from 'moment';
 
 declare var $:any;
-var self : any;
-var tbl,tbl1,tbl2: any;
-//tbl1 ds phieu kiem tra
-//tbl2 ds phieu sua chua
-var td:any;
+var tbl, tbl1, tbl2, td, headers, self: any;
+var id_xe, id_khach_hang, id_dong_xe, id_tinh_thanh, id_quan_huyen = null;
+var ten_khach_hang, bien_so, so_khung, so_may, mau_xe, so_vin, nhan_vien, ten_tinh_thanh, ten_quan_huyen = '';
+var so_km = 0;
+var dataXeKH = {};
 
 @Component({
   selector: 'app-tiepnhansuachua',
@@ -27,23 +28,26 @@ var td:any;
 })
 export class TiepNhanSuaChuaComponent implements OnInit {
 
-  checkBienSo=false;
-  checkSdt=false;
-  dataDongXe:any=[];
-  dataHangXe:any=[];
-  dataDonVi:any=[];
-  dataTTDongXe:any=[];
-  dataKhachHang:any=[];
-  dataXe:any=[];
-  dataNhanVien1:any[];
-  dataNhanVien2:any[];
-  dataNhanVien3:any[];
-  bienSo:string;
-  noiDungKham1:string;
-  noiDungKham2:string;
-  noiDungKham3:string;
-  yeuCauKiemTra:string;
-  maXe:string;
+  public checkBienSo = false;
+  public checkSdt = false; 
+  public dataHangXe:any = [];
+  public dataDonVi:any = [];
+  public dataTTDongXe:any = [];
+  public dataKhachHang:any = [];
+  public dataXe:any = [];
+  public dataTinhThanh:any = [];
+  public dataQuanHuyen:any = [];
+  public dataPhuongXa:any = [];
+  public dataNhanVien1:any = [];
+  public dataNhanVien2:any = [];
+  public dataNhanVien3:any = [];
+  public bienSo:string;
+  public noiDungKham1:string;
+  public noiDungKham2:string;
+  public noiDungKham3:string;
+  public yeuCauKiemTra:string;
+  public maXe:string;
+  private headerOptions;
 
   constructor(
     private donHangService: DonHangService,
@@ -54,17 +58,28 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     private donViLamViecService: DonViLamViecService,
     private nhanVienService: NhanVienService,
     private lapPhieuKhamService: LapPhieuKhamService,
+    private tinhThanhPhoService: TinhThanhPhoService,
     private http: Http,
     private router: Router
   ) { }
 
   ngOnInit() {
+    // construct params 
     self = this;
+    // loader display
+    $("#loader").css("display", "block");
+    // get info automakers
     self.getHangXe();
+    // get info unit of works
     self.getDonVi();
+    // get info all vehicles
     self.getAllDongXe();
+    // get info all customers
     self.getKhachHang();
+    // get cars info
     self.getXe();
+    // get province
+    self.getTinhThanh();
 
     $('#btn_XemDatLich').click(function(){
       $('#modaldatlich').modal('show');
@@ -74,9 +89,19 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       self.router.navigate(['/admin/donhang']);
     });
 
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
+
+    /* 
+     * ***************************************
+     *             Datetimepicker            *
+     * ***************************************
+     */
+    // datetimepicker ngay lap phieu
     $('#ngay_lap_phieu').daterangepicker({
       singleDatePicker: true,
-      // autoApply: false,
       locale: {
         format: 'YYYY-MM-DD HH:mm:ss',   
       },
@@ -84,8 +109,101 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       timePicker24Hour: true,
       timePickerSeconds:true
     });
-    /**
-     * table khach hang 
+    // datetimepicker ngay sinh 
+    $('#ngay_sinh').daterangepicker({
+      singleDatePicker: true,
+      showDropdowns: true,
+      autoUpdateInput: true,
+      locale: {
+        format: 'DD-MM-YYYY'
+      }
+    });
+    // datetimepicker ngay lap phieu
+    $('#ngay_lap_phieu').daterangepicker({
+      singleDatePicker: true,
+      startDate: new Date(),
+      showDropdowns: true,
+      timePicker: true,
+      timePicker24Hour: true,
+      timePickerIncrement: 10,
+      autoUpdateInput: true,
+      locale: {
+        format: 'DD-MM-YYYY HH:mm:ss'
+      }
+    });
+
+    /* 
+     * ***************************************
+     *             Select 2                  *
+     * ***************************************
+     */
+    // select 2 tinh thanh pho
+    $('.tinhthanh').select2({
+      placeholder: "Chọn Tỉnh/Thành phố",
+    });
+    // when select tinh thanh pho 
+    $('.tinhthanh').on('select2:select', function (e) {
+      id_tinh_thanh = $(this).val();
+      ten_tinh_thanh = e.params.data.text;
+      self.getQuanHuyen(id_tinh_thanh);
+    });
+    // select 2 quan huyen
+    $('.quanhuyen').select2({
+      placeholder: "Chọn Quận/Huyện",
+    });
+    // when select tinh thanh pho 
+    $('.quanhuyen').on('select2:select', function (e) {
+      id_quan_huyen = $(this).val();
+      ten_quan_huyen = e.params.data.text;
+      self.getPhuongXa(id_quan_huyen);
+    });
+    // selet 2 phuong xa
+    $('.phuongxa').select2({
+      placeholder: "Chọn Phường/Xã",
+    });
+    // select 2 thong tin khach hang
+    $('#thong_tin_khach_hang').select2();
+    // select 2 dong xe
+    $('#id_dong_xe').select2();
+    // select 2 hang xe
+    $('#ma_hang_xe').select2({
+      placeholder: "Choose Automaker",
+    });
+    // select 2 hang xe dong xe 
+    $('#MAHANGXE_ADD_DX').select2({
+      placeholder: "Choose Automaker",
+      allowClear: true
+    });
+    // select 2 dong xe 
+    $('#ma_dong_xe').select2({
+      placeholder: "Choose Vehicle",
+      allowClear: true
+      });
+    // select 2 gioi tinh 
+    $('#gioi_tinh').select2({
+        placeholder: "Choose Gender",
+        allowClear: true
+    });
+    // select 2 don vi 
+    $('select[name=ma_don_vi]').select2({
+      placeholder: "Choose Unit Of Work",
+      allowClear: true
+    });
+    // select 2 nhan vien 
+    $('select[name=nhan_vien]').select2({
+      placeholder: "Choose Staff",
+      allowClear: true
+    });
+    // select 2 loai phieu kham
+    $('select[name=loai_phieu_kham]').select2({
+      placeholder: "Choose Style Of Checklist",
+      allowClear: true
+    });
+
+    /* 
+     * ***************************************
+     *          Datatable Khach Hang         *
+     * ***************************************
      */
     tbl = $("#khachhang").DataTable({
       columnDefs: [
@@ -122,8 +240,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
     
 
-    /**
-     * tbl phieu kiem tra
+    /* 
+     * ***************************************
+     *      Datatable Phieu Kiem Tra         *
+     * ***************************************
      */
     tbl1 = $("#dsphieukiemtra").DataTable({
       "ordering": false,
@@ -138,10 +258,12 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       aaData: null,
       rowId: "id_phieu_kham",
       columns: [
-        { data: null, className: "text-center" },
         {data: "ngay_lap",className: "text-center",render:function(data){
-          //var k= moment(data,"YYYY-MM-DD HH:mm");
-          return moment(data).format("DD-MM-YYYY"); 
+          if( data ) {
+            return moment(data).format("DD-MM-YYYY HH:mm:ss"); 
+          }
+          return '';
+          
         }},
         { data: "bien_so" },  
         {data: "ten_dong_xe",className: "text-center"}, 
@@ -167,30 +289,21 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         //self.bindTableEvents();
       },
       rowCallback: function(row, data, index) {
-        var s = '';
         self.lapPhieuKhamService.getPK_NV(data.id_phieu_kham).subscribe(res=>{
-          
           if( res.data ) {
             for(let i of res.data) {
-              s += i.TENNHANVIEN+'-';             
+              nhan_vien += i.ten_nhan_vien + '-';             
             }
-            tbl1.cell(index,5).nodes()[0].textContent=s;
-            }
+            tbl1.cell(index,4).nodes()[0].textContent = nhan_vien;
+          }
         });
       }
     });
 
-    /**
-     * append stt for tbl1
-     */
-    tbl1.on('order.dt search.dt', function () {
-      tbl1.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-          cell.innerHTML = i + 1;
-      });
-    }).draw();
-
-    /**
-     * table danh sach sua chua
+    /* 
+     * ***************************************
+     *      Datatable Danh Sach Sua Chua     *
+     * ***************************************
      */
     tbl2 = $("#dssuachua").DataTable({
       "ordering": false,
@@ -235,48 +348,53 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         }}
       ],
       rowCallback: function(row, data, index) {
-        /**
-         * tinh tien con no dua vao tong tien va so tien da thanh toan
-         */
+        // tinh tien con no dua vao tong tien va so tien da thanh toan
         tbl2.cell(index,7).nodes()[0].textContent = (data.tong_tien - data.thanh_toan).toLocaleString('vi', {style : 'currency', currency : 'VND'});
       }
     });
-    
-    /**
-     * append stt for table tbl2
-     */
+     //append stt for table tbl2
     tbl2.on('order.dt search.dt', function () {
       tbl2.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
         cell.innerHTML = i + 1;
       });
     }).draw();
 
+
     $('#btn_UpdateData').click(function(){
-      var maXe=$('#id_thong_tin_xe').val();
-      var MAKHACHHANG=$('#thong_tin_khach_hang').val();
-      var bienSo=$('#bien_so').val();
-      var SOKHUNG=$('#so_khung').val();
-      var SOMAY=$('#so_may').val();
-      var SO_KILOMET=$('#so_km').val();
-      var MAUXE=$('#mau_xe').val();
-      var SOVIN=$('#so_vin').val();
-      var MADONGXE=$('#id_dong_xe').val();
-      var dataXeKH={"maXe":maXe,"MADONGXE":MADONGXE,"bienSo":bienSo,"SOVIN":SOVIN,"SOKHUNG":SOKHUNG,"SOMAY":SOMAY,"SO_KILOMET":SO_KILOMET,"MAUXE":MAUXE,"MAKHACHHANG":MAKHACHHANG};
-      console.log(dataXeKH);
-        self.xeService.update(dataXeKH).subscribe(res => {
-        if(res.errorCode==0)
-        {
+      id_xe = $('#id_thong_tin_xe').val();
+      id_khach_hang = $('#thong_tin_khach_hang').val();
+      bien_so = $('#bien_so').val();
+      so_khung = $('#so_khung').val();
+      so_may = $('#so_may').val();
+      so_km = $('#so_km').val();
+      mau_xe = $('#mau_xe').val();
+      so_vin = $('#so_vin').val();
+      id_dong_xe = $('#id_dong_xe').val();
+      dataXeKH = {
+        "id_xe": id_xe,
+        "id_dong_xe": id_dong_xe,
+        "bien_so": bien_so,
+        "SOVIN": so_vin,
+        "so_khung": so_khung,
+        "so_may": so_may,
+        "so_km": so_km,
+        "mau_xe": mau_xe,
+        "id_khach_hang": id_khach_hang
+      };
+
+      self.xeService.update(dataXeKH).subscribe(res => {
+        if(res.errorCode==0) {
           $('#modalThongTinXe').modal('hide');
-          self.PNotify('Cập nhật xe thành công !','success');
+          //self.PNotify('Cập nhật xe thành công !','success');
           self.loadTable();
         }
-        else
-        {
+        else {
           $('#exampleModal').modal('hide');
-          self.PNotify('Thêm Xe không thành công !','error');
+          //self.PNotify('Thêm Xe không thành công !','error');
         }
-       });
+      });
     });
+
     $('#plus_HX').click(function(){
       $('#modalHangXe').modal('show');
     });
@@ -333,15 +451,18 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('#lichsukiemtraxe').hide();
     $('#lichsusuachua').hide();
     $('#khachhang tbody').on('click', '.lichsu', function () {
+      $("#loader").css("display", "block");
       self.bienSo = ($(this).closest('tr').children().eq(2)[0].textContent);
       var maXe = $(this).closest('tr').attr('id');
       self.loadTableLSKT(maXe);
     });
     $('#khachhang tbody').on('click', '.lapphieukiemtra', function () {
+      $("#loader").css("display", "block");
       self.bienSo = ($(this).closest('tr').children().eq(2)[0].textContent);
       $('#bien_so_kiem_tra').val(self.bienSo);
       self.maXe = $(this).closest('tr').attr('id');
       $('#modelPhieuKiemTra').modal('show');
+      $("#loader").css("display", "none");
     });
     $('#bien_so').keyup(function(){
      var bienSo = $('#bien_so').val();
@@ -381,6 +502,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       }
     });
     $('#khachhang tbody').on('click', '.thongtinxe', function () {
+      $("#loader").css("display", "block");
       self.bienSo = ($(this).closest('tr').children().eq(2)[0].textContent);
       self.maXe = $(this).closest('tr').attr('id');
       $('#id_thong_tin_xe').val(self.maXe);
@@ -395,10 +517,11 @@ export class TiepNhanSuaChuaComponent implements OnInit {
           $('#id_dong_xe').val(res.data[0].id_dong_xe).change();
           $('#thong_tin_khach_hang').val(res.data[0].id_khach_hang).change();
           $('#modalThongTinXe').modal('show');
+          $("#loader").css("display", "none");
         }
-        else
-        {
+        else {
           console.log(res.message);
+          $("#loader").css("display", "none");
         }
       });
     });
@@ -466,10 +589,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
        });
     });
     $('#btn_AddData').click(function(){
-    var hideId=  $('#hideId').val();
-    var maXe=$('#maXe').text();
-    var bienSo=$('#bienSo').val();
-    if(bienSo=='')
+    var hideId =  $('#hideId').val();
+    var maXe = $('#maXe').text();
+    var bienSo = $('#bienSo').val();
+    if(bienSo == '')
     {
     self.PNotify('Vui lòng nhập biển số xe','error');
     return;
@@ -485,59 +608,64 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       return;
     }
 
-    var SOVIN=$('#SOVIN').val();
-    var SOKHUNG=$('#SOKHUNG').val();
-    var SOMAY=$('#SOMAY').val();
-    var SO_KILOMET=$('#SO_KILOMET').val();
-    var MAUXE=$('#MAUXE').val();
-    var MAHANGXE=$('#MAHANGXE').val();
-    var MADONGXE=$('#MADONGXE').val();
-    if(MADONGXE=='')
-    {
-    self.PNotify('Vui lòng chọn dòng xe','error');
-    return;
+    var so_vin = $('#so_vin').val();
+    var so_khung = $('#so_khung').val();
+    var so_may = $('#so_may').val();
+    var so_km = $('#so_km').val();
+    var mau_xe = $('#mau_xe').val();
+    var id_hang_xe = $('#id_hang_xe').val();
+    var id_dong_xe = $('#id_dong_xe').val();
+
+    if(id_dong_xe == '') {
+      self.PNotify('Vui lòng chọn dòng xe','error');
+      return;
     }
-    if(hideId=='0')
-    {
-      var MAKHACHHANG=$('#MAKHACHHANG').text();
-      var TENKHACHHANG=$('#TENKHACHHANG').val();
-      if(TENKHACHHANG=='')
-      {
+
+    if( hideId == '0' ) {
+      var ma_khach_hang = $('#ma_khach_hang').val();
+      
+      if( ten_khach_hang == '') {
         self.PNotify('Vui lòng nhập tên khách hàng','error');
         return;
       }
-      var kq= $('#NGAYSINH').val();
+
+      var kq = $('#NGAYSINH').val();
       var k= moment(kq,"DD-MM-YYYY");
-      var NGAYSINH=moment(k).format("YYYY-MM-DD");
-      var GIOITINH=$('#GIOITINH').val();
-      var EMAIL_KH=$('#EMAIL_KH').val();
-      var SDT_KH=$('#SDT_KH').val();
-      if(SDT_KH=='')
-      {
+      var ngay_sinh = moment(k).format("DD-MM-YYYY");
+      var gioi_tinh = $('#gioi_tinh').val();
+      var email = $('#email').val();
+      var sdt = $('#sdt').val();
+      if(sdt == '') {
         self.PNotify('Vui lòng nhập số điện thoại khách hàng','error');
         return;
       }
-      var DIACHI_KH=$('#DIACHI_KH').val();
-      var dataKH={"MAKHACHHANG":MAKHACHHANG,"TENKHACHHANG":TENKHACHHANG,"NGAYSINH":NGAYSINH,"SDT_KH":SDT_KH,"EMAIL_KH":EMAIL_KH,"DIACHI_KH":DIACHI_KH,"GIOITINH":GIOITINH};
-      console.log(dataKH);
-      self.khachhangService.add(dataKH).subscribe(res=>{
-        if(res.errorCode==0)
-        {
+      var dia_chi = $('#dia_chi').val();
+      var dataKH = {
+        "ma_khach_hang": ma_khach_hang,
+        "ten_khach_hang": ten_khach_hang,
+        "ngay_sinh": ngay_sinh,
+        "sdt": sdt,
+        "email": email,
+        "dia_chi": dia_chi,
+        "gioi_tinh": gioi_tinh
+      };
 
-          console.log(res);
-          var dataXeKH={"maXe":maXe,"MADONGXE":MADONGXE,"bienSo":bienSo,"SOVIN":SOVIN,"SOKHUNG":SOKHUNG,"SOMAY":SOMAY,"SO_KILOMET":SO_KILOMET,"MAUXE":MAUXE,"MAKHACHHANG":MAKHACHHANG};
-          console.log(dataXeKH);
+      self.khachHangService.add(dataKH).subscribe(res=>{
+        if(res.errorCode == 0 ) {
+          var dataXeKH = {
+            "maXe": maXe,
+            "id_dong_xe": id_dong_xe,
+            "bien_so":bienSo,
+            "so_vin":so_vin,
+            "so_khung": so_khung,
+            "so_may": so_may,
+            "so_km": so_km,
+            "mau_xe": mau_xe,
+            "ma_khach_hang": ma_khach_hang
+          };
+          
           self.xeService.add(dataXeKH).subscribe(respone => {
-            if(respone.errorCode==0)
-            {
-              self.firebaseService.database.ref().child('SDT').child(dataKH.SDT_KH).update({
-                mes_baogiamoi:'',
-                mes_baotri:'',
-                mes_suachua:'',
-                mes_congno:'',
-                mes_nhanbaotri:'',
-                mes_xacnhanxe:''
-               });
+            if(respone.errorCode==0) {         
               $('#exampleModal').modal('hide');
               self.PNotify('Thêm thông tin thành công !','success');
               self.loadTable();
@@ -551,84 +679,38 @@ export class TiepNhanSuaChuaComponent implements OnInit {
            });
         }
         else
-        console.log(res);
+          console.log(res);
       });
     }
     else
     {
-      var dataXeKH={"maXe":maXe,"MADONGXE":MADONGXE,"bienSo":bienSo,"SOVIN":SOVIN,"SOKHUNG":SOKHUNG,"SOMAY":SOMAY,"SO_KILOMET":SO_KILOMET,"MAUXE":MAUXE,"MAKHACHHANG":hideId};
+      var dataXeKH = {
+        "maXe": maXe,
+        "id_dong_xe": id_dong_xe,
+        "bien_so":bienSo,
+        "so_vin":so_vin,
+        "so_khung": so_khung,
+        "so_may": so_may,
+        "so_km": so_km,
+        "mau_xe": mau_xe,
+        "ma_khach_hang": hideId
+      };
 
-        self.xeService.add(dataXeKH).subscribe(res => {
-        if(res.errorCode==0)
-        {
+      self.xeService.add(dataXeKH).subscribe(res => {
+        if(res.errorCode==0) {
           $('#exampleModal').modal('hide');
-          self.PNotify('Thêm Xe thành công !','success');
+          // self.PNotify('Thêm Xe thành công !','success');
           var tr = td.closest('tr');
           var row = tbl.row( tr );
           child(hideId,row,tr);
-        }
-        else
-        {
+        } else {
           $('#exampleModal').modal('hide');
-          self.PNotify('Thêm Xe không thành công !','error');
+          // self.PNotify('Thêm Xe không thành công !','error');
         }
-       });
+      });
     }
     });
-   
-    
-    $('#thong_tin_khach_hang').select2();
-    $('#id_dong_xe').select2();
-    $('#ma_hang_xe').select2({
-      placeholder: "Choose Automaker",
-    });
-    $('#MAHANGXE_ADD_DX').select2({
-      placeholder: "Choose Automaker",
-      allowClear: true
-    });
-    $('#ma_dong_xe').select2({
-      placeholder: "Choose Vehicle",
-      allowClear: true
-      });
-    $('#gioi_tinh').select2({
-        placeholder: "Choose Gender",
-        allowClear: true
-    });
-    $('select[name=ma_don_vi]').select2({
-      placeholder: "Choose Unit Of Work",
-      allowClear: true
-    });
-    $('select[name=nhan_vien]').select2({
-      placeholder: "Choose Staff",
-      allowClear: true
-    });
-    $('select[name=loai_phieu_kham]').select2({
-      placeholder: "Choose Style Of Checklist",
-      allowClear: true
-    });
-    $('#ngay_sinh').daterangepicker({
-      singleDatePicker: true,
-      startDate: new Date(),
-      showDropdowns: true,
-      autoUpdateInput: true,
-      locale: {
-        format: 'DD-MM-YYYY'
-      }
-    });
-    $('#NGAYLAPPHIEU').daterangepicker({
-      singleDatePicker: true,
-      startDate: new Date(),
-      showDropdowns: true,
-      timePicker: true,
-      timePicker24Hour: true,
-      timePickerIncrement: 10,
-      autoUpdateInput: true,
-      locale: {
-        format: 'DD-MM-YYYY HH:mm'
-      }
-    // startDate: '20-02-2018',
-    // endDate: '27-02-2018'
-    });
+
     $('.btnNext').click(function(){
       var s = $('.nav-tabs > .active').next('li');
       s.find('a').trigger('click');
@@ -653,9 +735,8 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('#lblxe').text('THÔNG TIN XE');
     $('.modalkhachhang').removeClass('d-none');
     $('#hideId').val('0');
-    self.createMaKhachHang();
-    self.createMaXe();
       $('#exampleModal').modal('show');
+      self.createMaXe();
     });
 
     /**
@@ -707,6 +788,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
      * click button view car list
      */
     $('#khachhang tbody').on('click', 'a.details-control', function () {
+      $("#loader").css("display", "block");
       td = this;
       var tr = td.closest('tr');
       var row = tbl.row( tr );
@@ -714,10 +796,12 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       if ( row.child.isShown() ) {
           // This row is already open - close it
           row.child.hide();
+          $("#loader").css("display", "none");
       }
       else {
           // Open this row
           child(id,row,tr);
+          $("#loader").css("display", "none");
       }
     });
     
@@ -734,8 +818,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         tbl1.rows.add(res.data); 
         tbl1.columns.adjust().draw();
         $('#lichsukiemtraxe').show();
+        $("#loader").css("display", "none");
       } else {
         console.log(res.message);
+        $("#loader").css("display", "none");
       }
     });
   }
@@ -751,8 +837,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         tbl2.rows.add(res.data); 
         tbl2.columns.adjust().draw();
         $('#lichsusuachua').show();
+        $("#loader").css("display", "none");
       } else {
         console.log(res.errorMessage);
+        $("#loader").css("display", "none");
       }
     });
   }
@@ -761,12 +849,15 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    */
   private loadTable() {
     self.khachHangService.getAll().subscribe(res => {
+      self.createMaKhachHang();
       if (res.errorCode == 0) {
         tbl.clear().draw();
         tbl.rows.add(res.data); 
         tbl.columns.adjust().draw();
+        $("#loader").css("display", "none");
       } else {
         console.log(res.errorMessage);
+        $("#loader").css("display", "none");
       }
     });
 
@@ -784,10 +875,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
   /**
    * fn get data lich su sua chua
    */
-  private bindTableEvents()
-  {
+  private bindTableEvents() {
     // click button view history checklist
     $('a[data-group=grpLSSC]').off('click').click(function(){
+      $("#loader").css("display", "block");
       self.loadTableLSSC($(this).closest('tr').attr('id'));
     })
   }
@@ -815,6 +906,9 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       });
   }
 
+  /**
+   * fn get all dong xe
+   */
   private getAllDongXe() {
     self.dongXeService.getAll().subscribe(res=> {
       if(res.errorCode == 0 ) {
@@ -823,6 +917,9 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
 
+  /**
+   * fn get all data khach hang 
+   */
   private getKhachHang() {
     self.khachHangService.getAll().subscribe(res=> {
       if(res.errorCode == 0 ) {
@@ -833,6 +930,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
   
+  /**
+   * fn get nhan vien theo don vi lam viec 1
+   * @param id_don_vi_lam_viec 
+   */
   private getNhanVien1(id_don_vi_lam_viec) {
     self.nhanVienService.getNV_DV(id_don_vi_lam_viec).subscribe(res=>{
       if(res.errorCode == 0 ) {
@@ -849,6 +950,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
 
+  /**
+   * fn get data nhan vien theo don vi lam viec 2
+   * @param id_don_vi_lam_viec 
+   */
   private getNhanVien2(id_don_vi_lam_viec) {
     self.nhanVienService.getNV_DV(id_don_vi_lam_viec).subscribe(res=> {
       if(res.errorCode == 0 ) {
@@ -864,7 +969,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       }
     });
   }
-
+  /**
+   * fn get data nhan vien theo don vi lam viec 3
+   * @param id_don_vi_lam_viec 
+   */
   private getNhanVien3(id_don_vi_lam_viec)
   {
     self.nhanVienService.getNV_DV(id_don_vi_lam_viec).subscribe(res=>{
@@ -882,6 +990,9 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
     
+  /**
+   * fn get all don vi lam viec
+   */
   private getDonVi() {
     self.donViLamViecService.getAll().subscribe(res=>{
       if(res.errorCode == 0) {
@@ -892,6 +1003,9 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
 
+  /**
+   * fn get all data xe 
+   */
   private getXe() {
     self.xeService.getAll().subscribe(res=> {
       if(res.errorCode==0) {
@@ -903,37 +1017,84 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     });
   }
 
+  /**
+   * fn create new customer code
+   */
   private createMaKhachHang() {
-      self.khachhangService.createMaKhachHang().subscribe(res => {
-        if(res.errorCode==0)
-        {
-          if(res.data[0].MAKHACHHANG)
-          $('#MAKHACHHANG').text('KH'+res.data[0].MAKHACHHANG);
-          else
-          $('#MAKHACHHANG').text('KH000001');
-        }
-        else
-        {
-          $('#MAKHACHHANG').text('');
-        }
-      });
+    self.khachHangService.generate().subscribe(res => {
+      if(res.errorCode == 0 ) {
+        $('#ma_khach_hang').val(res.data).prop('readonly', true);
+      }
+      else {
+        $('#ma_khach_hang').val('').prop('readonly', false);
+      }
+    });
   }
 
-  // private createMaXe()
-  // {
-  //     self.xeService.createMaXe().subscribe(res => {
-  //       if(res.errorCode==0)
-  //       {
-  //         if(res.data[0].maXe)
-  //         $('#maXe').text('XE'+res.data[0].maXe);
-  //         else
-  //         $('#maXe').text('XE000001');
-  //       }
-  //       else
-  //       {
-  //         $('#maXe').text('');
-  //       }
-  //     });
-  // }
+  /**
+   * fn get all data tinh thanh pho viet nam
+   */
+  private getTinhThanh() {
+    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
+      if(res.status == 'success') {
+        headers = new Headers({
+          'Authorization': res.token_type + ' ' + res.access_token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+        self.headerOptions = new RequestOptions({ headers: headers });
+
+        self.tinhThanhPhoService.allTinhThanh( self.headerOptions).subscribe(res => {
+          if(res.status == 'success') {
+            self.dataTinhThanh = res.data;
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * fn get quan huyen theo tinh thanh 
+   * @param id_tinh_thanh 
+   */
+  private getQuanHuyen(id_tinh_thanh) {
+    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
+      if(res.status == 'success') {
+        headers = new Headers({
+          'Authorization': res.token_type + ' ' + res.access_token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+        self.headerOptions = new RequestOptions({ headers: headers });
+        self.tinhThanhPhoService.getQuanHuyenTheoTinhThanh( id_tinh_thanh, self.headerOptions).subscribe(res => {
+          if(res.status == 'success') {
+            self.dataQuanHuyen = res.data;
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * fn get data phuong xa theo quan huyen 
+   * @param id_quan_huyen 
+   */
+  private getPhuongXa(id_quan_huyen) {
+    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
+      if(res.status == 'success') {
+        headers = new Headers({
+          'Authorization': res.token_type + ' ' + res.access_token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+        self.headerOptions = new RequestOptions({ headers: headers });
+        self.tinhThanhPhoService.getPhuongXaTheoQuanHuyen( id_quan_huyen, self.headerOptions).subscribe(res => {
+          if(res.status == 'success') {
+            self.dataPhuongXa = res.data;
+          }
+        });
+      }
+    });
+  }
 
 }

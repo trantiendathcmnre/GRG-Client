@@ -1,7 +1,47 @@
+a.big_tab {
+    width: 310px;
+    text-align: center;
+}
 u:hover {
     color: #0056b3;
-    text-decoration: underline;
+    text-decoration: underline;   
 }
+.nav-tabs-custom>.nav-tabs>li>a{
+    touch-action: manipulation;
+    background-color: #97BE63;
+    border: 1px solid #97BE63;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    color: #FFF;
+}
+.nav-tabs-custom>.nav-tabs>li>a:hover{
+    touch-action: manipulation;
+    background-color: #97BE63;
+    border: 1px solid #97BE63;
+    font-weight: bold;
+    color: #000;
+}
+.nav-tabs-custom>.nav-tabs>li.active { 
+    border-top-color: transparent;
+}
+.nav-tabs-custom>.nav-tabs>li.active>a {
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    color: #212529;
+    background-color: #f2f2f2;
+    border: 1px solid #F2F2F2;
+    
+}
+.nav-tabs-custom>.nav-tabs>li.disabled>a {
+    cursor: not-allowed;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #cdcdcd;
+    border-color: #ccc;
+}
+
+
 .border-none{
     border: none;
 }
@@ -62,6 +102,10 @@ u:hover {
     background-color: #727b84;
     border-color: #6c757d;
 }
+.custom-control{
+    align-items: center;
+    margin-right: 2rem;
+}
 .d-block{
     display: block;
 }
@@ -99,7 +143,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
     justify-content: center!important;
 }
 label {
-    font-weight: normal;
+    font-weight: normal!important;
 }
 .m-r-xs {
     margin-right: 5px;
