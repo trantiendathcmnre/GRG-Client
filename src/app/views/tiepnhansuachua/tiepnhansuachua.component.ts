@@ -16,7 +16,7 @@ import * as moment from 'moment';
 
 declare var $:any;
 var tbl, tbl1, tbl2, td, headers, self: any;
-var id_xe, id_khach_hang, id_dong_xe, id_tinh_thanh, id_quan_huyen = null;
+var id_xe, id_khach_hang, id_dong_xe, id_tinh_thanh, id_quan_huyen, id_hang_xe = null;
 var ten_khach_hang, bien_so, so_khung, so_may, mau_xe, so_vin, nhan_vien, ten_tinh_thanh, ten_quan_huyen = '';
 var so_km = 0;
 var dataXeKH = {};
@@ -80,6 +80,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     self.getXe();
     // get province
     self.getTinhThanh();
+
+    // disabled quan huyen phuong xa
+    $('select[name=quanhuyen]').prop('disabled', true);
+    $('select[name=phuongxa]').prop('disabled', true);
 
     $('#btn_XemDatLich').click(function(){
       $('#modaldatlich').modal('show');
@@ -164,10 +168,16 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     // select 2 thong tin khach hang
     $('#thong_tin_khach_hang').select2();
     // select 2 dong xe
-    $('#id_dong_xe').select2();
+    $('.dong_xe').select2({
+      placeholder: "Chọn dòng xe",
+    });
     // select 2 hang xe
-    $('#ma_hang_xe').select2({
-      placeholder: "Choose Automaker",
+    $('.hang_xe').select2({
+      placeholder: "Chọn hãng xe",
+    }).on('select2:select', function (e) {
+      id_hang_xe = $(this).val();
+      self.getDongXe(id_hang_xe);
+      $('.dong_xe').prop('disabled', false);
     });
     // select 2 hang xe dong xe 
     $('#MAHANGXE_ADD_DX').select2({
@@ -198,6 +208,41 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('select[name=loai_phieu_kham]').select2({
       placeholder: "Choose Style Of Checklist",
       allowClear: true
+    });
+
+    /*****************************************
+     *             Validation                *
+     *****************************************
+     */
+    $.validator.addMethod("valueNotEquals", function(value, element, arg){
+      return arg !== value;
+    }, "Value must not equal arg.");
+
+    $('#form-khach-hang').validate({
+      debug: true,
+      rules: {
+        ten_khach_hang: { required : true },
+        tinhthanh: { valueNotEquals: "0" },
+        sdt: { required : true },
+        quanhuyen : { valueNotEquals: "0" },
+        phuongxa : { valueNotEquals: "0" }
+      },
+      messages: { 
+        ten_khach_hang: { required: "Vui lòng nhập tên khách hàng."},
+        tinhthanh: { valueNotEquals: "Vui lòng chọn Tỉnh/Thành."},
+        quanhuyen: { valueNotEquals: "Vui lòng chọn Quận/Huyện."},
+        sdt: { required: "Vui lòng nhập số điện thoại."},
+        phuongxa: { valueNotEquals: "Vui lòng chọn Phường/Xã."}
+      },
+      highlight : function (element) {
+          $(element).closest('.form-control').addClass('has-error');
+          $(element).closest('.form-group').addClass('has-error');
+          $('.no_error').removeClass('has-error');
+      },
+      unhighlight : function (element) {
+          $(element).closest('.form-control').removeClass('has-error');
+          $(element).closest('.form-group').removeClass('has-error');
+      }
     });
 
     /* 
@@ -444,10 +489,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         console.log(res.message);
       });
     });
-    $('#MAHANGXE').on('select2:select', function (e) {
-      var MAHANGXE=$('#MAHANGXE').val();
-     self.getDongXe(MAHANGXE);
-    });
+    // $('#MAHANGXE').on('select2:select', function (e) {
+    //   var MAHANGXE=$('#MAHANGXE').val();
+    //  self.getDongXe(MAHANGXE);
+    // });
     $('#lichsukiemtraxe').hide();
     $('#lichsusuachua').hide();
     $('#khachhang tbody').on('click', '.lichsu', function () {
@@ -464,43 +509,43 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       $('#modelPhieuKiemTra').modal('show');
       $("#loader").css("display", "none");
     });
-    $('#bien_so').keyup(function(){
-     var bienSo = $('#bien_so').val();
-      var vt=self.dataXe.findIndex(i=>i.bienSo==bienSo);
-      if(vt!=-1 && $('#bien_so').val()!=self.bienSo)
-      $('#errorbienSo').removeClass('d-none');
-      else
-      $('#errorbienSo').addClass('d-none');
-    });
-    $('#bienSo').keyup(function(){
-      var bienSo= $('#bienSo').val();
-       var vt=self.dataXe.findIndex(i=>i.bienSo==bienSo);
-       if(vt!=-1)
-       {
-       $('#errorbienSo').removeClass('d-none');
-       self.checkBienSo=true;
-       }
-       else
-       {
-       $('#errorbienSo').addClass('d-none');
-       self.checkBienSo=false;
-       }
-     });
-    $('#SDT_KH').keyup(function(){
-    var SDT_KH= $('#SDT_KH').val();
-      var vt=self.dataKhachHang.findIndex(i=>i.SDT_KH==SDT_KH);
-      if(vt!=-1)
-      {
-        self.checkSdt=true;
-      $('#errorSDT_KH').removeClass('d-none');
+    // $('#bien_so').keyup(function(){
+    //  var bienSo = $('#bien_so').val();
+    //   var vt=self.dataXe.findIndex(i=>i.bienSo==bienSo);
+    //   if(vt!=-1 && $('#bien_so').val()!=self.bienSo)
+    //   $('#errorbienSo').removeClass('d-none');
+    //   else
+    //   $('#errorbienSo').addClass('d-none');
+    // });
+    // $('#bienSo').keyup(function(){
+    //   var bienSo= $('#bienSo').val();
+    //    var vt=self.dataXe.findIndex(i=>i.bienSo==bienSo);
+    //    if(vt!=-1)
+    //    {
+    //    $('#errorbienSo').removeClass('d-none');
+    //    self.checkBienSo=true;
+    //    }
+    //    else
+    //    {
+    //    $('#errorbienSo').addClass('d-none');
+    //    self.checkBienSo=false;
+    //    }
+    //  });
+    // $('#SDT_KH').keyup(function(){
+    // var SDT_KH= $('#SDT_KH').val();
+    //   var vt=self.dataKhachHang.findIndex(i=>i.SDT_KH==SDT_KH);
+    //   if(vt!=-1)
+    //   {
+    //     self.checkSdt=true;
+    //   $('#errorSDT_KH').removeClass('d-none');
 
-      }
-      else
-      {
-      $('#errorSDT_KH').addClass('d-none');
-      self.checkSdt=false;
-      }
-    });
+    //   }
+    //   else
+    //   {
+    //   $('#errorSDT_KH').addClass('d-none');
+    //   self.checkSdt=false;
+    //   }
+    // });
     $('#khachhang tbody').on('click', '.thongtinxe', function () {
       $("#loader").css("display", "block");
       self.bienSo = ($(this).closest('tr').children().eq(2)[0].textContent);
@@ -588,128 +633,129 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         self.loadTableLSKT(self.maXe);
        });
     });
-    $('#btn_AddData').click(function(){
-    var hideId =  $('#hideId').val();
-    var maXe = $('#maXe').text();
-    var bienSo = $('#bienSo').val();
-    if(bienSo == '')
-    {
-    self.PNotify('Vui lòng nhập biển số xe','error');
-    return;
-    }
-    if(self.checkSdt)
-    {
-      self.PNotify('Số điện thoại này đã tồn tại','error');
-      return;
-    }
-    if(self.checkBienSo)
-    {
-      self.PNotify('Biển số xe này đã tồn tại','error');
-      return;
-    }
 
-    var so_vin = $('#so_vin').val();
-    var so_khung = $('#so_khung').val();
-    var so_may = $('#so_may').val();
-    var so_km = $('#so_km').val();
-    var mau_xe = $('#mau_xe').val();
-    var id_hang_xe = $('#id_hang_xe').val();
-    var id_dong_xe = $('#id_dong_xe').val();
+    // $('#btn_AddData').click(function(){
+    // var hideId =  $('#hideId').val();
+    // var maXe = $('#maXe').text();
+    // var bienSo = $('#bienSo').val();
+    // if(bienSo == '')
+    // {
+    // self.PNotify('Vui lòng nhập biển số xe','error');
+    // return;
+    // }
+    // if(self.checkSdt)
+    // {
+    //   self.PNotify('Số điện thoại này đã tồn tại','error');
+    //   return;
+    // }
+    // if(self.checkBienSo)
+    // {
+    //   self.PNotify('Biển số xe này đã tồn tại','error');
+    //   return;
+    // }
 
-    if(id_dong_xe == '') {
-      self.PNotify('Vui lòng chọn dòng xe','error');
-      return;
-    }
+    // var so_vin = $('#so_vin').val();
+    // var so_khung = $('#so_khung').val();
+    // var so_may = $('#so_may').val();
+    // var so_km = $('#so_km').val();
+    // var mau_xe = $('#mau_xe').val();
+    // var id_hang_xe = $('#id_hang_xe').val();
+    // var id_dong_xe = $('#id_dong_xe').val();
 
-    if( hideId == '0' ) {
-      var ma_khach_hang = $('#ma_khach_hang').val();
+    // if(id_dong_xe == '') {
+    //   self.PNotify('Vui lòng chọn dòng xe','error');
+    //   return;
+    // }
+
+    // if( hideId == '0' ) {
+    //   var ma_khach_hang = $('#ma_khach_hang').val();
       
-      if( ten_khach_hang == '') {
-        self.PNotify('Vui lòng nhập tên khách hàng','error');
-        return;
-      }
+    //   if( ten_khach_hang == '') {
+    //     self.PNotify('Vui lòng nhập tên khách hàng','error');
+    //     return;
+    //   }
 
-      var kq = $('#NGAYSINH').val();
-      var k= moment(kq,"DD-MM-YYYY");
-      var ngay_sinh = moment(k).format("DD-MM-YYYY");
-      var gioi_tinh = $('#gioi_tinh').val();
-      var email = $('#email').val();
-      var sdt = $('#sdt').val();
-      if(sdt == '') {
-        self.PNotify('Vui lòng nhập số điện thoại khách hàng','error');
-        return;
-      }
-      var dia_chi = $('#dia_chi').val();
-      var dataKH = {
-        "ma_khach_hang": ma_khach_hang,
-        "ten_khach_hang": ten_khach_hang,
-        "ngay_sinh": ngay_sinh,
-        "sdt": sdt,
-        "email": email,
-        "dia_chi": dia_chi,
-        "gioi_tinh": gioi_tinh
-      };
+    //   var kq = $('#NGAYSINH').val();
+    //   var k= moment(kq,"DD-MM-YYYY");
+    //   var ngay_sinh = moment(k).format("DD-MM-YYYY");
+    //   var gioi_tinh = $('#gioi_tinh').val();
+    //   var email = $('#email').val();
+    //   var sdt = $('#sdt').val();
+    //   if(sdt == '') {
+    //     self.PNotify('Vui lòng nhập số điện thoại khách hàng','error');
+    //     return;
+    //   }
+    //   var dia_chi = $('#dia_chi').val();
+    //   var dataKH = {
+    //     "ma_khach_hang": ma_khach_hang,
+    //     "ten_khach_hang": ten_khach_hang,
+    //     "ngay_sinh": ngay_sinh,
+    //     "sdt": sdt,
+    //     "email": email,
+    //     "dia_chi": dia_chi,
+    //     "gioi_tinh": gioi_tinh
+    //   };
 
-      self.khachHangService.add(dataKH).subscribe(res=>{
-        if(res.errorCode == 0 ) {
-          var dataXeKH = {
-            "maXe": maXe,
-            "id_dong_xe": id_dong_xe,
-            "bien_so":bienSo,
-            "so_vin":so_vin,
-            "so_khung": so_khung,
-            "so_may": so_may,
-            "so_km": so_km,
-            "mau_xe": mau_xe,
-            "ma_khach_hang": ma_khach_hang
-          };
+    //   self.khachHangService.add(dataKH).subscribe(res=>{
+    //     if(res.errorCode == 0 ) {
+    //       var dataXeKH = {
+    //         "maXe": maXe,
+    //         "id_dong_xe": id_dong_xe,
+    //         "bien_so":bienSo,
+    //         "so_vin":so_vin,
+    //         "so_khung": so_khung,
+    //         "so_may": so_may,
+    //         "so_km": so_km,
+    //         "mau_xe": mau_xe,
+    //         "ma_khach_hang": ma_khach_hang
+    //       };
           
-          self.xeService.add(dataXeKH).subscribe(respone => {
-            if(respone.errorCode==0) {         
-              $('#exampleModal').modal('hide');
-              self.PNotify('Thêm thông tin thành công !','success');
-              self.loadTable();
+    //       self.xeService.add(dataXeKH).subscribe(respone => {
+    //         if(respone.errorCode==0) {         
+    //           $('#exampleModal').modal('hide');
+    //           self.PNotify('Thêm thông tin thành công !','success');
+    //           self.loadTable();
 
-            }
-            else
-            {
-              $('#exampleModal').modal('hide');
-              self.PNotify('Thêm thông tin không thành công !','error');
-            }
-           });
-        }
-        else
-          console.log(res);
-      });
-    }
-    else
-    {
-      var dataXeKH = {
-        "maXe": maXe,
-        "id_dong_xe": id_dong_xe,
-        "bien_so":bienSo,
-        "so_vin":so_vin,
-        "so_khung": so_khung,
-        "so_may": so_may,
-        "so_km": so_km,
-        "mau_xe": mau_xe,
-        "ma_khach_hang": hideId
-      };
+    //         }
+    //         else
+    //         {
+    //           $('#exampleModal').modal('hide');
+    //           self.PNotify('Thêm thông tin không thành công !','error');
+    //         }
+    //        });
+    //     }
+    //     else
+    //       console.log(res);
+    //   });
+    // }
+    // else
+    // {
+    //   var dataXeKH = {
+    //     "maXe": maXe,
+    //     "id_dong_xe": id_dong_xe,
+    //     "bien_so":bienSo,
+    //     "so_vin":so_vin,
+    //     "so_khung": so_khung,
+    //     "so_may": so_may,
+    //     "so_km": so_km,
+    //     "mau_xe": mau_xe,
+    //     "ma_khach_hang": hideId
+    //   };
 
-      self.xeService.add(dataXeKH).subscribe(res => {
-        if(res.errorCode==0) {
-          $('#exampleModal').modal('hide');
-          // self.PNotify('Thêm Xe thành công !','success');
-          var tr = td.closest('tr');
-          var row = tbl.row( tr );
-          child(hideId,row,tr);
-        } else {
-          $('#exampleModal').modal('hide');
-          // self.PNotify('Thêm Xe không thành công !','error');
-        }
-      });
-    }
-    });
+    //   self.xeService.add(dataXeKH).subscribe(res => {
+    //     if(res.errorCode==0) {
+    //       $('#exampleModal').modal('hide');
+    //       // self.PNotify('Thêm Xe thành công !','success');
+    //       var tr = td.closest('tr');
+    //       var row = tbl.row( tr );
+    //       child(hideId,row,tr);
+    //     } else {
+    //       $('#exampleModal').modal('hide');
+    //       // self.PNotify('Thêm Xe không thành công !','error');
+    //     }
+    //   });
+    // }
+    // });
 
     $('.btnNext').click(function(){
       var s = $('.nav-tabs > .active').next('li');
@@ -737,6 +783,21 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('#hideId').val('0');
       $('#exampleModal').modal('show');
       self.createMaXe();
+    });
+
+    // them khach hang tab 1
+    $('.them_khach_hang').on('click', function () {
+      $('.tab-1').removeClass('active');
+      $('#activity').removeClass('active');
+      $('.tab-2').addClass('active');
+      $('#timeline').addClass('active');
+    });
+    // them xe tab 2 
+    $('.them_xe').on('click', function (){
+      $('.tab-2').removeClass('active');
+      $('#timeline').removeClass('active');
+      $('.tab-3').addClass('active');
+      $('#settings').addClass('active');
     });
 
     /**
@@ -1069,6 +1130,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         self.tinhThanhPhoService.getQuanHuyenTheoTinhThanh( id_tinh_thanh, self.headerOptions).subscribe(res => {
           if(res.status == 'success') {
             self.dataQuanHuyen = res.data;
+            $('select[name=quanhuyen]').prop('disabled', false);
           }
         });
       }
@@ -1091,6 +1153,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
         self.tinhThanhPhoService.getPhuongXaTheoQuanHuyen( id_quan_huyen, self.headerOptions).subscribe(res => {
           if(res.status == 'success') {
             self.dataPhuongXa = res.data;
+            $('select[name=phuongxa]').prop('disabled', false);
           }
         });
       }

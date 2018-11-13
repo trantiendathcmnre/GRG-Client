@@ -29,11 +29,12 @@
         <div class="col-md-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                <li class="active"><a class="big_tab" href="#activity" data-toggle="tab">Thông Tin Khách Hàng</a></li>
-                <li class=""><a class="big_tab" href="#timeline" data-toggle="tab">Thông Tin Xe</a></li>
-                <li class=""><a class="big_tab" href="#settings" data-toggle="tab">Lập Lệnh Khám</a></li>
+                <li class="active tab-1"><a class="big_tab" href="#activity" data-toggle="tab">Thông Tin Khách Hàng</a></li>
+                <li class="tab-2"><a class="big_tab" href="#timeline" data-toggle="tab">Thông Tin Xe</a></li>
+                <li class="tab-3"><a class="big_tab" href="#settings" data-toggle="tab">Lập Lệnh Khám</a></li>
                 </ul>
                 <div class="tab-content">
+                    <!-- Thong tin khach hang -->
                 <div class="active tab-pane" id="activity">
                     <form style="margin:20px" id="form-khach-hang">
                         <div class="form-group row">
@@ -41,7 +42,7 @@
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-4 col-form-label">Mã khách hàng <span class="required"> *</span></label>
                                     <div class="col-sm-8">
-                                    <input class="form-control" id="ma_khach_hang">
+                                    <input class="form-control" id="ma_khach_hang" name="ma_khach_hang">
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +50,7 @@
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-4 col-form-label">Email</label>
                                     <div class="col-sm-8">
-                                    <input type="email" class="form-control" id="email">
+                                    <input type="email" class="form-control" name="email" id="email">
                                     </div>
                                 </div>
                             </div>
@@ -58,9 +59,9 @@
                         <div class="form-group row">
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Tên khách hàng <span class="required"> *</span></label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error">Tên khách hàng <span class="required"> *</span></label>
                                     <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="ten_khach_hang">
+                                    <input type="text" class="form-control" id="ten_khach_hang" name="ten_khach_hang" required>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +69,7 @@
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-4 col-form-label">Địa chỉ</label>
                                     <div class="col-sm-8">
-                                    <input type="email" class="form-control" id="dia_chi">
+                                    <input type="text" class="form-control" name="dia_chi" id="dia_chi">
                                     </div>
                                 </div>
                             </div>
@@ -77,17 +78,17 @@
                         <div class="form-group row">
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Ngày sinh</label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error">Ngày sinh</label>
                                     <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="ngay_sinh">
+                                    <input type="text" class="form-control" id="ngay_sinh" name="ngay_sinh">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Tỉnh/Thành phố  <span class="required"> *</span></label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error" >Tỉnh/Thành phố  <span class="required"> *</span></label>
                                     <div class="col-sm-8">
-                                        <select name="tinhthanh" class="form-control select2 tinhthanh" style="width: 100%;">
+                                        <select name="tinhthanh" class="form-control select2 tinhthanh" style="width: 100%;" >
                                             <option></option>
                                             <option *ngFor="let tinh of dataTinhThanh" [value]= tinh.id>{{ tinh.name }}</option>
                                         </select>
@@ -100,16 +101,16 @@
                             
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Số điện thoại <span class="required"> *</span></label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error">Số điện thoại <span class="required"> *</span></label>
                                     <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="sdt">
-                                    <span class="d-none error" id="errorSDT_KH">Số điện thoại đã tồn tại</span>
+                                    <input type="text" class="form-control" name="sdt" id="sdt" required>
+                                    <!-- <span class="d-none error" id="errorSDT_KH">Số điện thoại đã tồn tại</span> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Quận/Huyện <span class="required"> *</span></label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error">Quận/Huyện <span class="required"> *</span></label>
                                     <div class="col-sm-8">
                                         <select name="quanhuyen" class="form-control select2 quanhuyen" style="width: 100%;">
                                             <option></option>
@@ -123,7 +124,7 @@
                         <div class="form-group row">
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Giới tính</label>
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label no_error">Giới tính</label>
                                     <div class="col-sm-8">
                                         <label class="custom-control">
                                             <input name="gioi_tinh" type="radio" class="flat-red" value="1" checked>
@@ -138,7 +139,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Phường/Xã <span class="required"> *</span></label>
+                                    <label class="col-sm-4 col-form-label no_error">Phường/Xã <span class="required"> *</span></label>
                                     <div class="col-sm-8">
                                         <select name="phuongxa" class="form-control select2 phuongxa" style="width: 100%;">
                                             <option></option>
@@ -150,7 +151,7 @@
                             </div>
                         </div>
                         <div class="form-group row justify-content-center p-t-md">
-                            <button class="btn btn-example">Thêm khách hàng</button>
+                            <button class="btn btn-example them_khach_hang">Tiếp theo</button>
                         </div>
                     </form>
                     <div class="table-responsive">
@@ -172,10 +173,68 @@
                         </table>
                     </div>
                 </div>
-                <!-- thông tin khách hàng -->
-                <div class="tab-pane" id="timeline">
-                
-                   
+                <!-- thông tin xe -->
+                <div class="active tab-pane" id="timeline">
+                    <form class="form-thong-tin-xe">
+                        <div class="row">
+                            <input type="hidden" id="id_thong_tin_xe" value="0">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Biển số</label>
+                                    <input type="text" class="form-control bien_so">
+                                    <span class="d-none" id="errorbienSo">Biển số này đã tồn tại !</span>
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Số Vin</label>
+                                    <input type="text" class="form-control so_vin">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Số khung</label>
+                                    <input type="text" class="form-control so_khung">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Hãng xe</label>
+                                    <select name="hang_xe" class="form-control hang_xe" style="width:100%;">
+                                        <option></option>
+                                        <option *ngFor="let hx of dataHangXe" [value]= hx.id>{{ hx.ten }}</option>
+                                    </select>
+                                </div>
+                            </div>
+            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số km</label>
+                                    <input type="text" class="form-control so_km">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Số máy</label>
+                                    <input type="text" class="form-control so_may">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Màu xe</label>
+                                    <input type="text" class="form-control mau_xe">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label>Dòng xe</label>
+                                    <select disabled="disabled" name="" class="form-control dong_xe"style="width:100%;">
+                                        <option></option>
+                                        <option *ngFor="let dx of dataDongXe" [value]=dx.id>{{dx.ten}}</option>
+                                    </select>
+                                </div>
+                            </div>
+            
+                        </div>
+                        <div class="form-group row pull-right">
+                            <button class="btn btn-secondary previous">Trước</button>
+                            <button class="btn btn-example them_xe">Tiếp theo</button>
+                        </div>
+                    </form>
                 </div>
                 <!-- /.tab-pane -->
         
