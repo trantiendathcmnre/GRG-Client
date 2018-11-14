@@ -71,7 +71,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     // get info automakers
     self.getHangXe();
     // get info unit of works
-    self.getDonVi();
+    //self.getDonVi();
     // get info all vehicles
     self.getAllDongXe();
     // get info all customers
