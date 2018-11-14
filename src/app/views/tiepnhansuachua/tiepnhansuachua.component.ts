@@ -214,36 +214,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
      *             Validation                *
      *****************************************
      */
-    $.validator.addMethod("valueNotEquals", function(value, element, arg){
-      return arg !== value;
-    }, "Value must not equal arg.");
-
-    $('#form-khach-hang').validate({
-      debug: true,
-      rules: {
-        ten_khach_hang: { required : true },
-        tinhthanh: { valueNotEquals: "0" },
-        sdt: { required : true },
-        quanhuyen : { valueNotEquals: "0" },
-        phuongxa : { valueNotEquals: "0" }
-      },
-      messages: { 
-        ten_khach_hang: { required: "Vui lòng nhập tên khách hàng."},
-        tinhthanh: { valueNotEquals: "Vui lòng chọn Tỉnh/Thành."},
-        quanhuyen: { valueNotEquals: "Vui lòng chọn Quận/Huyện."},
-        sdt: { required: "Vui lòng nhập số điện thoại."},
-        phuongxa: { valueNotEquals: "Vui lòng chọn Phường/Xã."}
-      },
-      highlight : function (element) {
-          $(element).closest('.form-control').addClass('has-error');
-          $(element).closest('.form-group').addClass('has-error');
-          $('.no_error').removeClass('has-error');
-      },
-      unhighlight : function (element) {
-          $(element).closest('.form-control').removeClass('has-error');
-          $(element).closest('.form-group').removeClass('has-error');
-      }
-    });
+    
 
     /* 
      * ***************************************
@@ -787,10 +758,13 @@ export class TiepNhanSuaChuaComponent implements OnInit {
 
     // them khach hang tab 1
     $('.them_khach_hang').on('click', function () {
-      $('.tab-1').removeClass('active');
-      $('#activity').removeClass('active');
-      $('.tab-2').addClass('active');
-      $('#timeline').addClass('active');
+      self.validationThongTinKhachHang();
+      if( $('#form-khach-hang').validate().checkForm() ) {
+        $('.tab-1').removeClass('active');
+        $('#activity').removeClass('active');
+        $('.tab-2').addClass('active');
+        $('#timeline').addClass('active');
+      }
     });
     // them xe tab 2 
     $('.them_xe').on('click', function (){
@@ -1096,21 +1070,8 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    * fn get all data tinh thanh pho viet nam
    */
   private getTinhThanh() {
-    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
-      if(res.status == 'success') {
-        headers = new Headers({
-          'Authorization': res.token_type + ' ' + res.access_token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-        self.headerOptions = new RequestOptions({ headers: headers });
-
-        self.tinhThanhPhoService.allTinhThanh( self.headerOptions).subscribe(res => {
-          if(res.status == 'success') {
-            self.dataTinhThanh = res.data;
-          }
-        });
-      }
+    self.tinhThanhPhoService.getTinhThanhJson().subscribe(res => {
+      self.dataTinhThanh = res.data;
     });
   }
 
@@ -1156,6 +1117,38 @@ export class TiepNhanSuaChuaComponent implements OnInit {
             $('select[name=phuongxa]').prop('disabled', false);
           }
         });
+      }
+    });
+  }
+
+  /**
+   * fn validation
+   */
+  private validationThongTinKhachHang (){
+    $('#form-khach-hang').validate({
+      debug: true,
+      rules: {
+        ten_khach_hang: { required : true },
+        tinhthanh: { required : true },
+        sdt: { required : true },
+        quanhuyen : { required : true },
+        phuongxa : { required : true }
+      },
+      messages: { 
+        ten_khach_hang: { required: "Vui lòng nhập tên khách hàng."},
+        tinhthanh: { required: "Vui lòng chọn Tỉnh/Thành."},
+        quanhuyen: { required: "Vui lòng chọn Quận/Huyện."},
+        sdt: { required: "Vui lòng nhập số điện thoại."},
+        phuongxa: { required: "Vui lòng chọn Phường/Xã."}
+      },
+      highlight : function (element) {
+          $(element).closest('.form-control').addClass('has-error');
+          $(element).closest('.form-group').addClass('has-error');
+          $('.no_error').removeClass('has-error');
+      },
+      unhighlight : function (element) {
+          $(element).closest('.form-control').removeClass('has-error');
+          $(element).closest('.form-group').removeClass('has-error');
       }
     });
   }

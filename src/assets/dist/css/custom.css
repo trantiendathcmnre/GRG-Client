@@ -330,3 +330,7 @@ table.dataTable {
 .total-click {
     width: 70px !important;
 }
+.checkbox label, .radio label {
+    padding-left: 10px;
+    padding-right: 30px
+}

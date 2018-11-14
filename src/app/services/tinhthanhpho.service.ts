@@ -52,4 +52,27 @@ export class TinhThanhPhoService {
     this.headerOptions = new RequestOptions({ headers: headers });
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
+
+  /**
+   * fn get tinh thanh file json
+   */
+  getTinhThanhJson() {
+    return this.http.get("assets/dist/json/tinh_tp.json").map(res => res.json());
+  }
+
+  /**
+   * fn get quan huyen file json
+   */
+  getQuanHuyenJson() {
+    return this.http.get("assets/dist/json/quan_huyen.json").map(res => res.json());
+  }
+
+  /**
+   * fn get phuong xa file json
+   */
+  getPhuongXaJson() {
+    return this.http.get("assets/dist/json/xa_phuong.json").map(res => res.json());
+  }
+
+
 }
