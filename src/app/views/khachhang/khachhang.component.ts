@@ -3,8 +3,10 @@ import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import { KhachHangService } from '../../services/khachhang.service';
+import { TinhThanhPhoService } from '../../services/tinhthanhpho.service';
 declare var $: any;
 var self,tbl, inforData, dataKT, result_name, ngay_sinh, validator :any;
+var id_tinh_thanh, id_quan_huyen = null;
 var rowId: any = 0;
 import * as moment from 'moment';
 
@@ -15,12 +17,78 @@ import * as moment from 'moment';
 })
 export class KhachHangComponent implements OnInit {
 
-  constructor(private khachHangService: KhachHangService ) { }
+  public dataTinhThanh:any = [];
+  public dataQuanHuyen:any = [];
+  public dataPhuongXa:any = [];
+  public dataSend:any = [];
+  constructor(
+    private khachHangService: KhachHangService,
+    private tinhThanhPhoService: TinhThanhPhoService 
+  ) { }
 
   ngOnInit() {
     self = this;
+    /**
+     * loader display
+     */
     $("#loader").css("display", "block");
-    $('.select2').select2();
+     /* 
+     * ***************************************
+     *             Select 2                  *
+     * ***************************************
+     */
+    // select 2 tinh thanh pho
+    $('.tinhthanh').select2({
+      placeholder: "Chọn Tỉnh/Thành phố",
+    });
+    // when select tinh thanh pho 
+    $('.tinhthanh').on('select2:select', function (e) {
+      id_tinh_thanh = $(this).val();
+      self.dataQuanHuyen = [];
+      self.getQuanHuyen(id_tinh_thanh);
+    });
+    // select 2 quan huyen
+    $('.quanhuyen').select2({
+      placeholder: "Chọn Quận/Huyện",
+    });
+    // when select tinh thanh pho 
+    $('.quanhuyen').on('select2:select', function (e) {
+      id_quan_huyen = $(this).val();
+      self.dataPhuongXa = [];
+      self.getPhuongXa(id_quan_huyen);
+    });
+    // selet 2 phuong xa
+    $('.phuongxa').select2({
+      placeholder: "Chọn Phường/Xã",
+    });
+
+    /* 
+     * ***************************************
+     *             Datetimepicker            *
+     * ***************************************
+     */
+    // datetimepicker ngay sinh 
+    $('#ngay_sinh').daterangepicker({
+      singleDatePicker: true,
+      showDropdowns: true,
+      autoUpdateInput: true,
+      locale: {
+        format: 'DD-MM-YYYY'
+      }
+    });
+
+    /**
+     * radio button icheck
+     */
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
+    /**
+     * get data tinh thanh pho
+     */
+    self.getTinhThanh();
+
     $("#add").validate({
       debug: true,
       focusCleanup: true,
@@ -125,125 +193,25 @@ export class KhachHangComponent implements OnInit {
     });
     $('#exampleModal').modal({show: false, backdrop: 'static', keyboard: false }).on('show.bs.modal',function(){
       rowId = $('#hideId').val();
-      if(rowId == '0') {
-        validator = $("#add").validate();
-        validator.resetForm();
-        $('.form-control').removeClass('has-error');
-        $('.form-group').removeClass('has-error');
-        $("#unname_ITK").hide();
-  
-       // $('#MAKHACHHANG').val("");
-        $("#MAKHACHHANG").prop('disabled', false);
-        $('#TENKHACHHANG').val("");
-        $('#SDT_KH').val("");
-        $('#DIACHI_KH').val("");
-        $('#EMAIL_KH').val("");
-      }
-       else
-        {
-          var validator = $("#add").validate();
-          validator.resetForm();
-          console.log(self.inforData);
-          $('.form-control').removeClass('has-error');
-           $('.form-group').removeClass('has-error');
-           $("#unname_ITK").hide();
-          $('#MAKHACHHANG').text(self.inforData.MAKHACHHANG);
-          $("#MAKHACHHANG").prop('disabled', true);
-          $('#TENKHACHHANG').val(self.inforData.TENKHACHHANG);
-          $('#DIACHI_KH').val(self.inforData.DIACHI_KH);
-          $('#GIOITINH').val(self.inforData.GIOITINH).change();
-          $('#EMAIL_KH').val(self.inforData.EMAIL_KH);
-          $('#SDT_KH').val(self.inforData.SDT_KH);
-          nameOLD=$('#SDT_KH').val();
-        }
-    });
-    $('#btn_Add').click(function(){
-      $('#hideId').val('0');
-      self.createMaKhachHang();
-      $('#btn_Luu').addClass('button_disabled').prop('disabled', true);
-    });
-    //btn-Luu
-    $('#btn_Luu').click(function(){
-     var MAKHACHHANG =$('#MAKHACHHANG').text();
-     var TENKHACHHANG=$('#TENKHACHHANG').val();
-     var GIOITINH=$('#GIOITINH').val();
-     var kq= $('#NGAYSINH').val();
-     var k= moment(kq,"DD-MM-YYYY");
-     var NGAYSINH=moment(k).format("YYYY-MM-DD");
-     var DIACHI_KH=$('#DIACHI_KH').val();
-     var SDT_KH=$('#SDT_KH').val();
-     var EMAIL_KH=$('#EMAIL_KH').val();
-     var Id=$('#hideId').val();
-     //Xu Ly Du Lieu
-     var data={
-      "MAKHACHHANG":MAKHACHHANG,
-      "TENKHACHHANG":TENKHACHHANG,
-      "GIOITINH":GIOITINH,
-      "NGAYSINH":NGAYSINH,
-      "DIACHI_KH":DIACHI_KH,
-      "EMAIL_KH":EMAIL_KH,
-      "SDT_KH":SDT_KH
-     }
-     if(Id=='0')
-     {
-        self.khachhangService.add(data).subscribe(res=>{
-          if(res.errorCode>=5)
-          {
-            console.log(res);
-            self.router.navigate(['/']);
-          }
-          else
-          {
-                if(res.errorCode == 0)
-              {
-                  self.PNotify('Thêm Thành Công','success');
-                  self.loadReader();
-              }
-              else
-              {
-                self.PNotify('Thêm Không Thành Công','error');
-                self.loadReader();
-              }
-              $('#exampleModal').modal('hide');
-        }
-          });
-    }
-    else
-    {
-      self.khachhangService.update(data).subscribe(res=>{
-        if(res.errorCode>=5)
-        {
-          console.log(res);
-          self.router.navigate(['/']);
-        }
-        else
-        {
-            if(res.errorCode == 0)
-            {
-              $('#exampleModal').modal('hide');
-                self.PNotify('Sửa Thành Công','success');
-                self.loadReader();
-            }
-            else
-            {
-              $('#exampleModal').modal('hide');
-                self.PNotify('Sửa Không Thành Công','error');
-                self.loadReader();
-            }
-          }
-      });    
-    }
-    });
-    $('#NGAYSINH').daterangepicker({
-      singleDatePicker: true,
-      startDate: new Date(),
-      showDropdowns: true,
-      autoUpdateInput: true,
-      locale: {
-        format: 'DD-MM-YYYY'
+      if( rowId == '0') {
+        self.createMaKhachHang();
+      } else {
+        $('.modal-title').html('Cập nhật thông tin ');
+        self.setDataKhachHang(
+          self.inforData.ma, 
+          self.inforData.email, 
+          self.inforData.ten, 
+          self.inforData.dia_chi, 
+          self.inforData.ngay_sinh, 
+          self.inforData.sdt, 
+          self.inforData.gioi_tinh,
+          self.inforData.tinh_thanh,
+          self.inforData.quan_huyen,
+          self.inforData.phuong_xa
+        );
       }
     });
-
+      
     /**
      * table thong tin khach hang
      */
@@ -280,7 +248,7 @@ export class KhachHangComponent implements OnInit {
         { data: "ma" ,className: "text-center"}, 
         { data: "ten" },
         { data: "ngay_sinh",render:function(data){
-          data = data == null ? 'N/A' : moment(data, "YYYY-MM-DD");
+          data = data == null ? 'N/A' : moment(data).format( "YYYY-MM-DD");
           return data;
         }}, 
         {data: "gioi_tinh",render:function(data){
@@ -306,9 +274,26 @@ export class KhachHangComponent implements OnInit {
         cell.innerHTML = i + 1;
       })
     }).draw();
+
+
+    /***
+     * save data 
+     */
+    $('#save-thong-tin-khach-hang').off('click').click(function() {
+      rowId = $('hideId').val();
+      self.getDataKhachHang();
+      if( rowId == '0') {
+        // add khach hang
+      } else {
+        // update khach hang
+      }
+    });
   }
-  private loadReader()
-  {
+
+  /**
+   * fn load data khach hang 
+   */
+  private loadReader() {
     self.khachHangService.getAll().subscribe(res => {
       if (res.errorCode == 0) {
         tbl.clear().draw();
@@ -322,109 +307,141 @@ export class KhachHangComponent implements OnInit {
       }
     });
   }
-  private createMaKhachHang()
-{
-    self.khachhangService.createMaKhachHang().subscribe(res => {
-      if(res.errorCode==0)
-      {
-        if(res.data[0].MAKHACHHANG)
-        $('#MAKHACHHANG').text('KH'+res.data[0].MAKHACHHANG);
-        else
-        $('#MAKHACHHANG').text('KH000001');
+
+  /**
+   * bind table event
+   */
+  private bindTableEvents() {
+    //Xu ly update
+    $('a[data-group=grpEdit]').off('click').click(function(){
+      rowId = $(this).closest('tr').attr('id');
+      $('#hideId').val(rowId);
+      self.getKhachHangById(rowId);
+    })
+  }
+
+  /**
+   * fn get data khach hang by id
+   * @param id_khach_hang 
+   */
+  private getKhachHangById(id_khach_hang) {
+    self.khachHangService.get(id_khach_hang).subscribe(res=> {
+      if(res.errorCode >= 5) {
+        console.log(res);
+        self.router.navigate(['/']);
+        $("#loader").css("display", "none");
       }
-      else
-      {
-        $('#MAKHACHHANG').text('');
+      else {
+        if(res.errorCode == 0) {
+          self.inforData = res.data[0];
+          $('#exampleModal').modal('show');
+          $("#loader").css("display", "none");
+        }
       }
-      $('#exampleModal').modal('show');
     });
   }
-  private bindTableEvents()
-    {
-      //Xu ly update
-        $('a[data-group=grpEdit]').off('click').click(function(){
-          rowId = $(this).closest('tr').attr('id');
-          $('#hideId').val(rowId);
-            self.khachHangService.get(rowId).subscribe(res=>{
-              if(res.errorCode >= 5) {
-                console.log(res);
-                self.router.navigate(['/']);
-                $("#loader").css("display", "none");
-              }
-              else {
-                if(res.errorCode == 0) {
-                  self.inforData = res.data;
-                  $('#exampleModal').modal('show');
-                  $("#loader").css("display", "none");
-                }
-              }
-            });
-        })
-        //Xu lý xóa
-        // $('i[data-group=grpDelete]').off('click').click(function(){
-        //   var rowId=$(this).closest('tr').attr('id');
-        //   $.confirm({
-        //     title: 'Thông báo !',
-        //     content: 'Bạn có muốn xóa nhà khách hàng này không ?',
-        //     type: 'red',
-        //     typeAnimated: true,
-        //     buttons: {
-        //         tryAgain: {
-        //             text: 'Có',
-        //             btnClass: 'btn-danger',
-        //             action: function(){
-        //               self.hangxeService.delete(rowId).subscribe(res=>{
-        //                 console.log(res);
-        //                 if(res.errorCode>=5)
-        //                 {
-        //                   console.log(res);
-        //                   self.router.navigate(['/']);
-        //                 }
-        //                 else
-        //                 {
-        //                     if(res.errorCode==0)
-        //                     {
-        //                       self.loadReader();
-        //                       self.PNotify('Xóa Thành Công','success');
-        //                     }
-        //                     else
-        //                     {
-        //                       self.PNotify('Hãng xe đang sử dụng không thể xóa !','error');
-        //                     }
-        //                 }
-        //               });        
-        //             }
-        //         },
-        //         close:{
-        //           text: "Không",
-        //           btnClass: 'btn-primary'
-        //         }
-        //     }
-      //   });
-      // });
-    }
-   
-    private createMaHangXe()
-    {
-      self.hangxeService.createMaHangXe().subscribe(res => {
-        if(res.errorCode>=5)
-        {
-          console.log(res);
-          self.router.navigate(['/']);
-        }
-        else
-        {
-          console.log('alo');
-          if(res.errorCode==0)
-          {
-            if(res.data[0].MAKHACHHANG)
-            $('#MAKHACHHANG').val('HX'+res.data[0].MAKHACHHANG);
-            else
-            $('#MAKHACHHANG').val('HX000001');
-            $('#exampleModal').modal('show');
-          }
-        }
+
+  /**
+   * fn create new customer code
+   */
+  private createMaKhachHang() {
+    self.khachHangService.generate().subscribe(res => {
+      if(res.errorCode == 0 ) {
+        $('#ma_khach_hang').val(res.data).prop('readonly', true);
+      }
+      else {
+        $('#ma_khach_hang').val('').prop('readonly', false);
+      }
+    });
+  }
+
+  /**
+   * fn get all data tinh thanh pho viet nam
+   */
+  private getTinhThanh() {
+    self.tinhThanhPhoService.getTinhThanhJson().subscribe(res => {
+      self.dataTinhThanh = res.data;
+    });
+  }
+
+  /**
+   * fn get quan huyen theo tinh thanh 
+   * @param id_tinh_thanh 
+   */
+  private getQuanHuyen(id_tinh_thanh) {
+    self.tinhThanhPhoService.getQuanHuyenJson(id_tinh_thanh).subscribe(res => {
+      res.data.forEach(element => {
+        if(element.parent_code == id_tinh_thanh ){
+          self.dataQuanHuyen.push(element)
+        } else 
+          return;
       });
+    });
+    $('select[name=quanhuyen]').prop('disabled', false);
+  }
+
+  /**
+   * fn get data phuong xa theo quan huyen 
+   * @param id_quan_huyen 
+   */
+  private getPhuongXa(id_quan_huyen) {
+    self.tinhThanhPhoService.getQuanHuyenJson(id_quan_huyen).subscribe(res => {
+      res.data.forEach(element => {
+        if(element.parent_code == id_quan_huyen ){
+          self.dataPhuongXa.push(element)
+        } else 
+          return;
+      });
+    });
+    $('select[name=phuongxa]').prop('disabled', false);
+  }
+
+  /**
+   * fn append data khach hang
+   * @param ma 
+   * @param email 
+   * @param ten 
+   * @param dia_chi 
+   * @param ngay_sinh 
+   * @param sdt 
+   * @param gt
+   */
+  private setDataKhachHang(ma, email, ten, dia_chi, ngay_sinh, sdt, gt, tinh, quan, xa) {
+    $('#ma_khach_hang').val(ma);
+    $('#email').val(email);
+    $('#ten_khach_hang').val(ten);
+    $('#dia_chi').val(dia_chi);
+    $('#ngay_sinh').val(ngay_sinh);
+    $('#sdt').val(sdt);
+    if( gt = 0) {
+      $('#radio_nu').iCheck('check');
+    } else {
+      $('#radio_nu').iCheck('check');
     }
+    $('select[name=tinhthanh]').val(tinh).trigger('change');
+    $('select[name=quanhuyen]').val(quan).trigger('change');
+    $('select[name=phuongxa]').val(xa).trigger('change');
+  }
+
+  /**
+   * fn get data khach hang
+   */
+  private getDataKhachHang() {
+    self.dataSend = {
+      "ma": $('#ma_khach_hang').val(),
+      "ten" : $('#ten_khach_hang').val(),
+      "gioi_tinh" : $('input[name=gioi_tinh]').val(),
+      "ngay_sinh" : $('#ngay_sinh').val(),
+      "dia_chi" : $('#dia_chi').val(),
+      "sdt" : $('#sdt').val(),
+      "email" : $('#email').val(),
+      "tinh_thanh" : $('.tinhthanh').val(),
+      "quan_huyen" : $('.quanhuyen').val(),
+      "phuong_xa" : $('.phuongxa').val()
+    };
+    debugger
+    return self.dataSend;
+  }
+
 
 }

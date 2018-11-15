@@ -15,7 +15,7 @@ import { TinhThanhPhoService } from '../../services/tinhthanhpho.service';
 import * as moment from 'moment';
 
 declare var $:any;
-var tbl, tbl1, tbl2, td, headers, self: any;
+var tbl, tbl1, tbl2, td, self: any;
 var id_xe, id_khach_hang, id_dong_xe, id_tinh_thanh, id_quan_huyen, id_hang_xe = null;
 var ten_khach_hang, bien_so, so_khung, so_may, mau_xe, so_vin, nhan_vien, ten_tinh_thanh, ten_quan_huyen = '';
 var so_km = 0;
@@ -149,6 +149,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('.tinhthanh').on('select2:select', function (e) {
       id_tinh_thanh = $(this).val();
       ten_tinh_thanh = e.params.data.text;
+      self.dataQuanHuyen = [];
       self.getQuanHuyen(id_tinh_thanh);
     });
     // select 2 quan huyen
@@ -159,6 +160,7 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('.quanhuyen').on('select2:select', function (e) {
       id_quan_huyen = $(this).val();
       ten_quan_huyen = e.params.data.text;
+      self.dataPhuongXa = [];
       self.getPhuongXa(id_quan_huyen);
     });
     // selet 2 phuong xa
@@ -179,42 +181,6 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       self.getDongXe(id_hang_xe);
       $('.dong_xe').prop('disabled', false);
     });
-    // select 2 hang xe dong xe 
-    $('#MAHANGXE_ADD_DX').select2({
-      placeholder: "Choose Automaker",
-      allowClear: true
-    });
-    // select 2 dong xe 
-    $('#ma_dong_xe').select2({
-      placeholder: "Choose Vehicle",
-      allowClear: true
-      });
-    // select 2 gioi tinh 
-    $('#gioi_tinh').select2({
-        placeholder: "Choose Gender",
-        allowClear: true
-    });
-    // select 2 don vi 
-    $('select[name=ma_don_vi]').select2({
-      placeholder: "Choose Unit Of Work",
-      allowClear: true
-    });
-    // select 2 nhan vien 
-    $('select[name=nhan_vien]').select2({
-      placeholder: "Choose Staff",
-      allowClear: true
-    });
-    // select 2 loai phieu kham
-    $('select[name=loai_phieu_kham]').select2({
-      placeholder: "Choose Style Of Checklist",
-      allowClear: true
-    });
-
-    /*****************************************
-     *             Validation                *
-     *****************************************
-     */
-    
 
     /* 
      * ***************************************
@@ -1080,22 +1046,15 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    * @param id_tinh_thanh 
    */
   private getQuanHuyen(id_tinh_thanh) {
-    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
-      if(res.status == 'success') {
-        headers = new Headers({
-          'Authorization': res.token_type + ' ' + res.access_token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-        self.headerOptions = new RequestOptions({ headers: headers });
-        self.tinhThanhPhoService.getQuanHuyenTheoTinhThanh( id_tinh_thanh, self.headerOptions).subscribe(res => {
-          if(res.status == 'success') {
-            self.dataQuanHuyen = res.data;
-            $('select[name=quanhuyen]').prop('disabled', false);
-          }
-        });
-      }
+    self.tinhThanhPhoService.getQuanHuyenJson(id_tinh_thanh).subscribe(res => {
+      res.data.forEach(element => {
+        if(element.parent_code == id_tinh_thanh ){
+          self.dataQuanHuyen.push(element)
+        } else 
+          return;
+      });
     });
+    $('select[name=quanhuyen]').prop('disabled', false);
   }
 
   /**
@@ -1103,22 +1062,15 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    * @param id_quan_huyen 
    */
   private getPhuongXa(id_quan_huyen) {
-    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
-      if(res.status == 'success') {
-        headers = new Headers({
-          'Authorization': res.token_type + ' ' + res.access_token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        });
-        self.headerOptions = new RequestOptions({ headers: headers });
-        self.tinhThanhPhoService.getPhuongXaTheoQuanHuyen( id_quan_huyen, self.headerOptions).subscribe(res => {
-          if(res.status == 'success') {
-            self.dataPhuongXa = res.data;
-            $('select[name=phuongxa]').prop('disabled', false);
-          }
-        });
-      }
+    self.tinhThanhPhoService.getQuanHuyenJson(id_quan_huyen).subscribe(res => {
+      res.data.forEach(element => {
+        if(element.parent_code == id_quan_huyen ){
+          self.dataPhuongXa.push(element)
+        } else 
+          return;
+      });
     });
+    $('select[name=phuongxa]').prop('disabled', false);
   }
 
   /**
