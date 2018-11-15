@@ -60,6 +60,10 @@ export class HeaderComponent implements OnInit {
           $('.danhmuc').addClass('active menu-open');
           $('#menu-danhsachphieudat').parent().addClass('active');
           break;
+      case '/admin/khachhang' : 
+          $('.khachhang').addClass('active menu-open');
+          $('#menu-khachhang').parent().addClass('active');
+          break;
     }
     $('#menu-danhmucphutung').off('click').click(function(){
       $('.active').removeClass('active');
@@ -113,6 +117,12 @@ export class HeaderComponent implements OnInit {
       $('.active').removeClass('active');
       $(this).parent().addClass('active');
       $('.order').addClass('active menu-open');
+    });
+
+    $('#menu-khachhang').off('click').click(function(){
+      $('.active').removeClass('active');
+      $(this).parent().addClass('active');
+      $('.khachhang').addClass('active menu-open');
     });
   }
 
