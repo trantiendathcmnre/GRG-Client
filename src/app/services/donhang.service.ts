@@ -42,57 +42,49 @@ export class DonHangService {
     return this.http.delete(url, this.headerOptions).map(response => response.json());
   }
 
-  createMaDonHang()
-  {
+  createMaDonHang() {
     // this.createHeader();
     let url = this.apiService.donHang.getMDH.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  getDH_PT(id)
-  {
+  getDonHangPhuTung(id) {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_PT.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  getDH_CONG(id)
-  {
+  getDonHangCong(id) {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_CONG.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  updateNV(data)
-  {
+  updateNV(data) {
     // this.createHeader();
     let url = this.apiService.donHang.updateNV.url;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
 
-  getDH_DangSua()
-  {
+  getDH_DangSua() {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_DangSua.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  huyDH(data)
-  {
+  huyDH(data) {
     // this.createHeader();
     let url = this.apiService.donHang.huyDH.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
 
-  getDH_HoanThanh()
-  {
+  getDH_HoanThanh() {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_HoanThanh.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  getDHHT_BSX(id)
-  {
+  getDHHT_BSX(id) {
     // this.createHeader();
     let url = this.apiService.donHang.getDHHT_BSX.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
@@ -104,60 +96,57 @@ export class DonHangService {
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  getDH_NVDLV()
-  {
+  getDH_NVDLV() {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_NVDLV.url;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  getDH_KH(id)
-  {
+  getDH_KH(id) {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_KH.url+id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  updateCN_NCC(data)
-  {
+  updateCN_NCC(data) {
     // this.createHeader();
     let url = this.apiService.donHang.updateCN_NCC.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
 
-  getCT_TT(id)
-  {
+  getChiTietThanhToan(id) {
     // this.createHeader();
-    let url = this.apiService.donHang.getCT_TT.url+id;
+    let url = this.apiService.donHang.getCT_TT.url + id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  sendMail(data)
-  {
+  sendMail(data) {
     // this.createHeader();
     let url = this.apiService.donHang.sendMail.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
   }
 
-  luutam(data)
-  {
+  luutam(data) {
     // this.createHeader();
     let url = this.apiService.donHang.luuTamDH.url;
     return this.http.put(url, data, this.headerOptions).map(response => response.json());
   }
 
-  getDH_TTKH(id)
-  {
+  getDH_TTKH(id) {
     // this.createHeader();
     let url = this.apiService.donHang.getDH_TTKH.url+id;
     return this.http.get(url, this.headerOptions).map(response => response.json());
   }
 
-  capnhatphieuhen(data)
-  {
+  capnhatphieuhen(data) {
     // this.createHeader();
     let url = this.apiService.donHang.capnhatphieuhen.url;
     return this.http.post(url, data, this.headerOptions).map(response => response.json());
+  }
+
+  lichSuSuaChua(id) {
+    let url = this.apiService.donHang.lichSuSuaChua.url + id;
+    return this.http.get(url, this.headerOptions).map(response => response.json());
   }
   
   // createHeader()

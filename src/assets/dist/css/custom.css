@@ -2,6 +2,10 @@ a.big_tab {
     width: 310px;
     text-align: center;
 }
+a.md-tab {
+    width: 246px;
+    text-align: center;
+}
 u:hover {
     color: #0056b3;
     text-decoration: underline;   
@@ -106,6 +110,14 @@ u:hover {
     align-items: center;
     margin-right: 2rem;
 }
+.chi-tiet-khach-hang{
+    cursor: pointer;
+    color: #8175c7;
+}
+.chi-tiet-xe{
+    cursor: pointer;
+    color: #8175c7;
+}
 .d-block{
     display: block;
 }
@@ -159,6 +171,9 @@ label {
 }
 .m-t-70 {
     margin-top: 70px;
+}
+.m-b-5 {
+    margin-bottom: 5px;
 }
 .no_error{
     color : #333!important;
@@ -333,4 +348,7 @@ table.dataTable {
 .checkbox label, .radio label {
     padding-left: 10px;
     padding-right: 30px
+}
+.text-info {
+    color: #8175c7;
 }

@@ -15,7 +15,7 @@ import { TinhThanhPhoService } from '../../services/tinhthanhpho.service';
 import * as moment from 'moment';
 
 declare var $:any;
-var tbl, tbl1, tbl2, td, self: any;
+var tbl, tbl1, tbl2, td, headers, self: any;
 var id_xe, id_khach_hang, id_dong_xe, id_tinh_thanh, id_quan_huyen, id_hang_xe = null;
 var ten_khach_hang, bien_so, so_khung, so_may, mau_xe, so_vin, nhan_vien, ten_tinh_thanh, ten_quan_huyen = '';
 var so_km = 0;
@@ -149,7 +149,6 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('.tinhthanh').on('select2:select', function (e) {
       id_tinh_thanh = $(this).val();
       ten_tinh_thanh = e.params.data.text;
-      self.dataQuanHuyen = [];
       self.getQuanHuyen(id_tinh_thanh);
     });
     // select 2 quan huyen
@@ -160,7 +159,6 @@ export class TiepNhanSuaChuaComponent implements OnInit {
     $('.quanhuyen').on('select2:select', function (e) {
       id_quan_huyen = $(this).val();
       ten_quan_huyen = e.params.data.text;
-      self.dataPhuongXa = [];
       self.getPhuongXa(id_quan_huyen);
     });
     // selet 2 phuong xa
@@ -180,6 +178,71 @@ export class TiepNhanSuaChuaComponent implements OnInit {
       id_hang_xe = $(this).val();
       self.getDongXe(id_hang_xe);
       $('.dong_xe').prop('disabled', false);
+    });
+    // select 2 hang xe dong xe 
+    $('#MAHANGXE_ADD_DX').select2({
+      placeholder: "Choose Automaker",
+      allowClear: true
+    });
+    // select 2 dong xe 
+    $('#ma_dong_xe').select2({
+      placeholder: "Choose Vehicle",
+      allowClear: true
+      });
+    // select 2 gioi tinh 
+    $('#gioi_tinh').select2({
+        placeholder: "Choose Gender",
+        allowClear: true
+    });
+    // select 2 don vi 
+    $('select[name=ma_don_vi]').select2({
+      placeholder: "Choose Unit Of Work",
+      allowClear: true
+    });
+    // select 2 nhan vien 
+    $('select[name=nhan_vien]').select2({
+      placeholder: "Choose Staff",
+      allowClear: true
+    });
+    // select 2 loai phieu kham
+    $('select[name=loai_phieu_kham]').select2({
+      placeholder: "Choose Style Of Checklist",
+      allowClear: true
+    });
+
+    /*****************************************
+     *             Validation                *
+     *****************************************
+     */
+    $.validator.addMethod("valueNotEquals", function(value, element, arg){
+      return arg !== value;
+    }, "Value must not equal arg.");
+
+    $('#form-khach-hang').validate({
+      debug: true,
+      rules: {
+        ten_khach_hang: { required : true },
+        tinhthanh: { valueNotEquals: "0" },
+        sdt: { required : true },
+        quanhuyen : { valueNotEquals: "0" },
+        phuongxa : { valueNotEquals: "0" }
+      },
+      messages: { 
+        ten_khach_hang: { required: "Vui lòng nhập tên khách hàng."},
+        tinhthanh: { valueNotEquals: "Vui lòng chọn Tỉnh/Thành."},
+        quanhuyen: { valueNotEquals: "Vui lòng chọn Quận/Huyện."},
+        sdt: { required: "Vui lòng nhập số điện thoại."},
+        phuongxa: { valueNotEquals: "Vui lòng chọn Phường/Xã."}
+      },
+      highlight : function (element) {
+          $(element).closest('.form-control').addClass('has-error');
+          $(element).closest('.form-group').addClass('has-error');
+          $('.no_error').removeClass('has-error');
+      },
+      unhighlight : function (element) {
+          $(element).closest('.form-control').removeClass('has-error');
+          $(element).closest('.form-group').removeClass('has-error');
+      }
     });
 
     /* 
@@ -724,13 +787,10 @@ export class TiepNhanSuaChuaComponent implements OnInit {
 
     // them khach hang tab 1
     $('.them_khach_hang').on('click', function () {
-      self.validationThongTinKhachHang();
-      if( $('#form-khach-hang').validate().checkForm() ) {
-        $('.tab-1').removeClass('active');
-        $('#activity').removeClass('active');
-        $('.tab-2').addClass('active');
-        $('#timeline').addClass('active');
-      }
+      // $('.tab-1').removeClass('active');
+      // $('#activity').removeClass('active');
+      // $('.tab-2').addClass('active');
+      // $('#timeline').addClass('active');
     });
     // them xe tab 2 
     $('.them_xe').on('click', function (){
@@ -1046,15 +1106,22 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    * @param id_tinh_thanh 
    */
   private getQuanHuyen(id_tinh_thanh) {
-    self.tinhThanhPhoService.getQuanHuyenJson(id_tinh_thanh).subscribe(res => {
-      res.data.forEach(element => {
-        if(element.parent_code == id_tinh_thanh ){
-          self.dataQuanHuyen.push(element)
-        } else 
-          return;
-      });
+    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
+      if(res.status == 'success') {
+        headers = new Headers({
+          'Authorization': res.token_type + ' ' + res.access_token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+        self.headerOptions = new RequestOptions({ headers: headers });
+        self.tinhThanhPhoService.getQuanHuyenTheoTinhThanh( id_tinh_thanh, self.headerOptions).subscribe(res => {
+          if(res.status == 'success') {
+            self.dataQuanHuyen = res.data;
+            $('select[name=quanhuyen]').prop('disabled', false);
+          }
+        });
+      }
     });
-    $('select[name=quanhuyen]').prop('disabled', false);
   }
 
   /**
@@ -1062,45 +1129,20 @@ export class TiepNhanSuaChuaComponent implements OnInit {
    * @param id_quan_huyen 
    */
   private getPhuongXa(id_quan_huyen) {
-    self.tinhThanhPhoService.getQuanHuyenJson(id_quan_huyen).subscribe(res => {
-      res.data.forEach(element => {
-        if(element.parent_code == id_quan_huyen ){
-          self.dataPhuongXa.push(element)
-        } else 
-          return;
-      });
-    });
-    $('select[name=phuongxa]').prop('disabled', false);
-  }
-
-  /**
-   * fn validation
-   */
-  private validationThongTinKhachHang (){
-    $('#form-khach-hang').validate({
-      debug: true,
-      rules: {
-        ten_khach_hang: { required : true },
-        tinhthanh: { required : true },
-        sdt: { required : true },
-        quanhuyen : { required : true },
-        phuongxa : { required : true }
-      },
-      messages: { 
-        ten_khach_hang: { required: "Vui lòng nhập tên khách hàng."},
-        tinhthanh: { required: "Vui lòng chọn Tỉnh/Thành."},
-        quanhuyen: { required: "Vui lòng chọn Quận/Huyện."},
-        sdt: { required: "Vui lòng nhập số điện thoại."},
-        phuongxa: { required: "Vui lòng chọn Phường/Xã."}
-      },
-      highlight : function (element) {
-          $(element).closest('.form-control').addClass('has-error');
-          $(element).closest('.form-group').addClass('has-error');
-          $('.no_error').removeClass('has-error');
-      },
-      unhighlight : function (element) {
-          $(element).closest('.form-control').removeClass('has-error');
-          $(element).closest('.form-group').removeClass('has-error');
+    self.tinhThanhPhoService.loginGoShip().subscribe(res => {
+      if(res.status == 'success') {
+        headers = new Headers({
+          'Authorization': res.token_type + ' ' + res.access_token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        });
+        self.headerOptions = new RequestOptions({ headers: headers });
+        self.tinhThanhPhoService.getPhuongXaTheoQuanHuyen( id_quan_huyen, self.headerOptions).subscribe(res => {
+          if(res.status == 'success') {
+            self.dataPhuongXa = res.data;
+            $('select[name=phuongxa]').prop('disabled', false);
+          }
+        });
       }
     });
   }

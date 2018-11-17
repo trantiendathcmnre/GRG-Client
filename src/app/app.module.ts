@@ -24,6 +24,7 @@ import { NotFoundComponent } from './views/notfound/notfound.component';
 import { DanhSachXeComponent } from './views/danhsachxe/danhsachxe.component';
 import { TiepNhanSuaChuaComponent } from './views/tiepnhansuachua/tiepnhansuachua.component';
 import { DonHangComponent } from './views/donhang/donhang.component';
+import { LichSuSuaChuaComponent } from './views/lichsusuachua/lichsusuachua.component';
 
 import { ApisService } from './services/apis.service';
 import { DanhMucPhuTungService } from './services/danhmucphutung.service';
@@ -43,6 +44,7 @@ import { DonHangService } from './services/donhang.service';
 import { LapPhieuKhamService } from './services/lapphieukham.service';
 import { NhanVienService } from './services/nhanvien.service';
 import { TinhThanhPhoService } from './services/tinhthanhpho.service';
+
 
 
 
@@ -66,6 +68,7 @@ export const router: Routes = [
       { path: 'danhsachxe', component: DanhSachXeComponent },
       { path: 'tiepnhansuachua', component: TiepNhanSuaChuaComponent },
       { path: 'donhang', component: DonHangComponent },
+      { path: 'lichsusuachua', component: LichSuSuaChuaComponent },
     ]
   },
   { path: '**', component: NotFoundComponent },
@@ -93,6 +96,7 @@ export const router: Routes = [
     DanhSachXeComponent,
     TiepNhanSuaChuaComponent,
     DonHangComponent,
+    LichSuSuaChuaComponent,
   ],
   imports: [
     BrowserModule,

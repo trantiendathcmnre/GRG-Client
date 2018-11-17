@@ -185,7 +185,8 @@ constructor() { }
         getDHHT_BSX:    { method: 'GET',    url : this.baseUrl + 'donhang/hoanthanh/biensoxe/' },
         luuTamDH:       { method: 'PUT',    url : this.baseUrl + 'donhang/luutam' },
         getDH_TTKH:     { method: 'GET',    url : this.baseUrl + 'donhang/biensoxe/' },
-        capnhatphieuhen:{ method: 'POST',   url : this.baseUrl + 'donhang/capnhat/phieuhen' }
+        capnhatphieuhen:{ method: 'POST',   url : this.baseUrl + 'donhang/capnhat/phieuhen' },
+        lichSuSuaChua:  { method: 'GET',    url : this.baseUrl + 'donhang/lichsusuachua/' },
     };
 
     generateID(length = null) {

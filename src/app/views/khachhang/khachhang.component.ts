@@ -4,10 +4,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import { KhachHangService } from '../../services/khachhang.service';
 import { TinhThanhPhoService } from '../../services/tinhthanhpho.service';
-declare var $: any;
-var self,tbl, inforData, dataKT, result_name, ngay_sinh, validator :any;
-var id_tinh_thanh, id_quan_huyen = null;
+import { XeService } from '../../services/xe.service';
+import { DonHangService } from '../../services/donhang.service';
+
+declare var $, toastr: any;
+var self, tbl, tbl2, tbl3, tbl4, tbl5, tbl6, tbl7, inforData, dataKT, result_name, ngay_sinh, gioi_tinh, validator, sdt_new :any;
+var id_tinh_thanh, id_quan_huyen, id_phuong_xa = null;
+var ten_tinh_thanh , ten_quan_huyen, ten_phuong_xa: string = '';
 var rowId: any = 0;
+var dataQuanHuyen = [];
 import * as moment from 'moment';
 
 @Component({
@@ -18,203 +23,60 @@ import * as moment from 'moment';
 export class KhachHangComponent implements OnInit {
 
   public dataTinhThanh:any = [];
-  public dataQuanHuyen:any = [];
   public dataPhuongXa:any = [];
   public dataSend:any = [];
+  public dataTable2:any = [];
+  sdt_current: string;
   constructor(
+    private router:Router,
     private khachHangService: KhachHangService,
-    private tinhThanhPhoService: TinhThanhPhoService 
+    private tinhThanhPhoService: TinhThanhPhoService,
+    private xeService: XeService,
+    private donHangService: DonHangService
   ) { }
 
   ngOnInit() {
     self = this;
-    /**
-     * loader display
-     */
+
+    // loader display
     $("#loader").css("display", "block");
-     /* 
-     * ***************************************
-     *             Select 2                  *
-     * ***************************************
-     */
-    // select 2 tinh thanh pho
-    $('.tinhthanh').select2({
-      placeholder: "Chọn Tỉnh/Thành phố",
-    });
-    // when select tinh thanh pho 
-    $('.tinhthanh').on('select2:select', function (e) {
-      id_tinh_thanh = $(this).val();
-      self.dataQuanHuyen = [];
-      self.getQuanHuyen(id_tinh_thanh);
-    });
-    // select 2 quan huyen
-    $('.quanhuyen').select2({
-      placeholder: "Chọn Quận/Huyện",
-    });
-    // when select tinh thanh pho 
-    $('.quanhuyen').on('select2:select', function (e) {
-      id_quan_huyen = $(this).val();
-      self.dataPhuongXa = [];
-      self.getPhuongXa(id_quan_huyen);
-    });
-    // selet 2 phuong xa
-    $('.phuongxa').select2({
-      placeholder: "Chọn Phường/Xã",
+  
+    // select2
+    $('select[name=tinhthanh]').select2({
+      placeholder: "Chọn Tỉnh/Thành phố"
     });
 
-    /* 
-     * ***************************************
-     *             Datetimepicker            *
-     * ***************************************
-     */
     // datetimepicker ngay sinh 
     $('#ngay_sinh').daterangepicker({
       singleDatePicker: true,
       showDropdowns: true,
       autoUpdateInput: true,
       locale: {
-        format: 'DD-MM-YYYY'
+        format: 'YYYY-MM-DD'
       }
     });
 
-    /**
-     * radio button icheck
-     */
+    // datetimepicker ngay thanh toan
+    $('#ngaythanhtoan').daterangepicker({
+      singleDatePicker: true,
+      timePicker: true,
+      showDropdowns: true,
+      autoUpdateInput: true,
+      locale: {
+        format: 'YYYY-MM-DD HH:mm:ss'
+      }
+    });
+
+    // radio button icheck
     $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
       checkboxClass: 'icheckbox_flat-green',
       radioClass   : 'iradio_flat-green'
     })
-    /**
-     * get data tinh thanh pho
-     */
-    self.getTinhThanh();
 
-    $("#add").validate({
-      debug: true,
-      focusCleanup: true,
-      rules:{
-        TENKHACHHANG:
-        {
-        required:true,
-        maxlength:100
-        },
-        SDT_KH:
-        {
-        required:true,
-        maxlength:100
-        }
-      },
-       messages:
-       {
-                  TENKHACHHANG:
-                  {
-                  required:"Tên khách hàng không được trống !",
-                  maxlength:"Tên hãng xe chỉ tối đa 100 ký tự !"
-                  },
-                  SDT_KH:
-                  {
-                  required:"Số điện thoại khách hàng không được trống !",
-                  maxlength:"Tên hãng xe chỉ tối đa 100 ký tự !"
-                  }
-      },
-      highlight : function (element) {
-        $(element).closest('.form-control').addClass('has-error');
-         $(element).closest('.form-group').addClass('has-error');
-      },
-      unhighlight : function (element) {
-        $(element).closest('.form-control').removeClass('has-error');
-         $(element).closest('.form-group').removeClass('has-error');
-      }
-    });
-    $('#add input').bind('keyup blur change', function () {
-      var Id=$('#hideId').val();
-      if(Id==0)
-      {
-        if ($('#add').validate().checkForm() ) {  
-          name();
-          if(self.result_check)
-            $('#btn_Luu').removeClass('button_disabled').prop('disabled', false); 
-            else
-            $('#btn_Luu').removeClass('button_disabled').prop('disabled', true); 
-          
-        } else {
-          $('#btn_Luu').addClass('button_disabled').prop('disabled', true);   
-        }
-      }
-      else
-      {
-        if ($('#add').validate().checkForm() ) {   
-           name();
-           if(self.result_check)
-            $('#btn_Luu').removeClass('button_disabled').prop('disabled', false); 
-            else
-            $('#btn_Luu').removeClass('button_disabled').prop('disabled', true);
-          }   
-          else
-          {
-            $('#btn_Luu').removeClass('button_disabled').prop('disabled', true); 
-          }
-        }
+    // jquery validate
+    validator = $('#form-khach-hang').validate();
       
-     });
-     var nameOLD;
-     function name()
-     {
-      var Id=$('#hideId').val();
-       var input_name_ITK = $("#SDT_KH").val().trim();
-       self.result_name = false;
-         $("#unname_ITK").show();
-         console.log(input_name_ITK);
-         console.log(Id);
-         console.log(self.dataKT);
-       $.each( self.dataKT, function( key, value ) {
-        if((input_name_ITK==value.SDT_KH && value.SDT_KH!=nameOLD && Id!='0' )||(input_name_ITK==value.SDT_KH && Id=='0'))
-         {    
-           self.result_name = true;        
-         }
-       });
-       if(self.result_name)
-       {
-         $("#unname_ITK").html("<span class='not-exists'>Số điện thoại này đã tồn tại.</span>");
-         self.result_check = false;
-       }
-       else
-       {
-         $("#unname_ITK").html("");
-         self.result_check = true;
-       }
-     }
-     $("#SDT_KH").keyup(function(){
-      name();
-    });
-    //change text without input
-    $("#SDT_KH").change(function(){
-      name();
-    });
-    $('#exampleModal').modal({show: false, backdrop: 'static', keyboard: false }).on('show.bs.modal',function(){
-      rowId = $('#hideId').val();
-      if( rowId == '0') {
-        self.createMaKhachHang();
-      } else {
-        $('.modal-title').html('Cập nhật thông tin ');
-        self.setDataKhachHang(
-          self.inforData.ma, 
-          self.inforData.email, 
-          self.inforData.ten, 
-          self.inforData.dia_chi, 
-          self.inforData.ngay_sinh, 
-          self.inforData.sdt, 
-          self.inforData.gioi_tinh,
-          self.inforData.tinh_thanh,
-          self.inforData.quan_huyen,
-          self.inforData.phuong_xa
-        );
-      }
-    });
-      
-    /**
-     * table thong tin khach hang
-     */
+    //table thong tin khach hang
     tbl = $("#khachhang").DataTable({
       "ordering": false,
       "info": false,
@@ -227,63 +89,292 @@ export class KhachHangComponent implements OnInit {
       rowId: "id",
       language: 
       {
-            "sProcessing":   "Đang xử lý...",
-            "sLengthMenu":   "Xem _MENU_ mục",
-            "sZeroRecords":  "Không tìm thấy dòng nào phù hợp",
-            "sInfo":         "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
-            "sInfoEmpty":    "Đang xem 0 đến 0 trong tổng số 0 mục",
-            "sInfoFiltered": "(được lọc từ _MAX_ mục)",
-            "sInfoPostFix":  "",
-            "sSearch":       "Tìm:",
-            "sUrl":          "",
-            "oPaginate": {
-                "sFirst":    "Đầu",
-                "sPrevious": "Trước",
-                "sNext":     "Tiếp",
-                "sLast":     "Cuối"
-            }
+        "sProcessing":   "Đang xử lý...",
+        "sLengthMenu":   "Xem _MENU_ mục",
+        "sZeroRecords":  "Không tìm thấy dữ liệu",
+        "sInfo":         "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+        "sInfoEmpty":    "Đang xem 0 đến 0 trong tổng số 0 mục",
+        "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+        "sInfoPostFix":  "",
+        "sSearch":       "Tìm:",
+        "sUrl":          "",
+        "oPaginate": {
+            "sFirst":    "Đầu",
+            "sPrevious": "Trước",
+            "sNext":     "Tiếp",
+            "sLast":     "Cuối"
+        }
       },
       columns: [
-        { data: null ,className: "text-center", width: "20px"},
-        { data: "ma" ,className: "text-center"}, 
-        { data: "ten" },
-        { data: "ngay_sinh",render:function(data){
-          data = data == null ? 'N/A' : moment(data).format( "YYYY-MM-DD");
-          return data;
+        { data: "ma" ,className: "text-center", render : function (data) {
+          return '<a class="chi-tiet-khach-hang">'+ data + '</a>';
         }}, 
-        {data: "gioi_tinh",render:function(data){
+        { data: "ten" , render : function (data) {
+          return '<a class="chi-tiet-khach-hang">'+ data + '</a>';
+        } },
+        {data: "gioi_tinh", render:function(data){
           data = data == '0' ? 'Nữ' : 'Nam'
           return data;
         }},
-        { data: "sdt" }, 
-        { data: "email" }, 
-        { data: "dia_chi" }, 
-        {data: null,className: "text-center" ,render: function (data, type, row){
-          return '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Cập nhật thông tin khách hàng" ><i class="fa fa-edit"></i></a>';
+        { data: "ngay_sinh", render:function(data) {
+          data = data == null ? 'N/A' : moment(data).format( "DD/MM/YYYY");
+          return data;
+        }},  
+        { data: "dia_chi", render: function(data) {
+          return data;
+        }},
+        { data: null,className: "text-center" , render: function (data, type, row){
+          return '<a class="btn btn-primary-action m-r-xs" data-group="grpViewHistory" title="Xem lịch sử thanh toán" ><i class="fa fa-calendar"></i></a>' +
+              '<a class="btn btn-primary-action m-r-xs" data-group="grpEdit" title="Cập nhật thông tin khách hàng" ><i class="fa fa-edit"></i></a>';
         }}
       ],
       initComplete: function (settings, json) {
+        // load data into table
         self.loadReader();
       },
       drawCallback: function( settings ) {
+        // binding data
         self.bindTableEvents();
       }
     });
-    tbl.on('order.dt search.dt', function(){
-      tbl.column(0, {search: 'applied', order: 'applied'}).nodes().each(function(cell,i){
-        cell.innerHTML = i + 1;
-      })
-    }).draw();
+
+    // table thong tin khach hang
+    tbl2 = $("#tbl-xe").DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowId: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "bien_so" ,className: "text-center", render : function (data) {
+          return '<a class="chi-tiet-xe">'+ data + '</a>';
+        }}, 
+        { data: "ten_hang_xe" , render : function (data) {
+          return '<a class="chi-tiet-xe">'+ data + '</a>';
+        } },
+        {data: "model"},
+        { data: "doi_xe"}
+      ],
+      drawCallback: function( settings ) {
+        // load data into tbl2
+        self.tbl2CallBack();
+      }
+    });
+
+    // table lich su sua chua
+    tbl3 = $("#dssuachua").DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowId: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "bien_so",className:"font-weight-bold" },  
+        {data: "tien_phu_tung",className: "text-center", render: function (data) {
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }}, 
+        {data: "tien_nhan_cong",className: "text-center", render: function (data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "chiet_khau",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "giam_tru_khac",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "thanh_toan",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: null},
+        {data: 'ghi_chu'}
+      ],
+      rowCallback: function(row, data, index) { 
+        // calculate tien con = tong tien - chiet khau - giam tru khac - thanh toan
+        var con_no = (data.tong_tien - data.chiet_khau - data.giam_tru_khac  - data.thanh_toan).toLocaleString('vi', {style : 'currency', currency : 'VND'});
+        // append data vao tbl3
+        tbl3.cell(index,6).nodes()[0].textContent = con_no;
+        // binding data tbl3
+        self.tbl3drawCallback(data, con_no);
+      }
+    });
+
+    // table cong don hang
+    tbl4 = $('#table-chi-tiet-nhan-cong').DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowID: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "ten",className:"font-weight-bold" },  
+        { data: "so_luong",className: "text-center" }, 
+        { data: "don_gia",className: "text-center", render: function (data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "giam_tru_cong",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "thue_cong",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "thanh_tien",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }}
+      ]
+    });
+
+    // table chi tiet vat tu
+    tbl5 = $('#table-chi-tiet-vat-tu').DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowID: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "ten_phu_tung",className:"font-weight-bold" },  
+        { data: "so_luong",className: "text-center" }, 
+        { data: "don_gia",className: "text-center", render: function (data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "giam_tru_phu_tung",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "thue_phu_tung",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }},
+        {data: "thanh_tien_phu_tung",className: "text-center",render:function(data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }}
+      ]
+    });
+
+    // table chi tiet thanh toan
+    tbl6 = $('#table-chi-tiet-thanh-toan').DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowID: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "ngay_thanh_toan",className:"font-weight-bold", render: function (data) {
+          return moment(data).format('DD/MM/YYYY');
+        }},  
+        { data: "nguoi_thanh_toan" }, 
+        { data: "tien_thanh_toan",className: "text-center", render: function (data){
+          data = data.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+          return data;
+        }}
+      ]
+    });
 
 
-    /***
-     * save data 
-     */
+    // table thong tin chu xe
+    tbl7 = $('.table-thong-tin-xe').DataTable({
+      "ordering": false,
+      "info": false,
+      "searching": false,
+      "paging":   false,
+      rowID: "id",
+      language: 
+      {
+        "sProcessing":   "Đang xử lý...",
+        "sZeroRecords":  "Không tìm thấy dữ liệu"
+      },
+      columns: [
+        { data: "ma"},  
+        { data: "ten"}, 
+        { data: "dia_chi"},
+        { data: "sdt",className: "text-center"},
+        { data: "email"}
+      ]
+    });
+
+    // them khach hang
+    $('#add-khach-hang').click(function () {
+      $("#loader").css("display", "block");
+      $('#hideId').val('0');
+      $('#exampleModal').modal('show');
+    });
+
+    // modal show biding data
+    $('#exampleModal').modal({show: false, backdrop: 'static', keyboard: false }).on('show.bs.modal',function(){
+      validator.resetForm();
+      $('input').removeClass('error');
+      // get hiden id == 0 ? add : update
+      rowId = $('#hideId').val();
+      if( rowId == '0') {
+        // change title 
+        $('.modal-title').html('Thêm thông tin khách hàng');
+        // create new customer code 
+        self.createMaKhachHang();
+        // set default value field
+        self.setDataKhachHang();
+        
+      } else {
+        // change title 
+        $('.modal-title').html('Cập nhật thông tin'); 
+        // readonly customer code
+        $('#ma_khach_hang').val(self.inforData.ma).prop('readonly', true);
+        // set value data into field
+        self.setDataKhachHang(
+          self.inforData.email, 
+          self.inforData.ten, 
+          self.inforData.dia_chi, 
+          self.inforData.ngay_sinh, 
+          self.inforData.sdt, 
+          self.inforData.gioi_tinh
+        );
+      }
+      // turn off loader
+      $("#loader").css("display", "none");
+    });
+
+    // save data info customer
     $('#save-thong-tin-khach-hang').off('click').click(function() {
-      rowId = $('hideId').val();
+      $("#loader").css("display", "block");
+      rowId = $('#hideId').val();
       self.getDataKhachHang();
       if( rowId == '0') {
         // add khach hang
+        self.addKhachHang(self.dataSend);
       } else {
         // update khach hang
       }
@@ -312,12 +403,93 @@ export class KhachHangComponent implements OnInit {
    * bind table event
    */
   private bindTableEvents() {
-    //Xu ly update
+    
+    // edit data customer 
     $('a[data-group=grpEdit]').off('click').click(function(){
+      // turn on loader 
+      $("#loader").css("display", "block");
+      // get row id
       rowId = $(this).closest('tr').attr('id');
+      // set hiden id by row id
       $('#hideId').val(rowId);
-      self.getKhachHangById(rowId);
-    })
+      // get info customer by row id
+      self.getKhachHangById(rowId);  
+    });
+
+    // xem lich su sua chua
+    // $('a[data-group=grpViewHistory]').off('click').click(function() {
+    //   self.router.navigate(['/admin/lichsusuachua'], 
+    //                       { queryParams: {title: 'ring', si: true }});
+    // });
+
+    // click ma khach hang hoac ten khach hang
+    $('.chi-tiet-khach-hang').off('click').click(function() {
+      // get row id 
+      rowId = $(this).closest('tr').attr('id');
+      // get info data customer 
+      self.getKhachHangChiTiet(rowId);
+      // get data car 
+      self.getXeTheoKhachHang(rowId);
+      // get history repair
+      self.getLichSuSuaChua(rowId);
+    });
+  }
+
+  /**
+   * fn table 2 raw call back
+   */
+  private tbl2CallBack() {
+
+    // click chi tiet xe 
+    $('.chi-tiet-xe').click(function() {
+      // get row id 
+      rowId = $(this).closest('tr').attr('id');
+      // loop data table 2 
+      self.dataTable2.forEach(data => {
+        // if data id == row id
+        if(data.id == rowId) {
+          $('.thong-tin-xe-bien-so').text(data.bien_so);
+          $('.thong-tin-xe-so-khung').text(data.so_khung);
+          $('.thong-tin-xe-model').text(data.model);
+          $('.thong-tin-xe-loai-xe').text(data.ten_dong_xe);
+          $('.thong-tin-xe-hang-xe').text(data.ten_hang_xe);
+          $('.thong-tin-xe-so-may').text(data.so_may);
+          $('.thong-tin-xe-doi-xe').text(data.doi_xe);
+          $('.thong-tin-xe-mau-xe').text(data.mau_xe);
+          // get info own car
+          self.chiTietKhachHangCuaXe(data.id_khach_hang)
+        }
+        return;
+      });
+    });
+  }
+  
+  /**
+   * fn table 3 raw call back
+   */
+  private tbl3drawCallback(data, con_no) {
+    // click row data history repair
+    $('#dssuachua tbody').off('click').on( 'click', 'tr', function () {
+      // get row id
+      rowId = $(this).closest('tr').attr('id');
+      $('.benh_an_khach_hang').text(data.ten_khach_hang);
+      $('.benh_an_tinh_thanh').text(data.dia_chi_khach_hang);
+      $('.benh_anh_sdt').text(data.sdt_khach_hang);
+      $('.benh_an_bien_so').text(data.bien_so);
+      $('.benh_an_model').text(data.model);
+      $('.benh_an_doi_xe').text(data.doi_xe);
+      $('.benh_an_tong_tien').text((data.tong_tien).toLocaleString('vi', {style : 'currency', currency : 'VND'}));
+      $('.benh_an_thanh_toan').text((data.thanh_toan).toLocaleString('vi', {style : 'currency', currency : 'VND'}));
+      $('.benh_an_con_no').text(con_no);
+      // get data nhan cong
+      self.getCongDonHang(rowId);
+      // get data phu tung don hang
+      self.getPhuTungDonHang(rowId);
+      // get lish su thanh toan
+      self.getLichSuThanhToan(rowId);
+      // show modal chi tiet benh an
+      $('#modal-chi-tiet-benh-an').modal('show');
+  } );
   }
 
   /**
@@ -326,16 +498,128 @@ export class KhachHangComponent implements OnInit {
    */
   private getKhachHangById(id_khach_hang) {
     self.khachHangService.get(id_khach_hang).subscribe(res=> {
-      if(res.errorCode >= 5) {
-        console.log(res);
-        self.router.navigate(['/']);
-        $("#loader").css("display", "none");
-      }
-      else {
         if(res.errorCode == 0) {
           self.inforData = res.data[0];
           $('#exampleModal').modal('show');
           $("#loader").css("display", "none");
+        }
+    });
+  }
+
+  /**
+   * fn det khach hang theo id
+   * @param id_khach_hang 
+   */
+  private chiTietKhachHangCuaXe(id_khach_hang) {
+    self.khachHangService.get(id_khach_hang).subscribe(res=> {
+        if(res.errorCode == 0) {
+          tbl7.clear().draw();
+          tbl7.rows.add(res.data[0]);
+          tbl7.columns.adjust().draw(); 
+          $('#modal-thong-tin-xe').modal('show');
+        }
+    });
+  }
+
+  /**
+   * chi tiet khach hang
+   * @param id_khach_hang 
+   */
+  private getKhachHangChiTiet(id_khach_hang) {
+    self.khachHangService.get(id_khach_hang).subscribe(res=> {
+      if(res.errorCode == 0) {
+        gioi_tinh = res.data[0].gioi_tinh == 1 ? 'Nam' : 'Nữ';
+        $('#dd_ma').text(res.data[0].ma);
+        $('#dd_ten').text(res.data[0].ten);
+        $('#dd_dia_chi').text(res.data[0].dia_chi);
+        $('#dd_tinh_thanh').text(res.data[0].tinh_thanh);
+        $('#dd_sdt').text(res.data[0].sdt);
+        $('#dd_email').text(res.data[0].email);
+        $('#dd_gioi_tinh').text(gioi_tinh);
+        $('#dd_ngay_sinh').text(moment(res.data[0].ngay_sinh).format('DD/MM/YYYY'));
+        $('.table-khach-hang').addClass('d-none');
+        $('.tab-list').removeClass('d-none');
+        $('#activity').addClass('active');
+        $('.tab-1').addClass('active');
+      }
+    });
+  }
+
+  /**
+   * fn get xe theo id khach hang
+   * @param id_khach_hang 
+   */
+  private getXeTheoKhachHang(id_khach_hang) {
+    self.xeService.getXe_KH(id_khach_hang).subscribe(res=>{
+      if( res.errorCode == 0 ) {
+        self.dataTable2 = res.data;
+        tbl2.clear().draw();
+        tbl2.rows.add(res.data);
+        tbl2.columns.adjust().draw(); 
+      }
+    });
+  }
+
+  /**
+   * fn get lich su sua chua theo id khach hang
+   * @param id_khach_hang 
+   */
+  private getLichSuSuaChua(id_khach_hang) {
+    self.donHangService.lichSuSuaChua(id_khach_hang).subscribe(res => {
+      if (res.errorCode == 0) {
+        tbl3.clear().draw();
+        tbl3.rows.add(res.data); 
+        tbl3.columns.adjust().draw();
+      } else {
+        console.log(res.errorMessage);
+      }
+    });
+  }
+
+  /**
+   * fn get cong don hang by id don hang
+   * @param id 
+   */
+  private getCongDonHang(id) {
+    self.donHangService.getDonHangCong(id).subscribe(res=>{
+      if( res.errorCode == 0 ) {
+        if(res.data.length > 0) {
+          tbl4.clear().draw();
+          tbl4.rows.add(res.data);
+          tbl4.columns.adjust().draw(); 
+        }
+      }
+    });
+  }
+
+  /**
+   * fn get phu tung don hang by id don hang 
+   * @param id 
+   */
+  private getPhuTungDonHang(id) {
+    self.donHangService.getDonHangPhuTung(id).subscribe(res=>{
+      if( res.errorCode == 0 ) {
+        if(res.data.length > 0) {
+          tbl5.clear().draw();
+          tbl5.rows.add(res.data);
+          tbl5.columns.adjust().draw(); 
+        }
+      }
+    });
+  }
+
+
+  /**
+   * fn get lich su thanh toan by id don hang
+   * @param id 
+   */
+  private getLichSuThanhToan(id) {
+    self.donHangService.getChiTietThanhToan(id).subscribe(res=>{
+      if( res.errorCode == 0 ) {
+        if(res.data.length > 0) {
+          tbl6.clear().draw();
+          tbl6.rows.add(res.data);//add new data
+          tbl6.columns.adjust().draw();// reraw datatable
         }
       }
     });
@@ -356,47 +640,6 @@ export class KhachHangComponent implements OnInit {
   }
 
   /**
-   * fn get all data tinh thanh pho viet nam
-   */
-  private getTinhThanh() {
-    self.tinhThanhPhoService.getTinhThanhJson().subscribe(res => {
-      self.dataTinhThanh = res.data;
-    });
-  }
-
-  /**
-   * fn get quan huyen theo tinh thanh 
-   * @param id_tinh_thanh 
-   */
-  private getQuanHuyen(id_tinh_thanh) {
-    self.tinhThanhPhoService.getQuanHuyenJson(id_tinh_thanh).subscribe(res => {
-      res.data.forEach(element => {
-        if(element.parent_code == id_tinh_thanh ){
-          self.dataQuanHuyen.push(element)
-        } else 
-          return;
-      });
-    });
-    $('select[name=quanhuyen]').prop('disabled', false);
-  }
-
-  /**
-   * fn get data phuong xa theo quan huyen 
-   * @param id_quan_huyen 
-   */
-  private getPhuongXa(id_quan_huyen) {
-    self.tinhThanhPhoService.getQuanHuyenJson(id_quan_huyen).subscribe(res => {
-      res.data.forEach(element => {
-        if(element.parent_code == id_quan_huyen ){
-          self.dataPhuongXa.push(element)
-        } else 
-          return;
-      });
-    });
-    $('select[name=phuongxa]').prop('disabled', false);
-  }
-
-  /**
    * fn append data khach hang
    * @param ma 
    * @param email 
@@ -406,21 +649,18 @@ export class KhachHangComponent implements OnInit {
    * @param sdt 
    * @param gt
    */
-  private setDataKhachHang(ma, email, ten, dia_chi, ngay_sinh, sdt, gt, tinh, quan, xa) {
-    $('#ma_khach_hang').val(ma);
+  private setDataKhachHang(email = null, ten = null, dia_chi = null, ngay_sinh = null, sdt = null, gioi_tinh) {
     $('#email').val(email);
     $('#ten_khach_hang').val(ten);
     $('#dia_chi').val(dia_chi);
     $('#ngay_sinh').val(ngay_sinh);
+    $('#ngay_sinh').val( ngay_sinh == null ? '' : moment(ngay_sinh).format('YYYY-MM-DD') );
     $('#sdt').val(sdt);
-    if( gt = 0) {
+    if( gioi_tinh == 0) {
       $('#radio_nu').iCheck('check');
     } else {
-      $('#radio_nu').iCheck('check');
+      $('#radio_nam').iCheck('check');
     }
-    $('select[name=tinhthanh]').val(tinh).trigger('change');
-    $('select[name=quanhuyen]').val(quan).trigger('change');
-    $('select[name=phuongxa]').val(xa).trigger('change');
   }
 
   /**
@@ -433,15 +673,37 @@ export class KhachHangComponent implements OnInit {
       "gioi_tinh" : $('input[name=gioi_tinh]').val(),
       "ngay_sinh" : $('#ngay_sinh').val(),
       "dia_chi" : $('#dia_chi').val(),
-      "sdt" : $('#sdt').val(),
-      "email" : $('#email').val(),
-      "tinh_thanh" : $('.tinhthanh').val(),
-      "quan_huyen" : $('.quanhuyen').val(),
-      "phuong_xa" : $('.phuongxa').val()
+      "sdt" : $('#sdt').val() ,
+      "email" : $('#email').val()
     };
-    debugger
     return self.dataSend;
   }
 
+  /**
+   * fn them khach hang
+   * @param data 
+   */
+  private addKhachHang(data) {
+    self.khachHangService.add(data).subscribe(res => {
+      if(res.errorCode == 0 ) {
+        self.loadReader();
+        $('#exampleModal').modal('hide');
+        $("#loader").css("display", "none");
+        toastr.success(res.message, 'Done!');
+      } else {
+        console.log(res.message);
+        $("#loader").css("display", "none");
+      }
+    });
+  }
+
+  /**
+   * fn get all data tinh thanh pho viet nam
+   */
+  private getTinhThanh() {
+    self.tinhThanhPhoService.getTinhThanhJson().subscribe(res => {
+      self.dataTinhThanh = res.data;
+    });
+  }
 
 }
