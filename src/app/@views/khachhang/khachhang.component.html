@@ -1,0 +1,659 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    <b>Thông tin khách hàng</b>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+    <li><a href="#">Quản lý khách hàng</a></li>
+    <li class="active">Thông tin khách hàng</li>
+  </ol>
+</section>
+
+<section class="content table-khach-hang">
+  <div class="box">
+    <div class="box-header">
+      <button type="button" class="btn btn-example pull-right" id="add-khach-hang">Thêm khách hàng</button>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table name="khachhang" class="table table-striped" id="khachhang" style="width: 100%;" >
+        <thead>
+          <tr>
+            <th>Mã khách hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Giới tính</th>
+            <th>Ngày sinh</th>
+            <th>Đại chỉ</th>
+            <th>Thao tác</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+      </table>  
+    </div>
+  </div>
+</section>
+
+<!-- Lịch sử bệnh án khách hàng -->
+<section class="content lich-su-benh-an-khach-hang d-none">
+    <div class="box">
+      <div class="box-header">
+        <h3>LỊCH SỬ BỆNH ÁN KHÁCH HÀNG <span class="text-danger" id="lsba_ten_khach_hang"></span></h3>
+      </div>
+      <div class="box-body">
+          <table class="table table-striped dssuachua" style="width:100%;">
+            <thead>
+                <tr>
+                <th>Biển số</th>
+                <th>Tổng tiền vật tư</th>
+                <th>Tổng tiền sửa chữa</th>
+                <th>Chiết khấu</th>
+                <th>Giảm trừ khác</th>
+                <th>Đã thanh toán</th>
+                <th>Còn nợ</th>
+                <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <button type="submit" class="btn btn-example btn-come-back-ds-kh pull-right"><i class="fa fa-history"></i> Trang trước</button>
+      </div>
+    </div>
+  </section>
+  
+
+<section class="content tab-list d-none">
+  <div class="box">
+    <div class="box-header">
+
+    </div>
+    <div class="box-body">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+            <li class="active tab-1"><a class="md-tab" href="#activity" data-toggle="tab">Thông Tin Khách Hàng</a></li>
+            <li class="tab-2"><a class="md-tab" href="#timeline" data-toggle="tab">Thông Tin Xe</a></li>
+            <li class="tab-3"><a class="md-tab" href="#settings" data-toggle="tab">Lịch Sử Bệnh Án</a></li>
+            <li class="tab-4"><a class="md-tab" href="#lienhe" data-toggle="tab">Liên Hệ</a></li>
+            </ul>
+            <div class="tab-content">       
+                <div class="active tab-pane" id="activity">
+                    <dl class="dl-horizontal">
+                      <dt>Mã khách hàng</dt>
+                      <dd id="dd_ma"></dd>
+                      <dt>Tên khách hàng</dt>
+                      <dd id="dd_ten"></dd>
+                      <dt>Địa chỉ</dt>
+                      <dd id="dd_dia_chi"></dd>
+                      <!-- <dt>Tỉnh thành phố</dt>
+                      <dd id="dd_tinh_thanh"></dd> -->
+                      <dt>Số điện thoại</dt>
+                      <dd id="dd_sdt"></dd>
+                      <dt>Email</dt>
+                      <dd id="dd_email"></dd>
+                      <dt>Giới tính</dt>
+                      <dd id="dd_gioi_tinh"></dd>
+                      <dt>Ngày sinh</dt>
+                      <dd id="dd_ngay_sinh"></dd>
+                    </dl>
+                    <button type="submit" class="btn btn-example btn-come-back-ds-kh pull-right"><i class="fa fa-history"></i> Trang trước</button>
+                </div>
+                <div class="tab-pane" id="timeline">
+                  <table class="table table-striped" id="tbl-xe" style="width: 100%;" >
+                    <thead>
+                      <tr>
+                        <th>Biển số xe</th>
+                        <th>Hãng xe</th>
+                        <th>Model</th>
+                        <th>Đời xe</th>
+                      </tr>
+                      </thead>
+                      <tbody></tbody>
+                  </table>
+                </div>
+                <div class="tab-pane" id="settings">
+                  <table class="table table-striped" id="dssuachua" style="width:100%;">
+                    <thead>
+                        <tr>
+                        <th>Biển số</th>
+                        <th>Tổng tiền vật tư</th>
+                        <th>Tổng tiền sửa chữa</th>
+                        <th>Chiết khấu</th>
+                        <th>Giảm trừ khác</th>
+                        <th>Đã thanh toán</th>
+                        <th>Còn nợ</th>
+                        <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div class="tab-pane" id="lienhe">
+                  <form id="form-send-mail">
+                    <div class="box">
+                      <div class="box-header with-border">
+                        <h3 class="box-title">Liên hệ qua email</h3>
+                      </div>
+                    
+                      <div class="box-body">
+                        <div class="form-group">
+                          <input 
+                          id="to" 
+                          class="form-control" 
+                          placeholder="Đến:" 
+                          data-rule-required = "true" 
+                          data-msg-required="Vui lòng nhập tên email cần gửi"
+                          data-rule-email = "true" 
+                          data-msg-email="Vui lòng nhập đúng định dạng email"
+                          >
+                        </div>
+                        <div class="form-group">
+                          <input 
+                          id="subject"
+                          class="form-control" 
+                          placeholder="Tiêu đề:"
+                          data-rule-required = "true" 
+                          data-msg-required="Vui lòng nhập tiêu đề mail"
+                          >
+                        </div>
+                        <div class="form-group">
+                              <textarea id="compose-textarea" class="form-control" style="height: 300px"></textarea>
+                        </div>
+                        <!-- <div class="form-group">
+                          <div class="btn btn-default btn-file">
+                            <i class="fa fa-paperclip"></i> Đính kèm
+                            <input type="file" name="attachment">
+                          </div>
+                          <p class="help-block">Tối đa. 32MB</p>
+                        </div> -->
+                      </div>
+                      
+                      <div class="box-footer">
+                        <div class="pull-right">
+                          <!-- <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Nháp</button> -->
+                          <button type="submit" class="btn btn-example btn-send-mail"><i class="fa fa-envelope-o"></i> Gửi</button>
+                        </div>
+                      </div>
+                        
+                    </div>
+                  </form>
+                  <form id="form-send-sms">
+                      <div class="box">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Liên hệ qua sms</h3>
+                        </div>
+                      
+                        <div class="box-body">
+                          <div class="form-group">
+                            <input 
+                            id="to_sms" 
+                            class="form-control" 
+                            placeholder="Đến:" 
+                            data-rule-required = "true" 
+                            data-msg-required="Vui lòng nhập số điện thoại"
+                            >
+                          </div>
+
+                          <div class="form-group">
+                                <textarea id="text_sms" class="form-control" style="height: 200px"></textarea>
+                          </div>
+                        </div>
+                        
+                        <div class="box-footer">
+                          <div class="pull-right">
+                            <!-- <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Nháp</button> -->
+                            <button type="submit" class="btn btn-example btn-send-sms"><i class="fa fa-mobile"></i> Gửi SMS</button>
+                          </div>
+                        </div>
+                          
+                      </div>
+                    </form>
+                </div> 
+            </div>
+         
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- hien thi thong tin xe -->
+<div class="modal fade in" id="modal-thong-tin-xe">
+  <div class="modal-dialog">
+    <form style="margin:20px" >
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h4 class="modal-title">THÔNG TIN CHI TIẾT XE</h4>
+        </div>
+        <div class="modal-body">
+          <div class="panel-body" id="addResult">
+            <section>
+                <div style="padding:8px">
+                    <div style="float:left; width:40%">
+                        <div class="col-md-12 col-sm-6 pull-left">
+                            <p><strong>Biển số:</strong> <span class="text-info thong-tin-xe-bien-so">BDKFFDD</span> <br>
+                                <strong>Số khung:</strong> <span class="text-info thong-tin-xe-so-khung"></span><br>
+                                <strong>Số Vin:</strong> <span class="text-info thong-tin-xe-so-vin"></span><br>
+                                <strong>Loại xe:</strong> <span class="text-info thong-tin-xe-loai-xe">acent</span><br>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="float: right; width:40%">
+                        <div class="col-md-12 col-sm-5 pull-right">
+                            <p><strong>Hãng xe</strong> <span class="text-info thong-tin-xe-hang-xe">huyndai</span> <br>
+                                <strong>Số máy:</strong> <span class="text-info thong-tin-xe-so-may"> DMVJFF</span><br>
+                                <strong>Đời xe:</strong> <span class="text-info thong-tin-xe-doi-xe">zxc</span><br>
+                                <strong>Màu xe:</strong> <span class="text-info thong-tin-xe-mau-xe">zx</span><br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </section> 
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Thoát</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade in" id="exampleModal">
+  <div class="modal-dialog modal-lg">
+    <form style="margin:20px" id="form-khach-hang">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h4 class="modal-title"></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+              <input type="hidden" id="hideId" value="0">
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label class="no_error">Mã khách hàng <span class="required"> *</span></label>
+                      <input class="form-control" id="ma_khach_hang" name="ma_khach_hang">
+                  </div>    
+                  <div class="form-group">
+                      <label class="no_error">Tên khách hàng <span class="required"> *</span></label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="ten_khach_hang" 
+                        name="ten_khach_hang" 
+                        data-rule-required = "true" 
+                        data-msg-required="Vui lòng nhập tên khách hàng"
+                      >
+                  </div>
+                  <div class="form-group">
+                      <label class="no_error">Số điện thoại <span class="required"> *</span></label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        name="sdt" 
+                        id="sdt" 
+                        data-rule-required = "true" 
+                        data-msg-required="Vui lòng nhập số điện thoại"
+                      >
+                  </div>
+                  <div class="form-group">
+                      <label class="no_error">Giới tính</label>
+                      <div class="checkbox">
+                          <input id="radio_nam" name="gioi_tinh" type="radio" class="flat-red form-control" value="1" checked>
+                          <label>Nam</label> 
+                          <input id="radio_nu" name="gioi_tinh" type="radio" class="flat-red form-control" value="0">
+                          <label>Nữ</label>
+                      </div>
+                  </div>
+                  
+                  
+              </div>
+              <div class="col-sm-6">
+                <div class="m-b-5 text-justify">
+                  <p>
+                    <strong >Thông tin khách hàng</strong> <br>
+                  </p>
+                  <span>
+                    Những thông tin  <span class="required"> *</span> là thông tin bắt buộc, ngoài ra các thông tin khác nhằm giúp liên hệ với khách hàng một cách dễ dàng nhất.
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="no_error">Email</label>
+                  <input type="text" class="form-control" name="email" id="email" data-rule-email="true" data-msg-email= "Vui lòng nhập đúng định dạng email">
+                </div>
+                <div class="form-group">
+                    <label class="no_error">Địa chỉ</label>
+                    <input type="text" class="form-control" name="dia_chi" id="dia_chi">
+                </div>
+
+                <div class="form-group">
+                  <label class="no_error">Ngày sinh</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="ngay_sinh" 
+                    name="ngay_sinh"
+                    data-rule-required = "true" 
+                    data-msg-required="Vui lòng nhập chọn ngày sinh"
+                  >
+                </div>
+                <!-- <div class="form-group">
+                  <label class="no_error" >Tỉnh/Thành phố  </label>
+                  <select id="tinhthanh" name="tinhthanh" class="form-control select2 tinhthanh" style="width: 100%;">
+                      <option></option>
+                      <option *ngFor="let tinh of dataTinhThanh" [value]= tinh.code>{{ tinh.name_with_type }}</option>
+                  </select>
+                  <input type="hidden" name="ten_tinh_thanh" id="ten_tinh_thanh">
+                </div> -->
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Thoát</button>
+          <button type="submit" class="btn btn-example" id="save-thong-tin-khach-hang">Lưu thông tin</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </form>
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+
+<div class="modal fade in" id="modal-chi-tiet-benh-an">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">CHI TIẾT BỆNH ÁN</h4>
+          </div>
+          <div class="modal-body">
+              <div class="panel-body" id="addresult">
+                  <section>
+                    <div style="padding:18px">
+                        <div style="float:left; width:40%">
+                            <div class="col-md-12 col-sm-6 pull-left">
+                                <p><strong>Khách hàng:</strong> <span class="text-info benh_an_khach_hang">Mr Nam</span> <br>
+                                    <strong>Địa chỉ:</strong> <span class="text-info benh_an_tinh_thanh">Hà Nội</span><br>
+                                    <strong>Điện thoại:</strong> <span class="text-info benh_anh_sdt">096 135 8885</span>
+                                </p>
+                            </div>
+                        </div>     
+                        <div style="float: right; width:40%">
+                            <div class="col-md-12 col-sm-5 pull-right">
+                                <p> <strong>Biển số xe:</strong> <span class="text-info benh_an_bien_so">30A8349</span> <br>
+                                    <strong>Model:</strong> <span class="text-info benh_an_model">undefined</span> <br>
+                                    <strong>Đời xe:</strong> <span class="text-info benh_an_doi_xe">2010</span></p>
+                            </div>
+                        </div>    
+                    </div>  
+                    <div style="clear:both"></div>
+                    <div align="center" style="padding-bottom:30px; ">
+                        <span style="text-align:center; font-weight:bold; font-size:18px">THÔNG TIN THANH TOÁN CHI TIẾT </span><br><br><br>
+                        <span style="text-align:center;"><strong>Tổng tiền:</strong> 
+                        <span class="text-info benh_an_tong_tien">3,450,000</span> &nbsp;&nbsp;&nbsp;
+                        <strong>Đã thanh toán:</strong> <span class="text-info benh_an_thanh_toan">0</span> &nbsp;&nbsp;&nbsp;
+                        <strong>Còn nợ:</strong> <span class="text-info benh_an_con_no">3,450,000</span></span>
+                    </div>
+                    <header class="panel-heading">
+                        CHI TIẾT NHÂN CÔNG
+                    </header>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="table-chi-tiet-nhan-cong">
+                        <thead>
+                          <tr>
+                            <th width="20%">Công việc</th>
+                            <th width="10%">Số lượng</th>
+                            <th width="20%">Đơn giá</th>
+                            <th width="20%">Giảm trừ</th>
+                            <th width="10%">Thuế</th>
+                            <th width="20%">Thành tiền</th>                        
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                    <header class="panel-heading">
+                      CHI TIẾT VẬT TƯ
+                    </header>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-chi-tiet-vat-tu">
+                            <thead>
+                              <tr>
+                                <th width="20%">Tên vật tư</th>
+                                <th width="10%">Số lượng</th>
+                                <th width="20%">Đơn giá</th>
+                                <th width="20%">Giảm trừ</th>
+                                <th width="10%">Thuế</th>
+                                <th width="20%">Thành tiền</th>                        
+                              </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <header class="panel-heading">
+                      LỊCH SỬ THANH TOÁN
+                    </header>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-chi-tiet-thanh-toan">
+                          <thead>
+                            <tr>
+                              <th>Ngày thanh toán</th>
+                              <th>Người thanh toán</th>
+                              <th>Số tiền thanh toán</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                    </div>
+                    <header class="panel-heading">
+                        THÊM MỚI GIAO DỊCH
+                        <span class="tools pull-right">
+        
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" data-toggle="collapse" data-target="#collapseOne" ></a>
+        
+                            </span>
+                        </span>
+                    </header>
+                    <div class="table-responsive">
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body" id="paneladd">
+                                <div class="form">
+                                    <form class="cmxform form-horizontal " id="formAddTT">
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3"></label>
+                                            <div class="col-lg-6">
+                                                <div class="alert alert-danger" style="display: none" id="errorTT" name="errorTT">Nội dung báo lỗi</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3">Ngày thanh toán</label>
+                                            <div class="col-lg-6">
+                                                <input class=" form-control clsDatePicker" value="17/11/2018" id="ngaythanhtoan" name="ngaythanhtoan" type="text" placeholder="DD/MM/YYYY" required="" onclick="showDatetime()">  
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3">Người thanh toán <span class="text-danger">(*)</span></label>
+                                            <div class="col-lg-6">
+                                                <input class=" form-control" value="Mr Nam" id="nguoithanhtoan" name="nguoithanhtoan" type="text" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label class="control-label col-lg-3">Số tiền thanh toán <span class="text-danger">(*)</span></label>
+                                            <div class="col-lg-6">
+                                                <input class="form-control" id="sotienthanhtoan" value="3,450,000" name="sotienthanhtoan" type="text" onkeyup="kiemtrasotien('3450000')" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-3 col-lg-6">
+                                                <input type="hidden" name="idbenhan" value="146">
+                                                <input class="btn btn-primary" type="button" name="submit" value="Thêm" onclick="themThanhtoan()">
+                                                <input class="btn btn-default" type="reset" value="Reset">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </section>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Thoát</button>
+        </div>
+    </div>
+</div>
+
+  <div class="modal fade in" id="modal-chi-tiet-xe">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">CHI TIẾT BỆNH ÁN</h4>
+          </div>
+          <div class="modal-body">
+              <div class="panel-body" id="addresult">
+                  <section>
+                    <div style="padding:18px">
+                        <div style="float:left; width:40%">
+                            <div class="col-md-12 col-sm-6 pull-left">
+                                <p><strong>Khách hàng:</strong> <span class="text-info benh_an_khach_hang">Mr Nam</span> <br>
+                                    <strong>Địa chỉ:</strong> <span class="text-info benh_an_tinh_thanh">Hà Nội</span><br>
+                                    <strong>Điện thoại:</strong> <span class="text-info benh_anh_sdt">096 135 8885</span>
+                                </p>
+                            </div>
+                        </div>     
+                        <div style="float: right; width:40%">
+                            <div class="col-md-12 col-sm-5 pull-right">
+                                <p> <strong>Biển số xe:</strong> <span class="text-info benh_an_bien_so">30A8349</span> <br>
+                                    <strong>Model:</strong> <span class="text-info benh_an_model">undefined</span> <br>
+                                    <strong>Đời xe:</strong> <span class="text-info benh_an_doi_xe">2010</span></p>
+                            </div>
+                        </div>    
+                    </div>  
+                    <div style="clear:both"></div>
+                    <div align="center" style="padding-bottom:30px; ">
+                        <span style="text-align:center; font-weight:bold; font-size:18px">THÔNG TIN THANH TOÁN CHI TIẾT </span><br><br><br>
+                        <span style="text-align:center;"><strong>Tổng tiền:</strong> 
+                        <span class="text-info benh_an_tong_tien">3,450,000</span> &nbsp;&nbsp;&nbsp;
+                        <strong>Đã thanh toán:</strong> <span class="text-info benh_an_thanh_toan">0</span> &nbsp;&nbsp;&nbsp;
+                        <strong>Còn nợ:</strong> <span class="text-info benh_an_con_no">3,450,000</span></span>
+                    </div>
+                    <header class="panel-heading">
+                        CHI TIẾT NHÂN CÔNG
+                    </header>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="table-chi-tiet-nhan-cong">
+                        <thead>
+                          <tr>
+                            <th width="20%">Công việc</th>
+                            <th width="10%">Số lượng</th>
+                            <th width="20%">Đơn giá</th>
+                            <th width="20%">Giảm trừ</th>
+                            <th width="10%">Thuế</th>
+                            <th width="20%">Thành tiền</th>                        
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                    <header class="panel-heading">
+                      CHI TIẾT VẬT TƯ
+                    </header>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-chi-tiet-vat-tu">
+                            <thead>
+                              <tr>
+                                <th width="20%">Tên vật tư</th>
+                                <th width="10%">Số lượng</th>
+                                <th width="20%">Đơn giá</th>
+                                <th width="20%">Giảm trừ</th>
+                                <th width="10%">Thuế</th>
+                                <th width="20%">Thành tiền</th>                        
+                              </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <header class="panel-heading">
+                      LỊCH SỬ THANH TOÁN
+                    </header>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-chi-tiet-thanh-toan">
+                          <thead>
+                            <tr>
+                              <th>Ngày thanh toán</th>
+                              <th>Người thanh toán</th>
+                              <th>Số tiền thanh toán</th>
+                            </tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                    </div>
+                    <header class="panel-heading">
+                        THÊM MỚI GIAO DỊCH
+                        <span class="tools pull-right">
+        
+                            <span class="tools pull-right">
+                                <a class="fa fa-chevron-down" data-toggle="collapse" data-target="#collapseOne" ></a>
+        
+                            </span>
+                        </span>
+                    </header>
+                    <div class="table-responsive">
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body" id="paneladd">
+                                <div class="form">
+                                    <form class="cmxform form-horizontal " id="formAddTT">
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3"></label>
+                                            <div class="col-lg-6">
+                                                <div class="alert alert-danger" style="display: none" id="errorTT" name="errorTT">Nội dung báo lỗi</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3">Ngày thanh toán</label>
+                                            <div class="col-lg-6">
+                                                <input class=" form-control clsDatePicker" value="17/11/2018" id="ngaythanhtoan" name="ngaythanhtoan" type="text" placeholder="DD/MM/YYYY" required="" onclick="showDatetime()">  
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="firstname" class="control-label col-lg-3">Người thanh toán <span class="text-danger">(*)</span></label>
+                                            <div class="col-lg-6">
+                                                <input class=" form-control" value="Mr Nam" id="nguoithanhtoan" name="nguoithanhtoan" type="text" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label class="control-label col-lg-3">Số tiền thanh toán <span class="text-danger">(*)</span></label>
+                                            <div class="col-lg-6">
+                                                <input class="form-control" id="sotienthanhtoan" value="3,450,000" name="sotienthanhtoan" type="text" onkeyup="kiemtrasotien('3450000')" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-lg-offset-3 col-lg-6">
+                                                <input type="hidden" name="idbenhan" value="146">
+                                                <input class="btn btn-primary" type="button" name="submit" value="Thêm" onclick="themThanhtoan()">
+                                                <input class="btn btn-default" type="reset" value="Reset">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </section>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Thoát</button>
+        </div>
+    </div>
+  </div>
